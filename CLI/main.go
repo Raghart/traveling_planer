@@ -20,7 +20,6 @@ func main() {
 	}
 
 	defer conn.Close()
-
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("CMD > ")
