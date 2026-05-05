@@ -38,7 +38,7 @@ func main() {
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, os.Interrupt)
 	<-signalChan
-	fmt.Println("RabbitMQ Connecion Closed")
+	fmt.Println("RabbitMQ Connection Closed")
 }
 
 func ClientWelcome() (string, error) {

@@ -3,6 +3,7 @@ package pubsub
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 
 	ampq "github.com/rabbitmq/amqp091-go"
@@ -29,22 +30,14 @@ func DeclareAndBind(conn *ampq.Connection,
 		log.Fatalf("error while creating the channel: %v", err)
 	}
 
-	durable := false
-	autoDelete := false
-	exclusive := false
+	queue, err := ch.QueueDeclare(queueName, queueType == DurableType, queueType != DurableType,
+		queueType != DurableType, false, nil)
 
-	if queueType == DurableType {
-		durable = true
-	} else {
-		autoDelete = true
-		exclusive = true
-	}
-	queue, err := ch.QueueDeclare(queueName, durable, autoDelete, exclusive, false, nil)
 	if err != nil {
-		log.Fatalf("there was an error while creating the queue: %v", err)
+		return &ampq.Channel{}, ampq.Queue{}, fmt.Errorf("error while creating the queue: %v", err)
 	}
 	if err = ch.QueueBind(queueName, key, exchange, false, nil); err != nil {
-		log.Fatal(err)
+		return &ampq.Channel{}, ampq.Queue{}, fmt.Errorf("error while binding the queue: %v", err)
 	}
 	return ch, queue, nil
 }

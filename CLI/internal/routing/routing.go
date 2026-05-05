@@ -2,6 +2,6 @@ package routing
 
 const (
 	ExchangePerilDirect = "peril_direct"
-	TestingKey          = "testing"
+	TestingKey          = "pause"
 	ConnectionStr       = "amqp://guest:guest@localhost:5672/"
 )
