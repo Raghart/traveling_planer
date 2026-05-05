@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
 	"strings"
 
+	"github.com/Raghart/traveling_planer/internal/pubsub"
 	"github.com/Raghart/traveling_planer/internal/routing"
 	ampq "github.com/rabbitmq/amqp091-go"
 )
@@ -23,6 +25,20 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	_, queue, err := pubsub.DeclareAndBind(conn,
+		routing.ExchangePerilDirect,
+		fmt.Sprintf("%s.%s", routing.TestingKey, username),
+		routing.TestingKey, pubsub.TransientType)
+
+	if err != nil {
+		log.Fatalf("there was a problem while trying to Bind the queue")
+	}
+	fmt.Printf("queue declared: %s!", queue.Name)
+
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, os.Interrupt)
+	<-signalChan
+	fmt.Println("RabbitMQ Connecion Closed")
 }
 
 func ClientWelcome() (string, error) {
