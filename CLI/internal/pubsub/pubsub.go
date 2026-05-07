@@ -82,18 +82,20 @@ func TestingRPC() (res string) {
 	utils.FailOnError(err, "couldn't register a consumer")
 
 	corrID := uuid.NewString()
-	PublishJSON(rabbitCh, "", "rpc_queue", corrID, q, routing.CountryData{
+	err = PublishJSON(rabbitCh, "", "rpc_queue", corrID, q, routing.CountryData{
 		IsCountry: false,
 	})
+	utils.FailOnError(err, "error while trying to publish the client JSON")
 
 	for d := range msgs {
 		if d.CorrelationId == corrID {
 			countryData := &routing.CountryData{}
 			err = json.Unmarshal(d.Body, countryData)
-
 			utils.FailOnError(err, "unable to unmarshal data")
+
 			if countryData.IsCountry == true {
 				res = "There is a country in the horizon!"
+				break
 			}
 			res = "unknown"
 			break

@@ -19,7 +19,7 @@ func main() {
 		switch scanner.Text() {
 		case "exit":
 			return
-		case "who":
+		case "test":
 			fmt.Println(pubsub.TestingRPC())
 		}
 	}
