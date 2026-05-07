@@ -1,10 +1,9 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"time"
 
+	"github.com/Raghart/traveling_planer/internal/pubsub"
 	"github.com/Raghart/traveling_planer/internal/routing"
 	"github.com/Raghart/traveling_planer/internal/utils"
 	ampq "github.com/rabbitmq/amqp091-go"
@@ -47,23 +46,12 @@ func main() {
 	var forever chan struct{}
 
 	go func() {
-		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-		defer cancel()
-
 		for d := range msgs {
-			err = ch.PublishWithContext(ctx,
-				"",
-				d.ReplyTo,
-				false,
-				false,
-				ampq.Publishing{
-					ContentType:   "text/plain",
-					CorrelationId: d.CorrelationId,
-					Body:          []byte("am I?"),
-				},
-			)
-			utils.FailOnError(err, "service couldn't publish answer")
+			pubsub.PublishJSON(ch, "", d.ReplyTo, q, routing.CountryData{
+				IsCountry: true,
+			})
 
+			utils.FailOnError(err, "service couldn't publish answer")
 			d.Ack(false)
 		}
 	}()

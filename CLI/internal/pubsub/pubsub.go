@@ -9,18 +9,21 @@ import (
 
 	"github.com/Raghart/traveling_planer/internal/routing"
 	"github.com/Raghart/traveling_planer/internal/utils"
+	"github.com/google/uuid"
 	ampq "github.com/rabbitmq/amqp091-go"
 )
 
-func PublishJSON[T any](ch *ampq.Channel, exchange, key string, val T) error {
+func PublishJSON[T any](ch *ampq.Channel, exchange, key string, queue ampq.Queue, val T) error {
 	jsonBytes, err := json.Marshal(val)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	return ch.PublishWithContext(context.Background(), exchange, key, false, false, ampq.Publishing{
-		ContentType: "application/json",
-		Body:        jsonBytes,
+		ContentType:   "application/json",
+		CorrelationId: uuid.NewString(),
+		ReplyTo:       queue.Name,
+		Body:          jsonBytes,
 	})
 }
 
@@ -89,7 +92,7 @@ func TestingRPC() (res string) {
 		false,
 		ampq.Publishing{
 			ContentType:   "text/plain",
-			CorrelationId: "1",
+			CorrelationId: uuid.NewString(),
 			ReplyTo:       q.Name,
 			Body:          []byte("Who"),
 		},
