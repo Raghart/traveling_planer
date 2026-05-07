@@ -88,7 +88,14 @@ func TestingRPC() (res string) {
 
 	for d := range msgs {
 		if d.CorrelationId == corrID {
-			res = string(d.Body)
+			countryData := &routing.CountryData{}
+			err = json.Unmarshal(d.Body, countryData)
+
+			utils.FailOnError(err, "unable to unmarshal data")
+			if countryData.IsCountry == true {
+				res = "There is a country in the horizon!"
+			}
+			res = "unknown"
 			break
 		}
 	}
