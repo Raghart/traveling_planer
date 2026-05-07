@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/Raghart/traveling_planer/internal/routing"
 	"github.com/Raghart/traveling_planer/internal/utils"
@@ -13,7 +12,7 @@ import (
 	ampq "github.com/rabbitmq/amqp091-go"
 )
 
-func PublishJSON[T any](ch *ampq.Channel, exchange, key string, queue ampq.Queue, val T) error {
+func PublishJSON[T any](ch *ampq.Channel, exchange, key, msgID string, queue ampq.Queue, val T) error {
 	jsonBytes, err := json.Marshal(val)
 	if err != nil {
 		log.Fatal(err)
@@ -21,7 +20,7 @@ func PublishJSON[T any](ch *ampq.Channel, exchange, key string, queue ampq.Queue
 
 	return ch.PublishWithContext(context.Background(), exchange, key, false, false, ampq.Publishing{
 		ContentType:   "application/json",
-		CorrelationId: uuid.NewString(),
+		CorrelationId: msgID,
 		ReplyTo:       queue.Name,
 		Body:          jsonBytes,
 	})
@@ -82,24 +81,13 @@ func TestingRPC() (res string) {
 	)
 	utils.FailOnError(err, "couldn't register a consumer")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
-	defer cancel()
-	err = rabbitCh.PublishWithContext(
-		ctx,
-		"",
-		"rpc_queue",
-		false,
-		false,
-		ampq.Publishing{
-			ContentType:   "text/plain",
-			CorrelationId: uuid.NewString(),
-			ReplyTo:       q.Name,
-			Body:          []byte("Who"),
-		},
-	)
+	corrID := uuid.NewString()
+	PublishJSON(rabbitCh, "", "rpc_queue", corrID, q, routing.CountryData{
+		IsCountry: false,
+	})
 
 	for d := range msgs {
-		if d.CorrelationId == "1" {
+		if d.CorrelationId == corrID {
 			res = string(d.Body)
 			break
 		}

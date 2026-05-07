@@ -47,7 +47,7 @@ func main() {
 
 	go func() {
 		for d := range msgs {
-			pubsub.PublishJSON(ch, "", d.ReplyTo, q, routing.CountryData{
+			pubsub.PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, q, routing.CountryData{
 				IsCountry: true,
 			})
 
