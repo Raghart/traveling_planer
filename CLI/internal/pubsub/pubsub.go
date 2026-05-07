@@ -56,6 +56,7 @@ func TestingRPC() (res string) {
 	if err != nil {
 		log.Fatalf("error while creating the channel: %v", err)
 	}
+	defer rabbitCh.Close()
 
 	q, err := rabbitCh.QueueDeclare(
 		"",
