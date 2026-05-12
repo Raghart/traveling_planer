@@ -44,6 +44,13 @@ func main() {
 	utils.FailsOnError(err, "unable to create the channel")
 	forever := make(chan struct{})
 
+	func() {
+		for d := range msgs {
+
+			d.Ack(false)
+		}
+	}()
+
 	fmt.Println("Starting travinfo, ready to recieve requests!")
 	<-forever
 }
