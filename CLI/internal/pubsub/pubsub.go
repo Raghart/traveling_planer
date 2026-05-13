@@ -109,20 +109,30 @@ func TestingRPC() (res string) {
 	return
 }
 
-func AskCurrency() float32 {
+func AskCurrency(fromCurr, toCurr string) (value float32) {
 	conn, ch, q, msgs := ConnectBunny()
 	defer conn.Close()
 	defer ch.Close()
 
 	corrID := uuid.NewString()
 
-	PublishJSON(ch, "", "travinfo-queue", corrID, q)
+	err := PublishJSON(ch, "", "travinfo-queue", corrID, q, routing.Currency{
+		From: fromCurr,
+		To:   toCurr,
+	})
+	utils.FailOnError(err, "unable to ask for currency")
 	func() {
 		for d := range msgs {
-
+			if d.CorrelationId == corrID {
+				currencyData := &routing.Currency{}
+				err = json.Unmarshal(d.Body, currencyData)
+				utils.FailOnError(err, "unable to unmarshal the recieved data")
+				value = currencyData.Value
+				break
+			}
 		}
 	}()
-	return 0.0
+	return
 }
 
 type SimpleQueueType int
