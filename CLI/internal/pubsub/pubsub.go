@@ -47,18 +47,16 @@ func DeclareAndBind(conn *ampq.Connection,
 	return ch, queue, nil
 }
 
-func TestingRPC() (res string) {
+func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.Delivery) {
 	conn, err := ampq.Dial(routing.ConnectionStr)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	defer conn.Close()
 	rabbitCh, err := conn.Channel()
 	if err != nil {
 		log.Fatalf("error while creating the channel: %v", err)
 	}
-	defer rabbitCh.Close()
 
 	q, err := rabbitCh.QueueDeclare(
 		"",
@@ -80,9 +78,16 @@ func TestingRPC() (res string) {
 		nil,
 	)
 	utils.FailOnError(err, "couldn't register a consumer")
+	return conn, rabbitCh, q, msgs
+}
+
+func TestingRPC() (res string) {
+	conn, rabbitCh, q, msgs := ConnectBunny()
+	defer conn.Close()
+	defer rabbitCh.Close()
 
 	corrID := uuid.NewString()
-	err = PublishJSON(rabbitCh, "", "rpc_queue", corrID, q, routing.CountryData{
+	err := PublishJSON(rabbitCh, "", "rpc_queue", corrID, q, routing.CountryData{
 		IsCountry: false,
 	})
 	utils.FailOnError(err, "error while trying to publish the client JSON")
