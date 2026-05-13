@@ -8,7 +8,7 @@ import (
 	ampq "github.com/rabbitmq/amqp091-go"
 )
 
-func PublishJSON[T any](ch *ampq.Channel, exchange, key, msgType, msgID string,
+func PublishJSON[T any](ch *ampq.Channel, exchange, key, msgID, msgType string,
 	queue ampq.Queue, val T) error {
 
 	body, err := json.Marshal(val)

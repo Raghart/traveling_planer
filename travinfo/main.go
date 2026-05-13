@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/Raghart/traveling_planer/travinfo/internal/types"
 	"github.com/Raghart/traveling_planer/travinfo/internal/utils"
@@ -52,7 +53,14 @@ func main() {
 			case "currency":
 				currencyData := &types.Currency{}
 				json.Unmarshal(d.Body, currencyData)
+
+				err = utils.PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "currency", queue,
+					currencyData)
+				utils.FailsOnError(err, "unable to publish the json")
+
 				d.Ack(false)
+			default:
+				log.Println("Invalid request made!")
 			}
 		}
 	}()

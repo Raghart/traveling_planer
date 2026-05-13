@@ -3,8 +3,9 @@ package types
 type currType string
 
 type Currency struct {
-	From currType
-	To   currType
+	From  currType
+	To    currType
+	Value float32
 }
 
 const (

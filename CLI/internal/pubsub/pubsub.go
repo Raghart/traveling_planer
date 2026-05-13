@@ -104,6 +104,10 @@ func TestingRPC() (res string) {
 	return
 }
 
+func AskCurrency() float32 {
+	return 0.0
+}
+
 type SimpleQueueType int
 
 const (
