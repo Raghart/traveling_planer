@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 
+	"github.com/Raghart/traveling_planer/travinfo/internal/types"
 	"github.com/Raghart/traveling_planer/travinfo/internal/utils"
 	ampq "github.com/rabbitmq/amqp091-go"
 )
@@ -46,8 +48,12 @@ func main() {
 
 	func() {
 		for d := range msgs {
-
-			d.Ack(false)
+			switch d.Type {
+			case "currency":
+				currencyData := &types.Currency{}
+				json.Unmarshal(d.Body, currencyData)
+				d.Ack(false)
+			}
 		}
 	}()
 
