@@ -18,21 +18,21 @@ func main() {
 		fmt.Print("CMD > ")
 		scanner.Scan()
 		inputSlice := strings.Split(scanner.Text(), " ")
+
 		switch inputSlice[0] {
 		case "exit":
 			return
 		case "test":
 			fmt.Println(pubsub.TestingRPC())
 		case "curr":
-			if len(inputSlice) != 3 {
-				fmt.Println("Invalid curr cmd usage. Example: CMD > curr USD CAD")
+			if len(inputSlice) != 2 {
+				fmt.Println("Invalid curr cmd usage. Example: CMD > curr CAD")
 				continue
 			}
 
-			fromCurr := inputSlice[1]
-			toCurr := inputSlice[2]
-			result := pubsub.AskCurrency(fromCurr, toCurr)
-			fmt.Printf("Currency value from '%s' to '%s': %f\n", fromCurr, toCurr, result)
+			toCurr := inputSlice[1]
+			result := pubsub.AskCurrency(toCurr)
+			fmt.Printf("Currency value from USD to '%s': %f\n", toCurr, result)
 		}
 	}
 }
