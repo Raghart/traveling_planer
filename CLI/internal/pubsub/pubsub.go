@@ -110,6 +110,18 @@ func TestingRPC() (res string) {
 }
 
 func AskCurrency() float32 {
+	conn, ch, q, msgs := ConnectBunny()
+	defer conn.Close()
+	defer ch.Close()
+
+	corrID := uuid.NewString()
+
+	PublishJSON(ch, "", "travinfo-queue", corrID, q)
+	func() {
+		for d := range msgs {
+
+		}
+	}()
 	return 0.0
 }
 
