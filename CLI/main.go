@@ -32,7 +32,7 @@ func main() {
 
 			toCurr := inputSlice[1]
 			result := pubsub.AskCurrency(toCurr)
-			fmt.Printf("Currency value from USD to '%s': %f\n", toCurr, result)
+			fmt.Printf("Currency value from USD to '%s': %.2f\n", toCurr, result)
 		}
 	}
 }
