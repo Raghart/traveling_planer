@@ -1,0 +1,32 @@
+country_code,latitude,longitude,country,usa_state_code,usa_state_latitude,usa_state_longitude,usa_state
+AR,-38.416097,-63.616672,Argentina,GA,32.157435,-82.907123,Georgia
+BO,-16.290154,-63.588653,Bolivia,NC,35.759573,-79.0193,North Carolina
+BR,-14.235004,-51.92528,Brazil,ND,47.551493,-101.002012,North Dakota
+CA,56.130366,-106.346771,Canada,OH,40.417287,-82.907123,Ohio
+CL,-35.675147,-71.542969,Chile,TN,35.517491,-86.580447,Tennessee
+CO,4.570868,-74.297333,Colombia,VA,37.431573,-78.656894,Virginia
+CR,9.748917,-83.753428,Costa Rica,VT,44.558803,-72.577841,Vermont
+CU,21.521757,-77.781167,Cuba,WA,47.751074,-120.740139,Washington
+DM,15.414999,-61.370976,Dominica,,,,
+DO,18.735693,-70.162651,Dominican Republic,,,,
+EC,-1.831239,-78.183406,Ecuador,,,,
+GD,12.262776,-61.604171,Grenada,,,,
+GF,3.933889,-53.125782,French Guiana,,,,
+GY,4.860416,-58.93018,Guyana,,,,
+HN,15.199999,-86.241905,Honduras,,,,
+LC,13.909444,-60.978893,Saint Lucia,,,,
+MX,23.634501,-102.552784,Mexico,,,,
+NI,12.865416,-85.207229,Nicaragua,,,,
+PA,8.537981,-80.782127,Panama,,,,
+PE,-9.189967,-75.015152,Peru,,,,
+PM,46.941936,-56.27111,Saint Pierre and Miquelon,,,,
+PR,18.220833,-66.590149,Puerto Rico,,,,
+PT,39.399872,-8.224454,Portugal,,,,
+PY,-23.442503,-58.443832,Paraguay,,,,
+SR,3.919305,-56.027783,Suriname,,,,
+SV,13.794185,-88.89653,El Salvador,,,,
+TT,10.691803,-61.222503,Trinidad and Tobago,,,,
+US,37.09024,-95.712891,United States,,,,
+UY,-32.522779,-55.765835,Uruguay,,,,
+VC,12.984305,-61.287228,Saint Vincent and the Grenadines,,,,
+VE,6.42375,-66.58973,Venezuela,,,,
