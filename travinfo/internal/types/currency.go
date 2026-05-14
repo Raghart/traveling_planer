@@ -4,7 +4,7 @@ type currType string
 
 type Currency struct {
 	To    currType
-	Value float32
+	Value float64
 }
 
 const (

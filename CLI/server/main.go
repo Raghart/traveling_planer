@@ -53,7 +53,7 @@ func main() {
 			utils.FailOnError(err, "unable to unmarshal recieved data")
 
 			countryData.IsCountry = true
-			pubsub.PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, q, countryData)
+			pubsub.PublishJSON(ch, "", d.ReplyTo, "", d.CorrelationId, q, countryData)
 			utils.FailOnError(err, "service couldn't publish answer")
 
 			d.Ack(false)

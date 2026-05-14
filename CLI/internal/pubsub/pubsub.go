@@ -12,7 +12,7 @@ import (
 	ampq "github.com/rabbitmq/amqp091-go"
 )
 
-func PublishJSON[T any](ch *ampq.Channel, exchange, key, msgID string, queue ampq.Queue, val T) error {
+func PublishJSON[T any](ch *ampq.Channel, exchange, key, msgType, msgID string, queue ampq.Queue, val T) error {
 	jsonBytes, err := json.Marshal(val)
 	if err != nil {
 		log.Fatal(err)
@@ -23,6 +23,7 @@ func PublishJSON[T any](ch *ampq.Channel, exchange, key, msgID string, queue amp
 		CorrelationId: msgID,
 		ReplyTo:       queue.Name,
 		Body:          jsonBytes,
+		Type:          msgType,
 	})
 }
 
@@ -87,7 +88,7 @@ func TestingRPC() (res string) {
 	defer rabbitCh.Close()
 
 	corrID := uuid.NewString()
-	err := PublishJSON(rabbitCh, "", "rpc_queue", corrID, q, routing.CountryData{
+	err := PublishJSON(rabbitCh, "", "rpc_queue", "", corrID, q, routing.CountryData{
 		IsCountry: false,
 	})
 	utils.FailOnError(err, "error while trying to publish the client JSON")
@@ -116,7 +117,7 @@ func AskCurrency(toCurr string) (value float32) {
 
 	corrID := uuid.NewString()
 
-	err := PublishJSON(ch, "", "travinfo-queue", corrID, q, routing.Currency{
+	err := PublishJSON(ch, "", "travinfo-queue", "currency", corrID, q, routing.Currency{
 		To: toCurr,
 	})
 	utils.FailOnError(err, "unable to ask for currency")
