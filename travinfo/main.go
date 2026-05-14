@@ -13,7 +13,6 @@ import (
 )
 
 func main() {
-	fmt.Println("Starting traveling information microservice!")
 	conn, err := ampq.Dial("amqp://guest:guest@localhost:5672/")
 	utils.FailsOnError(err, "unable to connect to RabbitMQ")
 	defer conn.Close()
@@ -89,6 +88,6 @@ func main() {
 		}
 	}()
 
-	fmt.Println("Starting travinfo, ready to recieve requests!")
+	fmt.Println("Starting traveling information microservice!")
 	<-forever
 }
