@@ -32,7 +32,7 @@ func StructToDict(obj interface{}) (map[string]interface{}, error) {
 	return res, nil
 }
 
-func ConnectBunny() (*ampq.Connection, *ampq.Channel, <-chan ampq.Delivery) {
+func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.Delivery) {
 	conn, err := ampq.Dial("amqp://guest:guest@localhost:5672/")
 	FailsOnError(err, "unable to connect to RabbitMQ")
 	defer conn.Close()
@@ -66,7 +66,7 @@ func ConnectBunny() (*ampq.Connection, *ampq.Channel, <-chan ampq.Delivery) {
 		nil,
 	)
 	FailsOnError(err, "unable to create the channel")
-	return conn, ch, msgs
+	return conn, ch, queue, msgs
 }
 
 func FailsOnError(err error, msg string) {
