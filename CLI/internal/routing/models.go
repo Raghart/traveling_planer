@@ -5,6 +5,11 @@ type Currency struct {
 	Value float32
 }
 
+type LocationTemp struct {
+	Country string
+	Value   float32
+}
+
 type CountryData struct {
 	IsCountry bool
 }

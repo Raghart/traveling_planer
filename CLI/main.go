@@ -24,6 +24,13 @@ func main() {
 			return
 		case "test":
 			fmt.Println(pubsub.TestingRPC())
+		case "temp":
+			if len(inputSlice) != 2 {
+				fmt.Println("Invalid temp cmd usage. Example: CMD > temp Canada")
+			}
+			country := inputSlice[1]
+			pubsub.AskTemperature(country)
+
 		case "curr":
 			if len(inputSlice) != 2 {
 				fmt.Println("Invalid curr cmd usage. Example: CMD > curr CAD")

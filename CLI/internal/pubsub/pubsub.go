@@ -135,6 +135,19 @@ func AskCurrency(toCurr string) (value float32) {
 	return
 }
 
+func AskTemperature(country string) (value float32) {
+	conn, ch, queue, msgs := ConnectBunny()
+	defer conn.Close()
+	defer ch.Close()
+
+	corrID := uuid.NewString()
+	err := PublishJSON(ch, "", "travinfo-queue", "temperature", corrID, queue, routing.LocationTemp{
+		Country: country,
+	})
+	utils.FailOnError(err, "unable to publish the temperature request")
+	return
+}
+
 type SimpleQueueType int
 
 const (
