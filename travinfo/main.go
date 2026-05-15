@@ -18,7 +18,7 @@ func main() {
 		for d := range msgs {
 			switch d.Type {
 			case "currency":
-				utils.DeliverLatestCurrency(d, ch, queue)
+				pubsub.DeliverLatestCurrency(d, ch, queue)
 			case "temperature":
 				pubsub.DeliverCountryTemperature(d, ch, queue)
 			default:
