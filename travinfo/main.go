@@ -18,6 +18,8 @@ func main() {
 			switch d.Type {
 			case "currency":
 				utils.DeliverLatestCurrency(d, ch, queue)
+			case "temperature":
+				utils.DeliverCountryTemperature(d, ch, queue)
 			default:
 				log.Println("Invalid request made!")
 				d.Ack(false)

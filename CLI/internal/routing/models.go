@@ -5,7 +5,7 @@ type Currency struct {
 	Value float32
 }
 
-type LocationTemp struct {
+type CountryTemp struct {
 	Country string
 	Value   float32
 }
