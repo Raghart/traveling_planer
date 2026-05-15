@@ -34,4 +34,6 @@ func DeliverCountryTemperature(d ampq.Delivery, ch *ampq.Channel, queue ampq.Que
 
 	err = PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "temperature", queue, countryTemp)
 	FailsOnError(err, "unable to publish the JSON")
+
+	d.Ack(false)
 }

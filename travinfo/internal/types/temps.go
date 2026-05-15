@@ -17,7 +17,7 @@ type CountryTempJSON struct {
 	UtcOffsetSeconds     int     `json:"utc_offset_seconds"`
 	Timezone             string  `json:"timezone"`
 	TimezoneAbbreviation string  `json:"timezone_abbreviation"`
-	Elevation            int     `json:"elevation"`
+	Elevation            float64 `json:"elevation"`
 	CurrentUnits         struct {
 		Time          string `json:"time"`
 		Interval      string `json:"interval"`

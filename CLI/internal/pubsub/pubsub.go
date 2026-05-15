@@ -135,7 +135,7 @@ func AskCurrency(toCurr string) (value float32) {
 	return
 }
 
-func AskTemperature(country string) (value float32) {
+func AskTemperature(country string) (value float64) {
 	conn, ch, queue, msgs := ConnectBunny()
 	defer conn.Close()
 	defer ch.Close()

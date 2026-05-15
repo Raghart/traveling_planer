@@ -7,7 +7,7 @@ type Currency struct {
 
 type CountryTemp struct {
 	Country string
-	Value   float32
+	Value   float64
 }
 
 type CountryData struct {
