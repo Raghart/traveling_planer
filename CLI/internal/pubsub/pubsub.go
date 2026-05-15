@@ -145,6 +145,17 @@ func AskTemperature(country string) (value float32) {
 		Country: country,
 	})
 	utils.FailOnError(err, "unable to publish the temperature request")
+	func() {
+		for d := range msgs {
+			if d.CorrelationId == corrID {
+				countryTemp := &routing.LocationTemp{}
+				err = json.Unmarshal(d.Body, countryTemp)
+				utils.FailOnError(err, "unable to unmarshal the body")
+				value = countryTemp.Value
+				break
+			}
+		}
+	}()
 	return
 }
 

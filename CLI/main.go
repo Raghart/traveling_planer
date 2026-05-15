@@ -29,7 +29,8 @@ func main() {
 				fmt.Println("Invalid temp cmd usage. Example: CMD > temp Canada")
 			}
 			country := inputSlice[1]
-			pubsub.AskTemperature(country)
+			temp := pubsub.AskTemperature(country)
+			fmt.Printf("The temperature of the Country: %s is %f", country, temp)
 
 		case "curr":
 			if len(inputSlice) != 2 {
