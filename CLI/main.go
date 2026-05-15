@@ -30,7 +30,7 @@ func main() {
 			}
 			country := inputSlice[1]
 			temp := pubsub.AskTemperature(country)
-			fmt.Printf("The temperature of the Country: %s is %.2f\n", country, temp)
+			fmt.Printf("The current Temperature of %s is %.2f°C\n", country, temp)
 
 		case "curr":
 			if len(inputSlice) != 2 {

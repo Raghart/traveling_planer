@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/Raghart/traveling_planer/travinfo/internal/pubsub"
 	"github.com/Raghart/traveling_planer/travinfo/internal/utils"
 )
 
@@ -19,7 +20,7 @@ func main() {
 			case "currency":
 				utils.DeliverLatestCurrency(d, ch, queue)
 			case "temperature":
-				utils.DeliverCountryTemperature(d, ch, queue)
+				pubsub.DeliverCountryTemperature(d, ch, queue)
 			default:
 				log.Println("Invalid request made!")
 				d.Ack(false)
