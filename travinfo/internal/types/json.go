@@ -1,70 +1,58 @@
 package types
 
-import "time"
-
 type CurrencyJSON struct {
-	Success   bool      `json:"success"`
-	Terms     string    `json:"terms"`
-	Privacy   string    `json:"privacy"`
-	Timestamp int       `json:"timestamp"`
-	Date      time.Time `json:"date"`
-	Base      string    `json:"base"`
-	Rates     struct {
-		ADA float64 `json:"ADA"`
+	Result          string `json:"result"`
+	BaseCode        string `json:"base_code"`
+	ConversionRates struct {
+		USD float64 `json:"USD"`
 		AED float64 `json:"AED"`
 		AFN float64 `json:"AFN"`
 		ALL float64 `json:"ALL"`
 		AMD float64 `json:"AMD"`
 		ANG float64 `json:"ANG"`
 		AOA float64 `json:"AOA"`
-		ARB float64 `json:"ARB"`
 		ARS float64 `json:"ARS"`
 		AUD float64 `json:"AUD"`
 		AWG float64 `json:"AWG"`
 		AZN float64 `json:"AZN"`
 		BAM float64 `json:"BAM"`
-		BBD int     `json:"BBD"`
+		BBD float64 `json:"BBD"`
 		BDT float64 `json:"BDT"`
 		BGN float64 `json:"BGN"`
 		BHD float64 `json:"BHD"`
 		BIF float64 `json:"BIF"`
-		BMD int     `json:"BMD"`
-		BNB float64 `json:"BNB"`
+		BMD float64 `json:"BMD"`
 		BND float64 `json:"BND"`
 		BOB float64 `json:"BOB"`
 		BRL float64 `json:"BRL"`
-		BSD int     `json:"BSD"`
-		BTC float64 `json:"BTC"`
+		BSD float64 `json:"BSD"`
 		BTN float64 `json:"BTN"`
 		BWP float64 `json:"BWP"`
 		BYN float64 `json:"BYN"`
-		BYR float64 `json:"BYR"`
-		BZD int     `json:"BZD"`
+		BZD float64 `json:"BZD"`
 		CAD float64 `json:"CAD"`
 		CDF float64 `json:"CDF"`
 		CHF float64 `json:"CHF"`
 		CLF float64 `json:"CLF"`
 		CLP float64 `json:"CLP"`
+		CNH float64 `json:"CNH"`
 		CNY float64 `json:"CNY"`
 		COP float64 `json:"COP"`
 		CRC float64 `json:"CRC"`
-		CUC int     `json:"CUC"`
-		CUP int     `json:"CUP"`
+		CUP float64 `json:"CUP"`
 		CVE float64 `json:"CVE"`
 		CZK float64 `json:"CZK"`
-		DAI float64 `json:"DAI"`
 		DJF float64 `json:"DJF"`
 		DKK float64 `json:"DKK"`
 		DOP float64 `json:"DOP"`
-		DOT float64 `json:"DOT"`
 		DZD float64 `json:"DZD"`
 		EGP float64 `json:"EGP"`
-		ERN int     `json:"ERN"`
+		ERN float64 `json:"ERN"`
 		ETB float64 `json:"ETB"`
-		ETH float64 `json:"ETH"`
 		EUR float64 `json:"EUR"`
 		FJD float64 `json:"FJD"`
 		FKP float64 `json:"FKP"`
+		FOK float64 `json:"FOK"`
 		GBP float64 `json:"GBP"`
 		GEL float64 `json:"GEL"`
 		GGP float64 `json:"GGP"`
@@ -93,8 +81,8 @@ type CurrencyJSON struct {
 		KES float64 `json:"KES"`
 		KGS float64 `json:"KGS"`
 		KHR float64 `json:"KHR"`
+		KID float64 `json:"KID"`
 		KMF float64 `json:"KMF"`
-		KPW float64 `json:"KPW"`
 		KRW float64 `json:"KRW"`
 		KWD float64 `json:"KWD"`
 		KYD float64 `json:"KYD"`
@@ -104,9 +92,6 @@ type CurrencyJSON struct {
 		LKR float64 `json:"LKR"`
 		LRD float64 `json:"LRD"`
 		LSL float64 `json:"LSL"`
-		LTC float64 `json:"LTC"`
-		LTL float64 `json:"LTL"`
-		LVL float64 `json:"LVL"`
 		LYD float64 `json:"LYD"`
 		MAD float64 `json:"MAD"`
 		MDL float64 `json:"MDL"`
@@ -115,7 +100,7 @@ type CurrencyJSON struct {
 		MMK float64 `json:"MMK"`
 		MNT float64 `json:"MNT"`
 		MOP float64 `json:"MOP"`
-		MRO float64 `json:"MRO"`
+		MRU float64 `json:"MRU"`
 		MUR float64 `json:"MUR"`
 		MVR float64 `json:"MVR"`
 		MWK float64 `json:"MWK"`
@@ -129,7 +114,6 @@ type CurrencyJSON struct {
 		NPR float64 `json:"NPR"`
 		NZD float64 `json:"NZD"`
 		OMR float64 `json:"OMR"`
-		OP  float64 `json:"OP"`
 		PAB float64 `json:"PAB"`
 		PEN float64 `json:"PEN"`
 		PGK float64 `json:"PGK"`
@@ -149,12 +133,12 @@ type CurrencyJSON struct {
 		SEK float64 `json:"SEK"`
 		SGD float64 `json:"SGD"`
 		SHP float64 `json:"SHP"`
+		SLE float64 `json:"SLE"`
 		SLL float64 `json:"SLL"`
-		SOL float64 `json:"SOL"`
 		SOS float64 `json:"SOS"`
 		SRD float64 `json:"SRD"`
-		STD float64 `json:"STD"`
-		SVC float64 `json:"SVC"`
+		SSP float64 `json:"SSP"`
+		STN float64 `json:"STN"`
 		SYP float64 `json:"SYP"`
 		SZL float64 `json:"SZL"`
 		THB float64 `json:"THB"`
@@ -164,31 +148,27 @@ type CurrencyJSON struct {
 		TOP float64 `json:"TOP"`
 		TRY float64 `json:"TRY"`
 		TTD float64 `json:"TTD"`
+		TVD float64 `json:"TVD"`
 		TWD float64 `json:"TWD"`
 		TZS float64 `json:"TZS"`
 		UAH float64 `json:"UAH"`
 		UGX float64 `json:"UGX"`
-		USD int     `json:"USD"`
 		UYU float64 `json:"UYU"`
 		UZS float64 `json:"UZS"`
-		VEF float64 `json:"VEF"`
+		VES float64 `json:"VES"`
 		VND float64 `json:"VND"`
 		VUV float64 `json:"VUV"`
 		WST float64 `json:"WST"`
 		XAF float64 `json:"XAF"`
-		XAG float64 `json:"XAG"`
-		XAU float64 `json:"XAU"`
 		XCD float64 `json:"XCD"`
+		XCG float64 `json:"XCG"`
 		XDR float64 `json:"XDR"`
 		XOF float64 `json:"XOF"`
-		XPD float64 `json:"XPD"`
 		XPF float64 `json:"XPF"`
-		XPT float64 `json:"XPT"`
-		XRP float64 `json:"XRP"`
 		YER float64 `json:"YER"`
 		ZAR float64 `json:"ZAR"`
-		ZMK float64 `json:"ZMK"`
 		ZMW float64 `json:"ZMW"`
+		ZWG float64 `json:"ZWG"`
 		ZWL float64 `json:"ZWL"`
-	} `json:"rates"`
+	} `json:"conversion_rates"`
 }

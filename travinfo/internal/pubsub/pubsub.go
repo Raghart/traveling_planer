@@ -84,7 +84,7 @@ func DeliverLatestCurrency(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) 
 	err = json.Unmarshal(resBody, currencyJson)
 	utils.FailsOnError(err, "unable to unmarshal json body")
 
-	dict, err := utils.StructToDict(currencyJson.Rates)
+	dict, err := utils.StructToDict(currencyJson.ConversionRates)
 	utils.FailsOnError(err, "unable to pack the dict")
 
 	searchValue := dict[string(currencyData.To)]

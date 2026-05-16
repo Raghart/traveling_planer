@@ -3,6 +3,7 @@ package types
 type currType string
 
 type Currency struct {
+	From  currType
 	To    currType
 	Value float64
 }
