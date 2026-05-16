@@ -46,8 +46,6 @@ func DeliverCountryTemperature(d ampq.Delivery, ch *ampq.Channel, queue ampq.Que
 	err = json.Unmarshal(bodyData, countryTempJSON)
 	utils.FailsOnError(err, "unable to unmarshal the JSON API data")
 
-	countryTemp.Value = countryTempJSON.Current.Temperature2M
-
 	err = PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "temperature", queue, countryTemp)
 	utils.FailsOnError(err, "unable to publish the JSON")
 

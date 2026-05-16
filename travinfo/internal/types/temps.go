@@ -6,8 +6,12 @@ type CountryLocation struct {
 }
 
 type CountryTemp struct {
-	Country string
-	Value   float64
+	Country         string
+	CodeTemp        int
+	MaxTemperatures []float64
+	MinTemperatures []float64
+	AparentTemp     float64
+	Value           float64
 }
 
 type CountryTempJSON struct {
@@ -18,14 +22,22 @@ type CountryTempJSON struct {
 	Timezone             string  `json:"timezone"`
 	TimezoneAbbreviation string  `json:"timezone_abbreviation"`
 	Elevation            float64 `json:"elevation"`
-	CurrentUnits         struct {
-		Time          string `json:"time"`
-		Interval      string `json:"interval"`
-		Temperature2M string `json:"temperature_2m"`
-	} `json:"current_units"`
-	Current struct {
-		Time          string  `json:"time"`
-		Interval      int     `json:"interval"`
-		Temperature2M float64 `json:"temperature_2m"`
-	} `json:"current"`
+	DailyUnits           struct {
+		Time                        string `json:"time"`
+		Temperature2MMax            string `json:"temperature_2m_max"`
+		Temperature2MMin            string `json:"temperature_2m_min"`
+		WeatherCode                 string `json:"weather_code"`
+		PrecipitationProbabilityMax string `json:"precipitation_probability_max"`
+		ApparentTemperatureMax      string `json:"apparent_temperature_max"`
+		ApparentTemperatureMin      string `json:"apparent_temperature_min"`
+	} `json:"daily_units"`
+	Daily struct {
+		Time                        []string  `json:"time"`
+		Temperature2MMax            []float64 `json:"temperature_2m_max"`
+		Temperature2MMin            []float64 `json:"temperature_2m_min"`
+		WeatherCode                 []int     `json:"weather_code"`
+		PrecipitationProbabilityMax []int     `json:"precipitation_probability_max"`
+		ApparentTemperatureMax      []float64 `json:"apparent_temperature_max"`
+		ApparentTemperatureMin      []float64 `json:"apparent_temperature_min"`
+	} `json:"daily"`
 }
