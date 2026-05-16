@@ -6,8 +6,18 @@ type Currency struct {
 }
 
 type CountryTemp struct {
-	Country string
-	Value   float64
+	Country           string
+	DailyTemperatures []DailyTemp
+	Value             float64
+}
+
+type DailyTemp struct {
+	WeatherCode int
+	Max         float64
+	Min         float64
+	RainProb    int
+	AparentMax  float64
+	AparentMin  float64
 }
 
 type CountryData struct {

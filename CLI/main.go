@@ -29,7 +29,7 @@ func main() {
 				fmt.Println("Invalid temp cmd usage. Example: CMD > temp Canada")
 			}
 			country := inputSlice[1]
-			temp := pubsub.AskTemperature(country)
+			dailyTemps := pubsub.AskTemperature(country)
 			fmt.Printf("The current Temperature of %s is %.2f°C\n", country, temp)
 
 		case "curr":

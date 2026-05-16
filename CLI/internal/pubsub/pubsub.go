@@ -135,7 +135,7 @@ func AskCurrency(toCurr string) (value float32) {
 	return
 }
 
-func AskTemperature(country string) (value float64) {
+func AskTemperature(country string) (tempSlice []routing.DailyTemp) {
 	conn, ch, queue, msgs := ConnectBunny()
 	defer conn.Close()
 	defer ch.Close()
@@ -151,7 +151,7 @@ func AskTemperature(country string) (value float64) {
 				countryTemp := &routing.CountryTemp{}
 				err = json.Unmarshal(d.Body, countryTemp)
 				utils.FailOnError(err, "unable to unmarshal the body")
-				value = countryTemp.Value
+				tempSlice = countryTemp.DailyTemperatures
 				break
 			}
 		}
