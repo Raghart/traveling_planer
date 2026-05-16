@@ -33,7 +33,7 @@ func DeliverCountryTemperature(d ampq.Delivery, ch *ampq.Channel, queue ampq.Que
 
 	mapLocations := utils.LoadLocations()
 	countryLocation := mapLocations[countryTemp.Country]
-	tempURL := fmt.Sprintf("https://api.open-meteo.com/v1/forecast?latitude=%f&longitude=%f&current=temperature_2m", countryLocation.Latitude, countryLocation.Longitude)
+	tempURL := fmt.Sprintf("https://api.open-meteo.com/v1/forecast?latitude=%f&longitude=%f&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max,apparent_temperature_max,apparent_temperature_min", countryLocation.Latitude, countryLocation.Longitude)
 
 	res, err := http.Get(tempURL)
 	utils.FailsOnError(err, fmt.Sprintf("unable to get the %s temperature", countryTemp.Country))
