@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 
 	"github.com/Raghart/traveling_planer/travinfo/internal/types"
 	"github.com/Raghart/traveling_planer/travinfo/internal/utils"
+	_ "github.com/joho/godotenv/autoload"
 	ampq "github.com/rabbitmq/amqp091-go"
 )
 
@@ -69,6 +71,9 @@ func DeliverLatestCurrency(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) 
 
 	utils.FailsOnError(err, "unable to publish the json")
 	currencyJson := &types.CurrencyJSON{}
+
+	apiKey := os.Getenv("MONEYKEY")
+	fmt.Println(apiKey)
 
 	res, err := http.Get("https://api.fxratesapi.com/latest")
 	utils.FailsOnError(err, "unable to contact with the API")
