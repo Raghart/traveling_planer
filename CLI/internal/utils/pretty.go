@@ -27,7 +27,7 @@ func PresentWeather(dailyTemps []routing.DailyTemp) {
 }
 
 func formatWeatherMessage(day string, dailyTemp routing.DailyTemp) string {
-	msg := fmt.Sprintf("%s: %s  %.2f°C / %.2f°C ",
+	msg := fmt.Sprintf("%s: %s  %.2f°C / %.2f°C",
 		day,
 		getWeatherEmoji(dailyTemp.WeatherCode),
 		dailyTemp.Max,
@@ -36,14 +36,14 @@ func formatWeatherMessage(day string, dailyTemp routing.DailyTemp) string {
 
 	if dailyTemp.AparentMax > dailyTemp.Max+3 {
 		msg += fmt.Sprintf(
-			"- Prepare for a sunny day! 🔅 The sensation will be %.2f",
+			" - Prepare for a sunny day! 🔅 The sensation will be %.2f",
 			dailyTemp.AparentMax,
 		)
 	}
 
 	if dailyTemp.AparentMin < dailyTemp.AparentMin-3 {
 		msg += fmt.Sprintf(
-			"- Wrap up with a Coat to survive the freeze! ❄️ The sensation will be %.2f",
+			" - Wrap up with a Coat to survive the freeze! ❄️ The sensation will be %.2f",
 			dailyTemp.AparentMin,
 		)
 	}
