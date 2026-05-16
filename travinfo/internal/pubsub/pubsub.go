@@ -70,17 +70,16 @@ func DeliverLatestCurrency(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) 
 	err := json.Unmarshal(d.Body, currencyData)
 
 	utils.FailsOnError(err, "unable to publish the json")
-	currencyJson := &types.CurrencyJSON{}
 
 	apiKey := os.Getenv("MONEYKEY")
-	fmt.Println(apiKey)
-
-	res, err := http.Get("https://api.fxratesapi.com/latest")
+	currUrl := fmt.Sprintf("https://v6.exchangerate-api.com/v6/%s/latest/%s", apiKey, currencyData.From)
+	res, err := http.Get(currUrl)
 	utils.FailsOnError(err, "unable to contact with the API")
 
 	resBody, err := io.ReadAll(res.Body)
 	utils.FailsOnError(err, "response doesn't have a body")
 
+	currencyJson := &types.CurrencyJSON{}
 	err = json.Unmarshal(resBody, currencyJson)
 	utils.FailsOnError(err, "unable to unmarshal json body")
 
