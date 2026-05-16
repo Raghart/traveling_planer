@@ -6,12 +6,18 @@ type CountryLocation struct {
 }
 
 type CountryTemp struct {
-	Country         string
-	CodeTemp        int
-	MaxTemperatures []float64
-	MinTemperatures []float64
-	AparentTemp     float64
-	Value           float64
+	Country           string
+	DailyTemperatures []DailyTemp
+	Value             float64
+}
+
+type DailyTemp struct {
+	WeatherCode int
+	Max         float64
+	Min         float64
+	RainProb    int
+	AparentMax  float64
+	AparentMin  float64
 }
 
 type CountryTempJSON struct {

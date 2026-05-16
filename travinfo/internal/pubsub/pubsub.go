@@ -46,6 +46,17 @@ func DeliverCountryTemperature(d ampq.Delivery, ch *ampq.Channel, queue ampq.Que
 	err = json.Unmarshal(bodyData, countryTempJSON)
 	utils.FailsOnError(err, "unable to unmarshal the JSON API data")
 
+	for i := 0; i < len(countryTempJSON.Daily.ApparentTemperatureMax); i++ {
+		countryTemp.DailyTemperatures = append(countryTemp.DailyTemperatures, types.DailyTemp{
+			WeatherCode: countryTempJSON.Daily.WeatherCode[i],
+			Max:         countryTempJSON.Daily.Temperature2MMax[i],
+			Min:         countryTempJSON.Daily.Temperature2MMin[i],
+			RainProb:    countryTempJSON.Daily.PrecipitationProbabilityMax[i],
+			AparentMax:  countryTempJSON.Daily.ApparentTemperatureMax[i],
+			AparentMin:  countryTempJSON.Daily.ApparentTemperatureMin[i],
+		})
+	}
+
 	err = PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "temperature", queue, countryTemp)
 	utils.FailsOnError(err, "unable to publish the JSON")
 
