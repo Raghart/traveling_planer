@@ -110,7 +110,7 @@ func TestingRPC() (res string) {
 	return
 }
 
-func AskCurrency(toCurr string) (value float32) {
+func AskCurrency(fromCurr, toCurr string) (value float32) {
 	conn, ch, q, msgs := ConnectBunny()
 	defer conn.Close()
 	defer ch.Close()
@@ -118,7 +118,8 @@ func AskCurrency(toCurr string) (value float32) {
 	corrID := uuid.NewString()
 
 	err := PublishJSON(ch, "", "travinfo-queue", "currency", corrID, q, routing.Currency{
-		To: toCurr,
+		From: fromCurr,
+		To:   toCurr,
 	})
 	utils.FailOnError(err, "unable to ask for currency")
 	func() {

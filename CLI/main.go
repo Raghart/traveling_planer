@@ -34,14 +34,15 @@ func main() {
 			utils.PresentWeather(dailyTemps)
 
 		case "curr":
-			if len(inputSlice) != 2 {
-				fmt.Println("Invalid curr cmd usage. Example: CMD > curr CAD")
+			if len(inputSlice) != 3 {
+				fmt.Println("Invalid curr cmd usage. Example: CMD > curr USD CAD")
 				continue
 			}
 
-			toCurr := inputSlice[1]
-			result := pubsub.AskCurrency(toCurr)
-			fmt.Printf("Currency value from USD to '%s': %.2f\n", toCurr, result)
+			fromCurr := inputSlice[1]
+			toCurr := inputSlice[2]
+			result := pubsub.AskCurrency(fromCurr, toCurr)
+			fmt.Printf("Currency value from %s to '%s': %.2f\n", fromCurr, toCurr, result)
 		}
 	}
 }
