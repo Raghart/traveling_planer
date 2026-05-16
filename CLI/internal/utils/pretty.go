@@ -16,25 +16,18 @@ func PresentWeather(dailyTemps []routing.DailyTemp) {
 		day := today.Add(dayTime)
 
 		if i == 0 {
-			fmt.Printf("Today: %s  %.2f°C / %.2f°C\n",
-				getWeatherEmoji(dailyTemps[i].WeatherCode),
-				dailyTemps[i].Max,
-				dailyTemps[i].Min,
-			)
+			msgFormatted := formatWeatherMessage("Today", dailyTemps[i])
+			fmt.Println(msgFormatted)
 			continue
 		}
 
-		fmt.Printf("%s: %s  %.2f°C / %.2f°C\n",
-			day.Weekday().String()[:3],
-			getWeatherEmoji(dailyTemps[i].WeatherCode),
-			dailyTemps[i].Max,
-			dailyTemps[i].Min,
-		)
+		msgFormatted := formatWeatherMessage(day.Weekday().String()[:3], dailyTemps[i])
+		fmt.Println(msgFormatted)
 	}
 }
 
 func formatWeatherMessage(day string, dailyTemp routing.DailyTemp) string {
-	msg := fmt.Sprintf("%s: %s  %.2f°C / %.2f°C",
+	msg := fmt.Sprintf("%s: %s  %.2f°C / %.2f°C ",
 		day,
 		getWeatherEmoji(dailyTemp.WeatherCode),
 		dailyTemp.Max,
@@ -54,8 +47,6 @@ func formatWeatherMessage(day string, dailyTemp routing.DailyTemp) string {
 			dailyTemp.AparentMin,
 		)
 	}
-
-	msg += ("\n")
 
 	return msg
 }
