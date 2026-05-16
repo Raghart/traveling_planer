@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/Raghart/traveling_planer/internal/pubsub"
+	"github.com/Raghart/traveling_planer/internal/utils"
 )
 
 func main() {
@@ -30,7 +31,7 @@ func main() {
 			}
 			country := inputSlice[1]
 			dailyTemps := pubsub.AskTemperature(country)
-			fmt.Printf("The current Temperature of %s is %.2f°C\n", country, temp)
+			utils.PresentWeather(dailyTemps)
 
 		case "curr":
 			if len(inputSlice) != 2 {
