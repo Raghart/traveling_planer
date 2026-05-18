@@ -24,3 +24,9 @@ type DailyTemp struct {
 type CountryData struct {
 	IsCountry bool
 }
+
+type Model struct {
+	Choices  []string
+	Cursor   int
+	Selected map[int]struct{}
+}
