@@ -1,32 +1,55 @@
 package utils
 
 import (
+	"fmt"
+	"io"
+	"strings"
+
 	"charm.land/bubbles/v2/key"
+	"charm.land/bubbles/v2/list"
+	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 	"github.com/Raghart/traveling_planer/internal/routing"
 )
 
 func NewStyles(darkBG bool) routing.Styles {
-	lightDark := lipgloss.LightDark(darkBG)
-	return routing.Styles{
-		App: lipgloss.NewStyle().Padding(1, 2),
-		Title: lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FFFDF5")).
-			Background(lipgloss.Color("#25A065")).
-			Padding(0, 1),
-		StatusMessage: lipgloss.NewStyle().
-			Foreground(lightDark(lipgloss.Color("#04B575"), lipgloss.Color("#04B575"))),
+	var s routing.Styles
+	s.Title = lipgloss.NewStyle().MarginLeft(2)
+	s.Item = lipgloss.NewStyle().PaddingLeft(4)
+	s.SelectItem = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170"))
+	s.Pagination = list.DefaultStyles(darkBG).PaginationStyle.PaddingLeft(4)
+	s.Help = list.DefaultStyles(darkBG).HelpStyle.PaddingLeft(4).PaddingBottom(1)
+	s.QuitText = lipgloss.NewStyle().Margin(1, 0, 2, 4)
+	return s
+}
+
+type Item string
+
+func (i Item) FilterValue() string { return "" }
+
+type ItemDelegate struct {
+	Styles *routing.Styles
+}
+
+func (d ItemDelegate) Height() int                             { return 1 }
+func (d ItemDelegate) Spacing() int                            { return 0 }
+func (d ItemDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd { return nil }
+func (d ItemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
+	i, ok := listItem.(Item)
+	if !ok {
+		return
 	}
-}
+	str := fmt.Sprintf("%d. %s", index+1, i)
+	fn := d.Styles.Item.Render
 
-type Item struct {
-	Title       string
-	Description string
-}
+	if index == m.Index() {
+		fn = func(s ...string) string {
+			return d.Styles.SelectItem.Render("> " + strings.Join(s, " "))
+		}
+	}
 
-func (i Item) GiveTitle() string       { return i.Title }
-func (i Item) GiveDescription() string { return i.Description }
-func (i Item) FilterValue() string     { return i.Title }
+	fmt.Fprint(w, fn(str))
+}
 
 type ListKeyMap struct {
 	ToggleSpinner    key.Binding

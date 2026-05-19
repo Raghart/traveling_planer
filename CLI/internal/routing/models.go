@@ -1,8 +1,7 @@
 package routing
 
 import (
-	"fmt"
-
+	"charm.land/bubbles/v2/list"
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 )
@@ -33,67 +32,21 @@ type CountryData struct {
 }
 
 type Styles struct {
-	App           lipgloss.Style
-	Title         lipgloss.Style
-	StatusMessage lipgloss.Style
+	Title      lipgloss.Style
+	Item       lipgloss.Style
+	SelectItem lipgloss.Style
+	Pagination lipgloss.Style
+	Help       lipgloss.Style
+	QuitText   lipgloss.Style
 }
 
 type Model struct {
-	Choices  []string
-	Cursor   int
-	Selected map[int]struct{}
+	Styles   Styles
+	List     list.Model
+	Choice   string
+	Quitting bool
 }
 
 func (m Model) Init() tea.Cmd {
 	return nil
-}
-
-func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
-
-	case tea.KeyPressMsg:
-		switch msg.String() {
-
-		case "ctrl+c", "q":
-			return m, tea.Quit
-
-		case "up", "k":
-			if m.Cursor > 0 {
-				m.Cursor--
-			}
-
-		case "down", "j":
-			if m.Cursor < len(m.Choices)-1 {
-				m.Cursor++
-			}
-
-		case "enter", "space":
-			_, ok := m.Selected[m.Cursor]
-			if ok {
-				delete(m.Selected, m.Cursor)
-			} else {
-				m.Selected[m.Cursor] = struct{}{}
-			}
-		}
-	}
-
-	return m, nil
-}
-
-func (m Model) View() tea.View {
-	s := "Where are you from?\n\n"
-	for idx, choice := range m.Choices {
-		cursor := " "
-		if m.Cursor == idx {
-			cursor = ">"
-		}
-
-		checked := " "
-		if _, ok := m.Selected[idx]; ok {
-			checked = "x"
-		}
-		s += fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice)
-	}
-	s += "\nPress q to quit.\n"
-	return tea.NewView(s)
 }
