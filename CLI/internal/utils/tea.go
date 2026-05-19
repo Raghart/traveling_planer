@@ -46,7 +46,11 @@ func InitialModel() routing.Model {
 
 	const defaultWidth = 20
 
-	l := list.New(items, routing.ItemDelegate{}, defaultWidth, 14)
+	s := routing.NewStyles(true)
+
+	l := list.New(items, routing.ItemDelegate{
+		Styles: &s,
+	}, defaultWidth, 14)
 	l.Title = "Where are you From?"
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(false)
@@ -54,6 +58,7 @@ func InitialModel() routing.Model {
 	m := routing.Model{
 		List: l,
 	}
+
 	m.UpdateStyles(true)
 	return m
 }
