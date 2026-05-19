@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 )
 
 type Currency struct {
@@ -29,6 +30,12 @@ type DailyTemp struct {
 
 type CountryData struct {
 	IsCountry bool
+}
+
+type Styles struct {
+	App           lipgloss.Style
+	Title         lipgloss.Style
+	StatusMessage lipgloss.Style
 }
 
 type Model struct {
@@ -74,7 +81,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() tea.View {
-	s := "Where are you from?"
+	s := "Where are you from?\n\n"
 	for idx, choice := range m.Choices {
 		cursor := " "
 		if m.Cursor == idx {
@@ -83,7 +90,7 @@ func (m Model) View() tea.View {
 
 		checked := " "
 		if _, ok := m.Selected[idx]; ok {
-			checked = ""
+			checked = "x"
 		}
 		s += fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice)
 	}

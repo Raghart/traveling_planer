@@ -3,7 +3,9 @@ module github.com/Raghart/traveling_planer
 go 1.25.0
 
 require (
+	charm.land/bubbles/v2 v2.1.0
 	charm.land/bubbletea/v2 v2.0.6
+	charm.land/lipgloss/v2 v2.0.3
 	github.com/google/uuid v1.6.0
 	github.com/rabbitmq/amqp091-go v1.11.0
 )
