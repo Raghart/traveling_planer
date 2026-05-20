@@ -11,48 +11,48 @@ import (
 	"charm.land/lipgloss/v2"
 )
 
-type Styles struct {
-	Title        lipgloss.Style
-	Item         lipgloss.Style
-	SelectedItem lipgloss.Style
-	Pagination   lipgloss.Style
-	Help         lipgloss.Style
-	QuitText     lipgloss.Style
+type styles struct {
+	title        lipgloss.Style
+	item         lipgloss.Style
+	selectedItem lipgloss.Style
+	pagination   lipgloss.Style
+	help         lipgloss.Style
+	quitText     lipgloss.Style
 }
 
-func NewStyles(darkBG bool) Styles {
-	var s Styles
-	s.Title = lipgloss.NewStyle().MarginLeft(2)
-	s.Item = lipgloss.NewStyle().PaddingLeft(4)
-	s.SelectedItem = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170"))
-	s.Pagination = list.DefaultStyles(darkBG).PaginationStyle.PaddingLeft(4)
-	s.Help = list.DefaultStyles(darkBG).HelpStyle.PaddingLeft(4).PaddingBottom(1)
-	s.QuitText = lipgloss.NewStyle().Margin(1, 0, 2, 4)
+func NewStyles(darkBG bool) styles {
+	var s styles
+	s.title = lipgloss.NewStyle().MarginLeft(2)
+	s.item = lipgloss.NewStyle().PaddingLeft(4)
+	s.selectedItem = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170"))
+	s.pagination = list.DefaultStyles(darkBG).PaginationStyle.PaddingLeft(4)
+	s.help = list.DefaultStyles(darkBG).HelpStyle.PaddingLeft(4).PaddingBottom(1)
+	s.quitText = lipgloss.NewStyle().Margin(1, 0, 2, 4)
 	return s
 }
 
-type Item string
+type item string
 
-func (i Item) FilterValue() string { return "" }
+func (i item) FilterValue() string { return "" }
 
 type ItemDelegate struct {
-	Styles *Styles
+	Styles *styles
 }
 
 func (d ItemDelegate) Height() int                             { return 1 }
 func (d ItemDelegate) Spacing() int                            { return 0 }
 func (d ItemDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd { return nil }
 func (d ItemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
-	i, ok := listItem.(Item)
+	i, ok := listItem.(item)
 	if !ok {
 		return
 	}
 	str := fmt.Sprintf("%d. %s", index+1, i)
-	fn := d.Styles.Item.Render
+	fn := d.Styles.item.Render
 
 	if index == m.Index() {
 		fn = func(s ...string) string {
-			return d.Styles.SelectedItem.Render("> " + strings.Join(s, " "))
+			return d.Styles.selectedItem.Render("> " + strings.Join(s, " "))
 		}
 	}
 
@@ -60,114 +60,111 @@ func (d ItemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 }
 
 type Model struct {
-	Styles   Styles
-	List     list.Model
-	Choice   string
-	Quitting bool
+	styles   styles
+	list     list.Model
+	choice   string
+	quitting bool
+}
+
+func InitialModel() Model {
+	items := []list.Item{
+		item("Argentina"),
+		item("Bolivia"),
+		item("Brazil"),
+		item("Canada"),
+		item("Chile"),
+		item("Colombia"),
+		item("Costa Rica"),
+		item("Cuba"),
+		item("Dominica"),
+		item("Dominican Republic"),
+		item("Grenada"),
+		item("French Guiana"),
+		item("Guyana"),
+		item("Saint Lucia"),
+		item("Honduras"),
+		item("Mexico"),
+		item("Nicaragua"),
+		item("Panama"),
+		item("Peru"),
+		item("Puerto Rico"),
+		item("Paraguay"),
+		item("Suriname"),
+		item("El Salvador"),
+		item("Trinidad and Tobago"),
+		item("United States"),
+		item("Uruguay"),
+		item("Venezuela"),
+		item("Guatemala"),
+		item("Belize"),
+		item("Jamaica"),
+		item("Haiti"),
+		item("Bahamas"),
+		item("Barbados"),
+		item("Saint Kitts and Nevis"),
+		item("Antigua and Barbuda"),
+	}
+
+	const defaultWidth = 20
+
+	l := list.New(items, &ItemDelegate{}, defaultWidth, 14)
+	l.Title = "Where are you From?"
+	l.SetShowStatusBar(false)
+	l.SetFilteringEnabled(false)
+
+	m := Model{
+		list: l,
+	}
+	m.UpdateStyles(true)
+	return m
+}
+
+func (m Model) UpdateStyles(isDark bool) {
+	m.styles = NewStyles(isDark)
+	m.list.Styles.Title = m.styles.title
+	m.list.Styles.PaginationStyle = m.styles.pagination
+	m.list.Styles.HelpStyle = m.styles.help
+	m.list.SetDelegate(ItemDelegate{Styles: &m.styles})
 }
 
 func (m Model) Init() tea.Cmd {
 	return nil
 }
 
-func (m Model) UpdateStyles(isDark bool) {
-	m.Styles = NewStyles(isDark)
-	m.List.Styles.Title = m.Styles.Title
-	m.List.Styles.PaginationStyle = m.Styles.Pagination
-	m.List.Styles.HelpStyle = m.Styles.Help
-	m.List.SetDelegate(ItemDelegate{Styles: &m.Styles})
-}
-
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.List.SetWidth(msg.Width)
+		m.list.SetWidth(msg.Width)
 		return m, nil
 
 	case tea.KeyPressMsg:
 		switch keypress := msg.String(); keypress {
 		case "q", "ctrl+c":
-			m.Quitting = true
+			m.quitting = true
 			return m, tea.Quit
 
 		case "enter":
-			i, ok := m.List.SelectedItem().(Item)
+			i, ok := m.list.SelectedItem().(item)
 			if ok {
-				m.Choice = string(i)
+				m.choice = string(i)
 			}
 			return m, tea.Quit
 		}
 	}
 
 	var cmd tea.Cmd
-	m.List, cmd = m.List.Update(msg)
+	m.list, cmd = m.list.Update(msg)
 	return m, cmd
 }
 
 func (m Model) View() tea.View {
-	if m.Choice != "" {
-		return tea.NewView(m.Styles.QuitText.Render(fmt.Sprintf("Traveling from %s!", m.Choice)))
+	if m.choice != "" {
+		return tea.NewView(m.styles.quitText.Render(fmt.Sprintf("Traveling from %s!", m.choice)))
 	}
-	if m.Quitting {
-		return tea.NewView(m.Styles.QuitText.Render("Have a good day!"))
+	if m.quitting {
+		return tea.NewView(m.styles.quitText.Render("Have a good day!"))
 	}
-	return tea.NewView("\n" + m.List.View())
-}
-
-func InitialModel() Model {
-	items := []list.Item{
-		Item("Argentina"),
-		Item("Bolivia"),
-		Item("Brazil"),
-		Item("Canada"),
-		Item("Chile"),
-		Item("Colombia"),
-		Item("Costa Rica"),
-		Item("Cuba"),
-		Item("Dominica"),
-		Item("Dominican Republic"),
-		Item("Grenada"),
-		Item("French Guiana"),
-		Item("Guyana"),
-		Item("Saint Lucia"),
-		Item("Honduras"),
-		Item("Mexico"),
-		Item("Nicaragua"),
-		Item("Panama"),
-		Item("Peru"),
-		Item("Puerto Rico"),
-		Item("Paraguay"),
-		Item("Suriname"),
-		Item("El Salvador"),
-		Item("Trinidad and Tobago"),
-		Item("United States"),
-		Item("Uruguay"),
-		Item("Venezuela"),
-		Item("Guatemala"),
-		Item("Belize"),
-		Item("Jamaica"),
-		Item("Haiti"),
-		Item("Bahamas"),
-		Item("Barbados"),
-		Item("Saint Kitts and Nevis"),
-		Item("Antigua and Barbuda"),
-	}
-
-	const defaultWidth = 20
-
-	s := NewStyles(true)
-
-	l := list.New(items, &ItemDelegate{
-		Styles: &s,
-	}, defaultWidth, 14)
-	l.Title = "Where are you From?"
-	l.SetShowStatusBar(false)
-	l.SetFilteringEnabled(false)
-
-	m := Model{
-		List: l,
-	}
-	return m
+	return tea.NewView("\n" + m.list.View())
 }
 
 func main() {
