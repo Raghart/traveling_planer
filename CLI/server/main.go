@@ -8,37 +8,17 @@ import (
 
 	"charm.land/bubbles/v2/list"
 	tea "charm.land/bubbletea/v2"
-	"charm.land/lipgloss/v2"
+	"github.com/Raghart/traveling_planer/internal/routing"
 )
 
 const listHeight = 14
-
-type styles struct {
-	title        lipgloss.Style
-	item         lipgloss.Style
-	selectedItem lipgloss.Style
-	pagination   lipgloss.Style
-	help         lipgloss.Style
-	quitText     lipgloss.Style
-}
-
-func newStyles(darkBG bool) styles {
-	var s styles
-	s.title = lipgloss.NewStyle().MarginLeft(2)
-	s.item = lipgloss.NewStyle().PaddingLeft(4)
-	s.selectedItem = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170"))
-	s.pagination = list.DefaultStyles(darkBG).PaginationStyle.PaddingLeft(4)
-	s.help = list.DefaultStyles(darkBG).HelpStyle.PaddingLeft(4).PaddingBottom(1)
-	s.quitText = lipgloss.NewStyle().Margin(1, 0, 2, 4)
-	return s
-}
 
 type item string
 
 func (i item) FilterValue() string { return "" }
 
 type itemDelegate struct {
-	styles *styles
+	styles *routing.Styles
 }
 
 func (d itemDelegate) Height() int                             { return 1 }
@@ -52,10 +32,10 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 
 	str := fmt.Sprintf("%d. %s", index+1, i)
 
-	fn := d.styles.item.Render
+	fn := d.styles.Item.Render
 	if index == m.Index() {
 		fn = func(s ...string) string {
-			return d.styles.selectedItem.Render("> " + strings.Join(s, " "))
+			return d.styles.SelectedItem.Render("> " + strings.Join(s, " "))
 		}
 	}
 
@@ -65,7 +45,7 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 type model struct {
 	list     list.Model
 	choice   string
-	styles   styles
+	styles   routing.Styles
 	quitting bool
 }
 
@@ -121,10 +101,10 @@ func initialModel() model {
 }
 
 func (m *model) updateStyles(isDark bool) {
-	m.styles = newStyles(isDark)
-	m.list.Styles.Title = m.styles.title
-	m.list.Styles.PaginationStyle = m.styles.pagination
-	m.list.Styles.HelpStyle = m.styles.help
+	m.styles = routing.NewStyles(isDark)
+	m.list.Styles.Title = m.styles.Title
+	m.list.Styles.PaginationStyle = m.styles.Pagination
+	m.list.Styles.HelpStyle = m.styles.Help
 	m.list.SetDelegate(itemDelegate{styles: &m.styles})
 }
 
@@ -160,10 +140,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() tea.View {
 	if m.choice != "" {
-		return tea.NewView(m.styles.quitText.Render(fmt.Sprintf("%s, Understood!", m.choice)))
+		return tea.NewView(m.styles.QuitText.Render(fmt.Sprintf("%s, Understood!", m.choice)))
 	}
 	if m.quitting {
-		return tea.NewView(m.styles.quitText.Render("Hope to see you again!"))
+		return tea.NewView(m.styles.QuitText.Render("Hope to see you again!"))
 	}
 	return tea.NewView("\n" + m.list.View())
 }
