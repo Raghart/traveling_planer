@@ -63,13 +63,13 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 }
 
 type model struct {
-	styles   styles
 	list     list.Model
 	choice   string
+	styles   styles
 	quitting bool
 }
 
-func InitialModel() model {
+func initialModel() model {
 	items := []list.Item{
 		item("Argentina"),
 		item("Bolivia"),
@@ -118,11 +118,11 @@ func InitialModel() model {
 	m := model{
 		list: l,
 	}
-	m.UpdateStyles(true)
+	m.updateStyles(true)
 	return m
 }
 
-func (m model) UpdateStyles(isDark bool) {
+func (m model) updateStyles(isDark bool) {
 	m.styles = newStyles(isDark)
 	m.list.Styles.Title = m.styles.title
 	m.list.Styles.PaginationStyle = m.styles.pagination
@@ -171,9 +171,8 @@ func (m model) View() tea.View {
 }
 
 func main() {
-	p := tea.NewProgram(InitialModel())
-	if _, err := p.Run(); err != nil {
-		fmt.Printf("Alas, there's been an error: %v", err)
+	if _, err := tea.NewProgram(initialModel()).Run(); err != nil {
+		fmt.Println("Error running program:", err)
 		os.Exit(1)
 	}
 }
