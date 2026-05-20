@@ -49,10 +49,10 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 	if !ok {
 		return
 	}
+
 	str := fmt.Sprintf("%d. %s", index+1, i)
 
 	fn := d.styles.item.Render
-
 	if index == m.Index() {
 		fn = func(s ...string) string {
 			return d.styles.selectedItem.Render("> " + strings.Join(s, " "))
@@ -111,18 +111,16 @@ func initialModel() model {
 	const defaultWidth = 20
 
 	l := list.New(items, itemDelegate{}, defaultWidth, listHeight)
-	l.Title = "Where are you From?"
+	l.Title = "Where are you from?"
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(false)
 
-	m := model{
-		list: l,
-	}
-	m.updateStyles(true)
+	m := model{list: l}
+	m.updateStyles(true) // default to dark styles.
 	return m
 }
 
-func (m model) updateStyles(isDark bool) {
+func (m *model) updateStyles(isDark bool) {
 	m.styles = newStyles(isDark)
 	m.list.Styles.Title = m.styles.title
 	m.list.Styles.PaginationStyle = m.styles.pagination
@@ -162,10 +160,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() tea.View {
 	if m.choice != "" {
-		return tea.NewView(m.styles.quitText.Render(fmt.Sprintf("Traveling from %s!", m.choice)))
+		return tea.NewView(m.styles.quitText.Render(fmt.Sprintf("%s, Understood!", m.choice)))
 	}
 	if m.quitting {
-		return tea.NewView(m.styles.quitText.Render("Have a good day!"))
+		return tea.NewView(m.styles.quitText.Render("Hope to see you again!"))
 	}
 	return tea.NewView("\n" + m.list.View())
 }
