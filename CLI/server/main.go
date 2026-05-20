@@ -11,6 +11,8 @@ import (
 	"charm.land/lipgloss/v2"
 )
 
+const listHeight = 14
+
 type styles struct {
 	title        lipgloss.Style
 	item         lipgloss.Style
@@ -20,7 +22,7 @@ type styles struct {
 	quitText     lipgloss.Style
 }
 
-func NewStyles(darkBG bool) styles {
+func newStyles(darkBG bool) styles {
 	var s styles
 	s.title = lipgloss.NewStyle().MarginLeft(2)
 	s.item = lipgloss.NewStyle().PaddingLeft(4)
@@ -35,38 +37,39 @@ type item string
 
 func (i item) FilterValue() string { return "" }
 
-type ItemDelegate struct {
-	Styles *styles
+type itemDelegate struct {
+	styles *styles
 }
 
-func (d ItemDelegate) Height() int                             { return 1 }
-func (d ItemDelegate) Spacing() int                            { return 0 }
-func (d ItemDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd { return nil }
-func (d ItemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
+func (d itemDelegate) Height() int                             { return 1 }
+func (d itemDelegate) Spacing() int                            { return 0 }
+func (d itemDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd { return nil }
+func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
 	i, ok := listItem.(item)
 	if !ok {
 		return
 	}
 	str := fmt.Sprintf("%d. %s", index+1, i)
-	fn := d.Styles.item.Render
+
+	fn := d.styles.item.Render
 
 	if index == m.Index() {
 		fn = func(s ...string) string {
-			return d.Styles.selectedItem.Render("> " + strings.Join(s, " "))
+			return d.styles.selectedItem.Render("> " + strings.Join(s, " "))
 		}
 	}
 
 	fmt.Fprint(w, fn(str))
 }
 
-type Model struct {
+type model struct {
 	styles   styles
 	list     list.Model
 	choice   string
 	quitting bool
 }
 
-func InitialModel() Model {
+func InitialModel() model {
 	items := []list.Item{
 		item("Argentina"),
 		item("Bolivia"),
@@ -107,31 +110,31 @@ func InitialModel() Model {
 
 	const defaultWidth = 20
 
-	l := list.New(items, &ItemDelegate{}, defaultWidth, 14)
+	l := list.New(items, itemDelegate{}, defaultWidth, listHeight)
 	l.Title = "Where are you From?"
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(false)
 
-	m := Model{
+	m := model{
 		list: l,
 	}
 	m.UpdateStyles(true)
 	return m
 }
 
-func (m Model) UpdateStyles(isDark bool) {
-	m.styles = NewStyles(isDark)
+func (m model) UpdateStyles(isDark bool) {
+	m.styles = newStyles(isDark)
 	m.list.Styles.Title = m.styles.title
 	m.list.Styles.PaginationStyle = m.styles.pagination
 	m.list.Styles.HelpStyle = m.styles.help
-	m.list.SetDelegate(ItemDelegate{Styles: &m.styles})
+	m.list.SetDelegate(itemDelegate{styles: &m.styles})
 }
 
-func (m Model) Init() tea.Cmd {
+func (m model) Init() tea.Cmd {
 	return nil
 }
 
-func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.list.SetWidth(msg.Width)
@@ -157,7 +160,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m Model) View() tea.View {
+func (m model) View() tea.View {
 	if m.choice != "" {
 		return tea.NewView(m.styles.quitText.Render(fmt.Sprintf("Traveling from %s!", m.choice)))
 	}
