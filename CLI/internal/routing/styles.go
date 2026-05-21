@@ -28,7 +28,8 @@ func NewStyles(darkBG bool) Styles {
 	s.Item = lipgloss.NewStyle().PaddingLeft(4)
 	s.SelectedItem = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170"))
 	s.Pagination = list.DefaultStyles(darkBG).PaginationStyle.PaddingLeft(4)
-	s.Help = list.DefaultStyles(darkBG).HelpStyle.PaddingLeft(4).PaddingBottom(1)
+	s.Help = list.DefaultStyles(darkBG).HelpStyle.PaddingLeft(4).PaddingBottom(1).
+		Foreground(lipgloss.Color("241"))
 	s.QuitText = lipgloss.NewStyle().Margin(1, 0, 2, 4)
 	s.StatusMessage = lipgloss.NewStyle().
 		Foreground(lightDark(lipgloss.Color("#04B575"), lipgloss.Color("#04B575")))

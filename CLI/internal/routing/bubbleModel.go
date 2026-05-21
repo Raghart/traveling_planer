@@ -67,7 +67,7 @@ func (m Model) View() tea.View {
 		return tea.NewView(m.styles.QuitText.Render("Hope to see you again!"))
 	}
 
-	footer := m.styles.Help.Render("↑/↓: Navegar • Enter: Viajar • /: Buscar • q: Salir")
+	footer := m.styles.Help.Render("↑/↓/←/→: Navigate • Enter: Select • q/esc: Exit")
 
 	v := tea.NewView("\n" + m.list.View() + "\n" + footer)
 	v.AltScreen = true
