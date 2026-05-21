@@ -8,6 +8,7 @@ import (
 )
 
 type Model struct {
+	keys     KeyMap
 	list     list.Model
 	choice   string
 	styles   Styles
@@ -23,7 +24,9 @@ func (m *Model) UpdateStyles(isDark bool) {
 }
 
 func (m Model) Init() tea.Cmd {
-	return nil
+	return tea.Batch(
+		tea.RequestBackgroundColor,
+	)
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -59,5 +62,59 @@ func (m Model) View() tea.View {
 	if m.quitting {
 		return tea.NewView(m.styles.QuitText.Render("Hope to see you again!"))
 	}
-	return tea.NewView("\n" + m.list.View())
+
+	v := tea.NewView("\n" + m.list.View())
+	v.AltScreen = true
+	return v
+}
+
+func InitialModel() Model {
+	items := []list.Item{
+		Item("Argentina"),
+		Item("Bolivia"),
+		Item("Brazil"),
+		Item("Canada"),
+		Item("Chile"),
+		Item("Colombia"),
+		Item("Costa Rica"),
+		Item("Cuba"),
+		Item("Dominica"),
+		Item("Dominican Republic"),
+		Item("Grenada"),
+		Item("French Guiana"),
+		Item("Guyana"),
+		Item("Saint Lucia"),
+		Item("Honduras"),
+		Item("Mexico"),
+		Item("Nicaragua"),
+		Item("Panama"),
+		Item("Peru"),
+		Item("Puerto Rico"),
+		Item("Paraguay"),
+		Item("Suriname"),
+		Item("El Salvador"),
+		Item("Trinidad and Tobago"),
+		Item("United States"),
+		Item("Uruguay"),
+		Item("Venezuela"),
+		Item("Guatemala"),
+		Item("Belize"),
+		Item("Jamaica"),
+		Item("Haiti"),
+		Item("Bahamas"),
+		Item("Barbados"),
+		Item("Saint Kitts and Nevis"),
+		Item("Antigua and Barbuda"),
+	}
+
+	const defaultWidth = 20
+
+	l := list.New(items, itemDelegate{}, defaultWidth, 14)
+	l.Title = "Where are you from?"
+	l.SetShowStatusBar(false)
+	l.SetFilteringEnabled(false)
+
+	m := Model{list: l}
+	m.UpdateStyles(true)
+	return m
 }
