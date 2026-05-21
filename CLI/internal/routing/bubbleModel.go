@@ -35,7 +35,7 @@ func (m Model) Init() tea.Cmd {
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.help.SetWidth(msg.Width)
+		m.list.SetSize(msg.Width, msg.Height-5)
 		return m, nil
 
 	case tea.KeyPressMsg:
@@ -116,7 +116,7 @@ func InitialModel() Model {
 	const defaultWidth = 30
 	const defaultHeight = 30
 
-	l := list.New(items, itemDelegate{}, defaultWidth, defaultHeight)
+	l := list.New(items, itemDelegate{}, 0, 0)
 	l.Title = "Where are you from?"
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(false)
