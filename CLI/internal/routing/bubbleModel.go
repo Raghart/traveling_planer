@@ -3,6 +3,8 @@ package routing
 import (
 	"fmt"
 
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/key"
 	"charm.land/bubbles/v2/list"
 	tea "charm.land/bubbletea/v2"
 )
@@ -13,6 +15,7 @@ type Model struct {
 	choice   string
 	styles   Styles
 	quitting bool
+	help     help.Model
 }
 
 func (m *Model) UpdateStyles(isDark bool) {
@@ -32,20 +35,21 @@ func (m Model) Init() tea.Cmd {
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.list.SetWidth(msg.Width)
+		m.help.SetWidth(msg.Width)
 		return m, nil
 
 	case tea.KeyPressMsg:
-		switch keypress := msg.String(); keypress {
-		case "q", "ctrl+c":
-			m.quitting = true
-			return m, tea.Quit
-
-		case "enter":
+		switch {
+		case key.Matches(msg, m.keys.Help):
+			m.help.ShowAll = !m.help.ShowAll
+		case key.Matches(msg, m.keys.Enter):
 			i, ok := m.list.SelectedItem().(Item)
 			if ok {
 				m.choice = string(i)
 			}
+			return m, tea.Quit
+		case key.Matches(msg, m.keys.Quit):
+			m.quitting = true
 			return m, tea.Quit
 		}
 	}
@@ -63,7 +67,9 @@ func (m Model) View() tea.View {
 		return tea.NewView(m.styles.QuitText.Render("Hope to see you again!"))
 	}
 
-	v := tea.NewView("\n" + m.list.View())
+	footer := m.styles.Help.Render("↑/↓: Navegar • Enter: Viajar • /: Buscar • q: Salir")
+
+	v := tea.NewView("\n" + m.list.View() + "\n" + footer)
 	v.AltScreen = true
 	return v
 }
@@ -107,14 +113,16 @@ func InitialModel() Model {
 		Item("Antigua and Barbuda"),
 	}
 
-	const defaultWidth = 20
+	const defaultWidth = 30
+	const defaultHeight = 30
 
-	l := list.New(items, itemDelegate{}, defaultWidth, 14)
+	l := list.New(items, itemDelegate{}, defaultWidth, defaultHeight)
 	l.Title = "Where are you from?"
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(false)
+	l.SetShowHelp(false)
 
-	m := Model{list: l}
+	m := Model{list: l, keys: createKeyMap(), help: help.New()}
 	m.UpdateStyles(true)
 	return m
 }

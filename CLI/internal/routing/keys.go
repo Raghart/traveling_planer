@@ -7,6 +7,7 @@ type KeyMap struct {
 	Down  key.Binding
 	Left  key.Binding
 	Right key.Binding
+	Enter key.Binding
 	Help  key.Binding
 	Quit  key.Binding
 }
@@ -25,20 +26,24 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 func createKeyMap() KeyMap {
 	return KeyMap{
 		Up: key.NewBinding(
-			key.WithKeys("up", "k"),
-			key.WithHelp("↑/k", "move up"),
+			key.WithKeys("up", "i"),
+			key.WithHelp("↑/i", "move up"),
 		),
 		Down: key.NewBinding(
-			key.WithKeys("down", "j"),
-			key.WithHelp("↓/j", "move down"),
+			key.WithKeys("down", "k"),
+			key.WithHelp("↓/k", "move down"),
 		),
 		Left: key.NewBinding(
-			key.WithKeys("left", "h"),
-			key.WithHelp("←/h", "move left"),
+			key.WithKeys("left", "j"),
+			key.WithHelp("←/j", "move left"),
 		),
 		Right: key.NewBinding(
 			key.WithKeys("right", "l"),
-			key.WithHelp("←/h", "move right"),
+			key.WithHelp("→/l", "move right"),
+		),
+		Enter: key.NewBinding(
+			key.WithKeys("enter"),
+			key.WithHelp("enter", "select a country"),
 		),
 		Help: key.NewBinding(
 			key.WithKeys("?"),
