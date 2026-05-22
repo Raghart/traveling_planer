@@ -9,9 +9,13 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
-type Item string
+type Item struct {
+	title, desc string
+}
 
-func (i Item) FilterValue() string { return "" }
+func (i Item) Title() string       { return i.title }
+func (i Item) Description() string { return i.desc }
+func (i Item) FilterValue() string { return i.title }
 
 type itemDelegate struct {
 	styles *Styles
@@ -26,7 +30,7 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 		return
 	}
 
-	str := fmt.Sprintf("%d. %s", index+1, i)
+	str := fmt.Sprintf("%d. %s", index+1, i.title)
 
 	fn := d.styles.Item.Render
 	if index == m.Index() {

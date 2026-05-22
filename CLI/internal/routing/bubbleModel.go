@@ -23,7 +23,7 @@ func (m *Model) UpdateStyles(isDark bool) {
 	m.list.Styles.Title = m.styles.Title
 	m.list.Styles.PaginationStyle = m.styles.Pagination
 	m.list.Styles.HelpStyle = m.styles.Help
-	m.list.SetDelegate(itemDelegate{styles: &m.styles})
+	m.list.SetDelegate(list.NewDefaultDelegate())
 }
 
 func (m Model) Init() tea.Cmd {
@@ -45,7 +45,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, m.keys.Enter):
 			i, ok := m.list.SelectedItem().(Item)
 			if ok {
-				m.choice = string(i)
+				m.choice = i.title
 			}
 			return m, tea.Quit
 		case key.Matches(msg, m.keys.Quit):
@@ -76,47 +76,46 @@ func (m Model) View() tea.View {
 
 func InitialModel() Model {
 	items := []list.Item{
-		Item("Argentina"),
-		Item("Bolivia"),
-		Item("Brazil"),
-		Item("Canada"),
-		Item("Chile"),
-		Item("Colombia"),
-		Item("Costa Rica"),
-		Item("Cuba"),
-		Item("Dominica"),
-		Item("Dominican Republic"),
-		Item("Grenada"),
-		Item("French Guiana"),
-		Item("Guyana"),
-		Item("Saint Lucia"),
-		Item("Honduras"),
-		Item("Mexico"),
-		Item("Nicaragua"),
-		Item("Panama"),
-		Item("Peru"),
-		Item("Puerto Rico"),
-		Item("Paraguay"),
-		Item("Suriname"),
-		Item("El Salvador"),
-		Item("Trinidad and Tobago"),
-		Item("United States"),
-		Item("Uruguay"),
-		Item("Venezuela"),
-		Item("Guatemala"),
-		Item("Belize"),
-		Item("Jamaica"),
-		Item("Haiti"),
-		Item("Bahamas"),
-		Item("Barbados"),
-		Item("Saint Kitts and Nevis"),
-		Item("Antigua and Barbuda"),
+		Item{title: "Argentina", desc: "The Carnita Asada meat in all South America!"},
+		Item{title: "Bolivia", desc: ""},
+		Item{title: "Brazil", desc: ""},
+		Item{title: "Canada", desc: ""},
+		Item{title: "Chile", desc: ""},
+		Item{title: "Colombia", desc: ""},
+		Item{title: "Costa Rica", desc: ""},
+		Item{title: "Cuba", desc: ""},
+		Item{title: "Dominica", desc: ""},
+		Item{title: "Dominican Republic", desc: ""},
+		Item{title: "Grenada", desc: ""},
+		Item{title: "French Guiana", desc: ""},
+		Item{title: "Guyana", desc: ""},
+		Item{title: "Saint Lucia", desc: ""},
+		Item{title: "Honduras", desc: ""},
+		Item{title: "Mexico", desc: ""},
+		Item{title: "Nicaragua", desc: ""},
+		Item{title: "Panama", desc: ""},
+		Item{title: "Peru", desc: ""},
+		Item{title: "Puerto Rico", desc: ""},
+		Item{title: "Paraguay", desc: ""},
+		Item{title: "Suriname", desc: ""},
+		Item{title: "El Salvador", desc: ""},
+		Item{title: "Trinidad and Tobago", desc: ""},
+		Item{title: "United States", desc: ""},
+		Item{title: "Venezuela", desc: ""},
+		Item{title: "Guatemala", desc: ""},
+		Item{title: "Belize", desc: ""},
+		Item{title: "Jamaica", desc: ""},
+		Item{title: "Haiti", desc: ""},
+		Item{title: "Bahamas", desc: ""},
+		Item{title: "Barbados", desc: ""},
+		Item{title: "Saint Kitts and Nevis", desc: ""},
+		Item{title: "Antigua and Barbuda", desc: ""},
 	}
 
 	const defaultWidth = 30
 	const defaultHeight = 30
 
-	l := list.New(items, itemDelegate{}, 0, 0)
+	l := list.New(items, list.NewDefaultDelegate(), 0, 0)
 	l.Title = "Where are you from?"
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(false)
