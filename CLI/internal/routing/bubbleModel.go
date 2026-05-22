@@ -76,8 +76,8 @@ func (m Model) View() tea.View {
 
 func InitialModel() Model {
 	items := []list.Item{
-		Item{title: "Argentina", desc: "The Carnita Asada meat in all South America!"},
-		Item{title: "Bolivia", desc: ""},
+		Item{title: "Argentina", desc: "The Best Carnita Asada meat in all South America!"},
+		Item{title: "Bolivia", desc: "Land of extremes: soaring Andean peaks, vast salt flats, dense Amazon jungle, and rich indigenous traditions."},
 		Item{title: "Brazil", desc: ""},
 		Item{title: "Canada", desc: ""},
 		Item{title: "Chile", desc: ""},
