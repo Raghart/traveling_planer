@@ -67,7 +67,7 @@ func (m Model) View() tea.View {
 		return tea.NewView(m.styles.QuitText.Render("Hope to see you again!"))
 	}
 
-	footer := m.styles.Help.Render("↑/↓/←/→: Navigate • Enter: Select • q/esc: Exit")
+	footer := m.styles.Help.Render("↑/↓/←/→: Navigate • Enter: Select • Filter: / • q/esc: Exit")
 
 	v := tea.NewView("\n" + m.list.View() + "\n" + footer)
 	v.AltScreen = true
@@ -118,7 +118,6 @@ func InitialModel() Model {
 	l := list.New(items, list.NewDefaultDelegate(), 0, 0)
 	l.Title = "Where are you from?"
 	l.SetShowStatusBar(false)
-	l.SetFilteringEnabled(false)
 	l.SetShowHelp(false)
 
 	m := Model{list: l, keys: createKeyMap(), help: help.New()}

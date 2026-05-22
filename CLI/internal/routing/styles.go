@@ -21,9 +21,12 @@ func NewStyles(darkBG bool) Styles {
 	lightDark := lipgloss.LightDark(darkBG)
 	s.App = lipgloss.NewStyle().Padding(1, 2)
 	s.Title = lipgloss.NewStyle().
-		Background(lipgloss.Color("#25A065")).
-		Foreground(lipgloss.Color("#FFFDF5")).
-		Padding(0, 1)
+		Foreground(lipgloss.Color("#FFFF")).
+		Border(lipgloss.DoubleBorder()).
+		BorderForeground(lipgloss.Color("#25A065")).
+		Padding(0, 1).
+		Bold(true).
+		MarginLeft(2)
 
 	s.Item = lipgloss.NewStyle().PaddingLeft(4)
 	s.SelectedItem = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170"))
