@@ -50,15 +50,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.help.ShowAll = !m.help.ShowAll
 		case key.Matches(msg, m.keys.Enter):
 			i, ok := m.list.SelectedItem().(Item)
-			if ok {
-				if m.country.From != "" {
-					m.country.To = i.title
-					return m, tea.Quit
-				}
+			if ok && m.country.From != "" {
+				m.country.To = i.title
+				return m, tea.Quit
+			}
 
-				if m.country.From == "" {
-					m.country.From = i.title
-				}
+			if ok && m.country.From == "" {
+				m.country.From = i.title
+				m.list.Title = "Where do you want to go?"
 			}
 
 			return m, nil
@@ -74,9 +73,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() tea.View {
-	if m.choice != "" {
-		return tea.NewView(m.styles.QuitText.Render(fmt.Sprintf("%s, Understood!", m.choice)))
+	if m.country.From != "" && m.country.To != "" {
+		return tea.NewView(
+			m.styles.QuitText.Render(
+				fmt.Sprintf("Traveling from: %s to %s!", m.country.From, m.country.To)))
 	}
+
 	if m.quitting {
 		return tea.NewView(m.styles.QuitText.Render("Hope to see you again!"))
 	}
