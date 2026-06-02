@@ -2,6 +2,7 @@ package routing
 
 import (
 	"fmt"
+	"strings"
 
 	"charm.land/bubbles/v2/help"
 	"charm.land/bubbles/v2/key"
@@ -83,7 +84,19 @@ func (m Model) View() tea.View {
 		return tea.NewView(m.styles.QuitText.Render("Hope to see you again!"))
 	}
 
-	footer := m.styles.Help.Render("↑/↓/←/→: Navigate • Enter: Select • Filter: / • q/esc: Exit")
+	footer := m.styles.Help.Render(
+		strings.Join([]string{
+			"↑/↓/←/→: Navigate",
+			"Enter: Select",
+			"Filter: /",
+			"q/esc: Exit",
+		}, " • "))
+
+	if m.country.From != "" {
+		v := tea.NewView("\n" + m.list.View() + "\n" + m.country.From + "\n" + footer)
+		v.AltScreen = true
+		return v
+	}
 
 	v := tea.NewView("\n" + m.list.View() + "\n" + footer)
 	v.AltScreen = true
