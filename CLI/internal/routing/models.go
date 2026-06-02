@@ -1,5 +1,10 @@
 package routing
 
+type TravelingManager struct {
+	From string
+	To   string
+}
+
 type Currency struct {
 	From  string
 	To    string

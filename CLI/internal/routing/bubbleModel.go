@@ -16,6 +16,12 @@ type Model struct {
 	styles   Styles
 	quitting bool
 	help     help.Model
+	country  CountryStruct
+}
+
+type CountryStruct struct {
+	From string
+	To   string
 }
 
 func (m *Model) UpdateStyles(isDark bool) {
@@ -45,9 +51,17 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, m.keys.Enter):
 			i, ok := m.list.SelectedItem().(Item)
 			if ok {
-				m.choice = i.title
+				if m.country.From != "" {
+					m.country.To = i.title
+					return m, tea.Quit
+				}
+
+				if m.country.From == "" {
+					m.country.From = i.title
+				}
 			}
-			return m, tea.Quit
+
+			return m, nil
 		case key.Matches(msg, m.keys.Quit):
 			m.quitting = true
 			return m, tea.Quit
