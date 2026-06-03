@@ -59,6 +59,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if ok && m.country.From == "" {
 				m.country.From = i.title
 				m.list.Title = "Where do you want to go?"
+				m.list.NewStatusMessage(
+					m.styles.StatusMessage.Render("From: " + i.title))
+				m.list.RemoveItem(m.list.Index())
 			}
 
 			return m, nil
@@ -92,13 +95,12 @@ func (m Model) View() tea.View {
 			"q/esc: Exit",
 		}, " • "))
 
-	if m.country.From != "" {
-		v := tea.NewView("\n" + m.list.View() + "\n" + m.country.From + "\n" + footer)
-		v.AltScreen = true
-		return v
-	}
+	strView := strings.Join([]string{
+		m.list.View(),
+		footer,
+	}, "\n")
 
-	v := tea.NewView("\n" + m.list.View() + "\n" + footer)
+	v := tea.NewView(strView)
 	v.AltScreen = true
 	return v
 }
