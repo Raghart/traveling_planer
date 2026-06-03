@@ -143,9 +143,6 @@ func InitialModel() Model {
 		Item{title: "Antigua and Barbuda", desc: "365 distinct beaches—one for every day of the year."},
 	}
 
-	const defaultWidth = 30
-	const defaultHeight = 30
-
 	l := list.New(items, list.NewDefaultDelegate(), 0, 0)
 	l.Title = "Where are you from?"
 	l.SetShowStatusBar(false)
