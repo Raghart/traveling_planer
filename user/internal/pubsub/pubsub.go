@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/Raghart/traveling_planer/internal/routing"
@@ -88,6 +89,10 @@ func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.De
 
 func TestingRPC() (res string) {
 	conn, rabbitCh, q, msgs, err := ConnectBunny()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	defer conn.Close()
 	defer rabbitCh.Close()
 
@@ -95,19 +100,22 @@ func TestingRPC() (res string) {
 	err = PublishJSON(rabbitCh, "", "rpc_queue", "", corrID, q, routing.CountryData{
 		IsCountry: false,
 	})
-	utils.FailOnError(err, "error while trying to publish the client JSON")
+	if err != nil {
+		log.Fatalf("error while trying to publish the client json: %v", err)
+	}
 
 	for d := range msgs {
 		if d.CorrelationId == corrID {
 			countryData := &routing.CountryData{}
 			err = json.Unmarshal(d.Body, countryData)
-			utils.FailOnError(err, "unable to unmarshal data")
+			if err != nil {
+				log.Fatalf("unable to unmarshal data: %v", err)
+			}
 
+			res = "unknown"
 			if countryData.IsCountry == true {
 				res = "There is a country in the horizon!"
-				break
 			}
-			res = "unknown"
 			break
 		}
 	}
