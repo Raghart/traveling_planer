@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 
@@ -84,9 +85,21 @@ func DeliverCountryTemperature(d ampq.Delivery, ch *ampq.Channel, queue ampq.Que
 
 	mapLocations := utils.LoadLocations()
 	countryLocation := mapLocations[countryTemp.Country]
-	tempURL := fmt.Sprintf("https://api.open-meteo.com/v1/forecast?latitude=%f&longitude=%f&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max,apparent_temperature_max,apparent_temperature_min", countryLocation.Latitude, countryLocation.Longitude)
 
-	res, err := http.Get(tempURL)
+	baseUrl := "https://api.open-meteo.com/v1/forecast"
+	params := url.Values{}
+	params.Add("latitude", fmt.Sprintf("%f", countryLocation.Latitude))
+	params.Add("longitude", fmt.Sprintf("%f", countryLocation.Longitude))
+	params.Add("daily", strings.Join([]string{
+		"temperature_2m_max",
+		"temperature_2m_min",
+		"weather_code",
+		"precipitation_probability_max",
+		"apparent_temperature_max",
+		"apparent_temperature_min",
+	}, ","))
+
+	res, err := http.Get(fmt.Sprintf("%s?%s", baseUrl, params.Encode()))
 	utils.FailsOnError(err, fmt.Sprintf("unable to get the %s temperature", countryTemp.Country))
 
 	bodyData, err := io.ReadAll(res.Body)
