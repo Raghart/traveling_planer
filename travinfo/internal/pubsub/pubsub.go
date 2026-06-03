@@ -28,6 +28,41 @@ func PublishJSON[T any](ch *ampq.Channel, exchange, key, msgID, msgType string,
 	})
 }
 
+func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.Delivery, error) {
+	conn, err := ampq.Dial("amqp://guest:guest@localhost:5672/")
+	utils.FailsOnError(err, "unable to connect to RabbitMQ")
+
+	ch, err := conn.Channel()
+	utils.FailsOnError(err, "unable to create a channel")
+
+	queue, err := ch.QueueDeclare(
+		"travinfo-queue",
+		true,
+		false,
+		false,
+		false,
+		ampq.Table{
+			ampq.QueueTypeArg: ampq.QueueTypeQuorum,
+		},
+	)
+	utils.FailsOnError(err, "unable to creathe the queue")
+
+	err = ch.Qos(1, 0, false)
+	utils.FailsOnError(err, "unable to setup QoS")
+
+	msgs, err := ch.Consume(
+		queue.Name,
+		"",
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
+	utils.FailsOnError(err, "unable to create the channel")
+	return conn, ch, queue, msgs, nil
+}
+
 func DeliverCountryTemperature(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) {
 	countryTemp := &types.CountryTemp{}
 	err := json.Unmarshal(d.Body, countryTemp)
