@@ -17,7 +17,7 @@ import (
 func PublishJSON[T any](ch *ampq.Channel, exchange, key, msgType, msgID string, queue ampq.Queue, val T) error {
 	jsonBytes, err := json.Marshal(val)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("error while trying to marshal the value: %w", err)
 	}
 
 	return ch.PublishWithContext(context.Background(), exchange, key, false, false, ampq.Publishing{
@@ -33,24 +33,23 @@ func DeclareAndBind(conn *ampq.Connection,
 	exchange, queueName, key string,
 	queueType SimpleQueueType) (*ampq.Channel, ampq.Queue, error) {
 	ch, err := conn.Channel()
-
 	if err != nil {
-		log.Fatalf("error while creating the channel: %v", err)
+		return nil, ampq.Queue{}, fmt.Errorf("error while creating the channel: %w", err)
 	}
 
 	queue, err := ch.QueueDeclare(queueName, queueType == DurableType, queueType != DurableType,
 		queueType != DurableType, false, nil)
-
 	if err != nil {
 		return &ampq.Channel{}, ampq.Queue{}, fmt.Errorf("error while creating the queue: %v", err)
 	}
+
 	if err = ch.QueueBind(queueName, key, exchange, false, nil); err != nil {
 		return &ampq.Channel{}, ampq.Queue{}, fmt.Errorf("error while binding the queue: %v", err)
 	}
 	return ch, queue, nil
 }
 
-func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.Delivery) {
+func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.Delivery, error) {
 	conn, err := ampq.Dial(os.Getenv("CONNECTRABBIT"))
 	if err != nil {
 		log.Fatal(err)
@@ -81,16 +80,16 @@ func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.De
 		nil,
 	)
 	utils.FailOnError(err, "couldn't register a consumer")
-	return conn, rabbitCh, q, msgs
+	return conn, rabbitCh, q, msgs, nil
 }
 
 func TestingRPC() (res string) {
-	conn, rabbitCh, q, msgs := ConnectBunny()
+	conn, rabbitCh, q, msgs, err := ConnectBunny()
 	defer conn.Close()
 	defer rabbitCh.Close()
 
 	corrID := uuid.NewString()
-	err := PublishJSON(rabbitCh, "", "rpc_queue", "", corrID, q, routing.CountryData{
+	err = PublishJSON(rabbitCh, "", "rpc_queue", "", corrID, q, routing.CountryData{
 		IsCountry: false,
 	})
 	utils.FailOnError(err, "error while trying to publish the client JSON")
@@ -113,13 +112,13 @@ func TestingRPC() (res string) {
 }
 
 func AskCurrency(fromCurr, toCurr string) (value float32) {
-	conn, ch, q, msgs := ConnectBunny()
+	conn, ch, q, msgs, err := ConnectBunny()
 	defer conn.Close()
 	defer ch.Close()
 
 	corrID := uuid.NewString()
 
-	err := PublishJSON(ch, "", "travinfo-queue", "currency", corrID, q, routing.Currency{
+	err = PublishJSON(ch, "", "travinfo-queue", "currency", corrID, q, routing.Currency{
 		From: fromCurr,
 		To:   toCurr,
 	})
@@ -139,12 +138,12 @@ func AskCurrency(fromCurr, toCurr string) (value float32) {
 }
 
 func AskTemperature(country string) (tempSlice []routing.DailyTemp) {
-	conn, ch, queue, msgs := ConnectBunny()
+	conn, ch, queue, msgs, err := ConnectBunny()
 	defer conn.Close()
 	defer ch.Close()
 
 	corrID := uuid.NewString()
-	err := PublishJSON(ch, "", "travinfo-queue", "temperature", corrID, queue, routing.CountryTemp{
+	err = PublishJSON(ch, "", "travinfo-queue", "temperature", corrID, queue, routing.CountryTemp{
 		Country: country,
 	})
 	utils.FailOnError(err, "unable to publish the temperature request")
