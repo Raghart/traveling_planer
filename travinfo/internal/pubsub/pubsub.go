@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/Raghart/traveling_planer/travinfo/internal/types"
 	"github.com/Raghart/traveling_planer/travinfo/internal/utils"
@@ -18,7 +19,9 @@ func PublishJSON[T any](ch *ampq.Channel, exchange, key, msgID, msgType string,
 	queue ampq.Queue, val T) error {
 
 	body, err := json.Marshal(val)
-	utils.FailsOnError(err, "unable to marshal the json value")
+	if err != nil {
+		return fmt.Errorf("unable to marshal the json value: %w", err)
+	}
 	return ch.PublishWithContext(context.Background(), exchange, key, false, false, ampq.Publishing{
 		ContentType:   "application/json",
 		CorrelationId: msgID,
@@ -114,13 +117,17 @@ func DeliverCountryTemperature(d ampq.Delivery, ch *ampq.Channel, queue ampq.Que
 func DeliverLatestCurrency(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) {
 	currencyData := &types.Currency{}
 	err := json.Unmarshal(d.Body, currencyData)
-
 	utils.FailsOnError(err, "unable to publish the json")
 
 	apiKey := os.Getenv("MONEYKEY")
-	currUrl := fmt.Sprintf("https://v6.exchangerate-api.com/v6/%s/latest/%s", apiKey, currencyData.From)
-	res, err := http.Get(currUrl)
-	utils.FailsOnError(err, "unable to contact with the API")
+	if strings.TrimSpace(apiKey) == "" {
+		utils.FailsOnError(fmt.Errorf("key hasn't been loaded: %s", apiKey), "key not valid")
+	}
+
+	res, err := http.Get(
+		fmt.Sprintf(
+			"https://v6.exchangerate-api.com/v6/%s/latest/%s", apiKey, currencyData.From))
+	utils.FailsOnError(err, "unable to contact with the weather API")
 
 	resBody, err := io.ReadAll(res.Body)
 	utils.FailsOnError(err, "response doesn't have a body")
@@ -133,13 +140,16 @@ func DeliverLatestCurrency(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) 
 	utils.FailsOnError(err, "unable to pack the dict")
 
 	searchValue := dict[string(currencyData.To)]
+	floatVal, isFloat := searchValue.(float64)
 
-	if value, isFloat := searchValue.(float64); isFloat {
-		currencyData.Value = value
+	if !isFloat {
+		utils.FailsOnError(fmt.Errorf("value: '%v' wasn't found in the dict", searchValue),
+			"searched value is not avaible in the dict")
 	}
 
-	err = PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "currency",
-		queue, currencyData)
+	currencyData.Value = floatVal
+
+	err = PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "currency", queue, currencyData)
 	utils.FailsOnError(err, "unable to publish currency to JSON")
 
 	d.Ack(false)

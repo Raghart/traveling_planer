@@ -11,6 +11,7 @@ import (
 func main() {
 	conn, ch, queue, msgs, err := pubsub.ConnectBunny()
 	utils.FailsOnError(err, "unable to connect with server")
+
 	defer conn.Close()
 	defer ch.Close()
 	forever := make(chan struct{})
