@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/Raghart/traveling_planer/internal/routing"
@@ -52,12 +51,12 @@ func DeclareAndBind(conn *ampq.Connection,
 func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.Delivery, error) {
 	conn, err := ampq.Dial(os.Getenv("CONNECTRABBIT"))
 	if err != nil {
-		log.Fatal(err)
+		return nil, nil, ampq.Queue{}, nil, fmt.Errorf("unable to connect with rabbit server: %w", err)
 	}
 
 	rabbitCh, err := conn.Channel()
 	if err != nil {
-		log.Fatalf("error while creating the channel: %v", err)
+		return nil, nil, ampq.Queue{}, nil, fmt.Errorf("error while creating the channel: %w", err)
 	}
 
 	q, err := rabbitCh.QueueDeclare(
@@ -68,7 +67,9 @@ func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.De
 		false,
 		nil,
 	)
-	utils.FailOnError(err, "couldn't declare the user queue")
+	if err != nil {
+		return nil, nil, ampq.Queue{}, nil, fmt.Errorf("couldn't declare the user queue: %w", err)
+	}
 
 	msgs, err := rabbitCh.Consume(
 		q.Name,
@@ -79,7 +80,9 @@ func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.De
 		false,
 		nil,
 	)
-	utils.FailOnError(err, "couldn't register a consumer")
+	if err != nil {
+		return nil, nil, ampq.Queue{}, nil, fmt.Errorf("couldn't register a consumer: %w", err)
+	}
 	return conn, rabbitCh, q, msgs, nil
 }
 
