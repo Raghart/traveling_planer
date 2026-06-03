@@ -146,6 +146,8 @@ func AskCurrency(fromCurr, toCurr string) (value float32) {
 
 func AskTemperature(country string) (tempSlice []routing.DailyTemp) {
 	conn, ch, queue, msgs, err := ConnectBunny()
+	utils.FailOnError(err, "unable to connect to bunny server")
+
 	defer conn.Close()
 	defer ch.Close()
 
@@ -154,6 +156,7 @@ func AskTemperature(country string) (tempSlice []routing.DailyTemp) {
 		Country: country,
 	})
 	utils.FailOnError(err, "unable to publish the temperature request")
+
 	func() {
 		for d := range msgs {
 			if d.CorrelationId == corrID {
