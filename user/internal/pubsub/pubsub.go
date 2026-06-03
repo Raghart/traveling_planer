@@ -86,7 +86,7 @@ func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.De
 	return conn, rabbitCh, q, msgs, nil
 }
 
-func TestingRPC() (res string) {
+func GetTestingRPC() (res string) {
 	conn, rabbitCh, q, msgs, err := ConnectBunny()
 	utils.FailOnError(err, "unable to connect to bunny")
 
@@ -115,7 +115,7 @@ func TestingRPC() (res string) {
 	return
 }
 
-func AskCurrency(fromCurr, toCurr string) (value float32) {
+func GetCurrency(fromCurr, toCurr string) (value float32) {
 	conn, ch, q, msgs, err := ConnectBunny()
 	utils.FailOnError(err, "unable to load to bunny")
 
@@ -144,7 +144,7 @@ func AskCurrency(fromCurr, toCurr string) (value float32) {
 	return
 }
 
-func AskTemperature(country string) (tempSlice []routing.DailyTemp) {
+func GetTemperature(country string) (tempSlice []routing.DailyTemp) {
 	conn, ch, queue, msgs, err := ConnectBunny()
 	utils.FailOnError(err, "unable to connect to bunny server")
 
