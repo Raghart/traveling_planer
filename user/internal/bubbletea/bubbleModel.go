@@ -1,4 +1,4 @@
-package routing
+package bubbletea
 
 import (
 	"fmt"
