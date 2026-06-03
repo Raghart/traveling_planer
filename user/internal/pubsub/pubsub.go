@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/Raghart/traveling_planer/internal/routing"
@@ -89,9 +88,7 @@ func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.De
 
 func TestingRPC() (res string) {
 	conn, rabbitCh, q, msgs, err := ConnectBunny()
-	if err != nil {
-		log.Fatal(err)
-	}
+	utils.FailOnError(err, "unable to connect to bunny")
 
 	defer conn.Close()
 	defer rabbitCh.Close()
@@ -100,17 +97,13 @@ func TestingRPC() (res string) {
 	err = PublishJSON(rabbitCh, "", "rpc_queue", "", corrID, q, routing.CountryData{
 		IsCountry: false,
 	})
-	if err != nil {
-		log.Fatalf("error while trying to publish the client json: %v", err)
-	}
+	utils.FailOnError(err, "error while trying to publish the client json")
 
 	for d := range msgs {
 		if d.CorrelationId == corrID {
 			countryData := &routing.CountryData{}
 			err = json.Unmarshal(d.Body, countryData)
-			if err != nil {
-				log.Fatalf("unable to unmarshal data: %v", err)
-			}
+			utils.FailOnError(err, "unable to unmarshal data")
 
 			res = "unknown"
 			if countryData.IsCountry == true {
@@ -124,6 +117,8 @@ func TestingRPC() (res string) {
 
 func AskCurrency(fromCurr, toCurr string) (value float32) {
 	conn, ch, q, msgs, err := ConnectBunny()
+	utils.FailOnError(err, "unable to load to bunny")
+
 	defer conn.Close()
 	defer ch.Close()
 
@@ -134,6 +129,7 @@ func AskCurrency(fromCurr, toCurr string) (value float32) {
 		To:   toCurr,
 	})
 	utils.FailOnError(err, "unable to ask for currency")
+
 	func() {
 		for d := range msgs {
 			if d.CorrelationId == corrID {
