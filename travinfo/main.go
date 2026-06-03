@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	conn, ch, queue, msgs, err := utils.ConnectBunny()
+	conn, ch, queue, msgs, err := pubsub.ConnectBunny()
 	utils.FailsOnError(err, "unable to connect with server")
 	defer conn.Close()
 	defer ch.Close()

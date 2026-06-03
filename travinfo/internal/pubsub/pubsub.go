@@ -30,10 +30,14 @@ func PublishJSON[T any](ch *ampq.Channel, exchange, key, msgID, msgType string,
 
 func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.Delivery, error) {
 	conn, err := ampq.Dial("amqp://guest:guest@localhost:5672/")
-	utils.FailsOnError(err, "unable to connect to RabbitMQ")
+	if err != nil {
+		return nil, nil, ampq.Queue{}, nil, fmt.Errorf("unable to connect to RabbitMQ: %w", err)
+	}
 
 	ch, err := conn.Channel()
-	utils.FailsOnError(err, "unable to create a channel")
+	if err != nil {
+		return nil, nil, ampq.Queue{}, nil, fmt.Errorf("unable to create a channel: %w", err)
+	}
 
 	queue, err := ch.QueueDeclare(
 		"travinfo-queue",
@@ -45,10 +49,14 @@ func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.De
 			ampq.QueueTypeArg: ampq.QueueTypeQuorum,
 		},
 	)
-	utils.FailsOnError(err, "unable to creathe the queue")
+	if err != nil {
+		return nil, nil, ampq.Queue{}, nil, fmt.Errorf("unable to create the queue: %w", err)
+	}
 
 	err = ch.Qos(1, 0, false)
-	utils.FailsOnError(err, "unable to setup QoS")
+	if err != nil {
+		return nil, nil, ampq.Queue{}, nil, fmt.Errorf("unable to setup QoS: %w", err)
+	}
 
 	msgs, err := ch.Consume(
 		queue.Name,
@@ -59,7 +67,10 @@ func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.De
 		false,
 		nil,
 	)
-	utils.FailsOnError(err, "unable to create the channel")
+	if err != nil {
+		return nil, nil, ampq.Queue{}, nil, fmt.Errorf("unable to create the channel: %w", err)
+	}
+
 	return conn, ch, queue, msgs, nil
 }
 
