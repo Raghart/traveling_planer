@@ -5,10 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/Raghart/traveling_planer/internal/routing"
 	"github.com/Raghart/traveling_planer/internal/utils"
 	"github.com/google/uuid"
+	_ "github.com/joho/godotenv/autoload"
 	ampq "github.com/rabbitmq/amqp091-go"
 )
 
@@ -49,7 +51,7 @@ func DeclareAndBind(conn *ampq.Connection,
 }
 
 func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.Delivery) {
-	conn, err := ampq.Dial(routing.ConnectionStr)
+	conn, err := ampq.Dial(os.Getenv("CONNECTRABBIT"))
 	if err != nil {
 		log.Fatal(err)
 	}

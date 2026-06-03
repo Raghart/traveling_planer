@@ -17,10 +17,10 @@ type Model struct {
 	styles   Styles
 	quitting bool
 	help     help.Model
-	country  CountryStruct
+	country  CountryManager
 }
 
-type CountryStruct struct {
+type CountryManager struct {
 	From string
 	To   string
 }
