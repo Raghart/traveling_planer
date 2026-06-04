@@ -152,3 +152,30 @@ func InitialModel() Model {
 	m.UpdateStyles(true)
 	return m
 }
+
+func (m Model) UpdateModelSelection() Model {
+	items := []list.Item{
+		Item{
+			title: "Temperature",
+			desc:  fmt.Sprintf("Want to know the weekly temperature of %s?", m.country.To),
+		},
+		Item{
+			title: "Currency",
+			desc: fmt.Sprintf(
+				"Want to know the currency difference from %s to %s?",
+				m.country.From,
+				m.country.To),
+		},
+	}
+
+	l := list.New(items, list.NewDefaultDelegate(), 0, 0)
+
+	updatedModel := Model{
+		list:    l,
+		keys:    createKeyMap(),
+		help:    help.New(),
+		country: m.country,
+	}
+	updatedModel.UpdateStyles(true)
+	return updatedModel
+}
