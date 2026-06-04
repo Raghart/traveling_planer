@@ -13,7 +13,6 @@ import (
 type Model struct {
 	keys     KeyMap
 	list     list.Model
-	choice   string
 	styles   Styles
 	quitting bool
 	help     help.Model
@@ -30,6 +29,7 @@ func (m *Model) UpdateStyles(isDark bool) {
 	m.list.Styles.Title = m.styles.Title
 	m.list.Styles.PaginationStyle = m.styles.Pagination
 	m.list.Styles.HelpStyle = m.styles.Help
+
 	m.list.Styles.ActivePaginationDot = m.styles.ActiveDot
 	m.list.Styles.InactivePaginationDot = m.styles.InactiveDot
 	m.list.Paginator.ActiveDot = m.styles.ActiveDot.Render("•")
@@ -54,9 +54,15 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.help.ShowAll = !m.help.ShowAll
 		case key.Matches(msg, m.keys.Enter):
 			i, ok := m.list.SelectedItem().(Item)
-			if ok && m.country.From != "" {
+			if ok && m.country.From != "" && m.country.To == "" {
 				m.country.To = i.title
-				return m, tea.Quit
+
+				newItems := m.GenerateProjectActions()
+				cmd := m.list.SetItems(newItems)
+
+				m.list.Title = fmt.Sprintf("Traveling from %s to %s", m.country.From, m.country.To)
+				m.list.NewStatusMessage("")
+				return m, cmd
 			}
 
 			if ok && m.country.From == "" {
@@ -80,11 +86,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() tea.View {
-	if m.country.From != "" && m.country.To != "" {
-		return tea.NewView(
-			m.styles.QuitText.Render(
-				fmt.Sprintf("Traveling from: %s to %s!", m.country.From, m.country.To)))
-	}
 
 	if m.quitting {
 		return tea.NewView(m.styles.QuitText.Render("Hope to see you again!"))
@@ -156,8 +157,8 @@ func InitialModel() Model {
 	return m
 }
 
-func (m Model) UpdateModelSelection() Model {
-	items := []list.Item{
+func (m Model) GenerateProjectActions() []list.Item {
+	return []list.Item{
 		Item{
 			title: "Temperature",
 			desc:  fmt.Sprintf("Want to know the weekly temperature of %s?", m.country.To),
@@ -170,15 +171,4 @@ func (m Model) UpdateModelSelection() Model {
 				m.country.To),
 		},
 	}
-
-	l := list.New(items, list.NewDefaultDelegate(), 0, 0)
-
-	updatedModel := Model{
-		list:    l,
-		keys:    createKeyMap(),
-		help:    help.New(),
-		country: m.country,
-	}
-	updatedModel.UpdateStyles(true)
-	return updatedModel
 }
