@@ -14,6 +14,8 @@ type Styles struct {
 	Help          lipgloss.Style
 	QuitText      lipgloss.Style
 	StatusMessage lipgloss.Style
+	ActiveDot     lipgloss.Style
+	InactiveDot   lipgloss.Style
 }
 
 func NewStyles(darkBG bool) Styles {
@@ -36,5 +38,8 @@ func NewStyles(darkBG bool) Styles {
 	s.QuitText = lipgloss.NewStyle().Margin(1, 0, 2, 4)
 	s.StatusMessage = lipgloss.NewStyle().
 		Foreground(lightDark(lipgloss.Color("#04B575"), lipgloss.Color("#04B575")))
+
+	s.ActiveDot = lipgloss.NewStyle().Foreground(lipgloss.Color("#12d142"))
+	s.InactiveDot = lipgloss.NewStyle().Foreground(lipgloss.Color("#555555"))
 	return s
 }
