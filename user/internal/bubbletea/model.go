@@ -8,6 +8,8 @@ import (
 	"charm.land/bubbles/v2/key"
 	"charm.land/bubbles/v2/list"
 	tea "charm.land/bubbletea/v2"
+	"github.com/Raghart/traveling_planer/internal/pubsub"
+	"github.com/Raghart/traveling_planer/internal/utils"
 )
 
 type Model struct {
@@ -162,6 +164,9 @@ func (m Model) GenerateProjectActions() []list.Item {
 		Item{
 			title: "Temperature",
 			desc:  fmt.Sprintf("Want to know the weekly temperature of %s?", m.country.To),
+			task: func() {
+				utils.PresentWeather(pubsub.GetTemperature(m.country.To))
+			},
 		},
 		Item{
 			title: "Currency",
@@ -169,6 +174,9 @@ func (m Model) GenerateProjectActions() []list.Item {
 				"Want to know the currency difference from %s to %s?",
 				m.country.From,
 				m.country.To),
+			task: func() {
+				fmt.Printf("Currency value: %.2f", pubsub.GetCurrency(m.country.From, m.country.To))
+			},
 		},
 	}
 }
