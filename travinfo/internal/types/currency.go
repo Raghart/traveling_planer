@@ -3,9 +3,12 @@ package types
 type CurrType string
 
 type Currency struct {
-	From  CurrType
-	To    CurrType
-	Value float64
+	From         string
+	FromCurrency CurrType
+	To           string
+	ToCurrency   CurrType
+	ExchangeRate float64
+	InverseRate  float64
 }
 
 const (
