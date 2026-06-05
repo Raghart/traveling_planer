@@ -181,6 +181,8 @@ func (m Model) GenerateProjectActions() []list.Item {
 			task: func() {
 				currencyInfo := pubsub.GetCurrency(m.country.From, m.country.To)
 
+				fmt.Printf("\nExchange rates from %s to %s\n", currencyInfo.From, currencyInfo.To)
+
 				fmt.Printf("1 %s = %f %s\n",
 					currencyInfo.FromCurrency,
 					currencyInfo.ExchangeRate,
