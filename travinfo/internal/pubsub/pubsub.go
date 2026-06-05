@@ -138,44 +138,55 @@ func DeliverCountryTemperature(d ampq.Delivery, ch *ampq.Channel, queue ampq.Que
 	return d.Ack(false)
 }
 
-func DeliverLatestCurrency(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) {
+func DeliverLatestCurrency(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) error {
 	currencyData := &types.Currency{}
 	err := json.Unmarshal(d.Body, currencyData)
-	utils.FailsOnError(err, "unable to publish the json")
+	if err != nil {
+		return fmt.Errorf("unable to publish the json: %w", err)
+	}
 
 	apiKey := os.Getenv("MONEYKEY")
 	if strings.TrimSpace(apiKey) == "" {
-		utils.FailsOnError(fmt.Errorf("key hasn't been loaded: %s", apiKey), "key not valid")
+		return fmt.Errorf("key hasn't been loaded: %s", apiKey)
 	}
 
 	// error while getting the res
 	res, err := http.Get(
 		fmt.Sprintf(
 			"https://v6.exchangerate-api.com/v6/%s/latest/%s", apiKey, currencyData.From))
-	utils.FailsOnError(err, "unable to contact with the weather API")
+	if err != nil || res.StatusCode >= 400 {
+		return fmt.Errorf("unable to contact with the weather api: %w", err)
+	}
 
 	resBody, err := io.ReadAll(res.Body)
-	utils.FailsOnError(err, "response doesn't have a body")
+	if err != nil {
+		return fmt.Errorf("response doesn't have a body: %w", err)
+	}
 
 	currencyJson := &types.CurrencyJSON{}
 	err = json.Unmarshal(resBody, currencyJson)
-	utils.FailsOnError(err, "unable to unmarshal json body")
+	if err != nil {
+		return fmt.Errorf("unable to unmarshal json body: %w", err)
+	}
 
 	dict, err := utils.StructToDict(currencyJson.ConversionRates)
-	utils.FailsOnError(err, "unable to pack the dict")
+	if err != nil {
+		return fmt.Errorf("unable to pack the dict: %w", err)
+	}
 
 	searchValue := dict[string(currencyData.To)]
 	floatVal, isFloat := searchValue.(float64)
 
 	if !isFloat {
-		utils.FailsOnError(fmt.Errorf("value: '%v' wasn't found in the dict", searchValue),
-			"searched value is not avaible in the dict")
+		return fmt.Errorf("value: '%v' wasn't found in the dict", searchValue)
 	}
 
 	currencyData.Value = floatVal
 
 	err = PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "currency", queue, currencyData)
-	utils.FailsOnError(err, "unable to publish currency to JSON")
+	if err != nil {
+		return fmt.Errorf("unable to publish currency to json: %w", err)
+	}
 
-	d.Ack(false)
+	return d.Ack(false)
 }
