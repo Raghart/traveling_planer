@@ -22,7 +22,10 @@ func main() {
 			case "currency":
 				pubsub.DeliverLatestCurrency(d, ch, queue)
 			case "temperature":
-				pubsub.DeliverCountryTemperature(d, ch, queue)
+				err := pubsub.DeliverCountryTemperature(d, ch, queue)
+				if err != nil {
+					log.Print(err)
+				}
 			default:
 				log.Println("Invalid request made!")
 				d.Ack(false)
