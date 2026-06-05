@@ -78,10 +78,12 @@ func ConnectBunny() (*ampq.Connection, *ampq.Channel, ampq.Queue, <-chan ampq.De
 	return conn, ch, queue, msgs, nil
 }
 
-func DeliverCountryTemperature(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) {
+func DeliverCountryTemperature(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) error {
 	countryTemp := &types.CountryTemp{}
 	err := json.Unmarshal(d.Body, countryTemp)
-	utils.FailsOnError(err, "unable to unmarshal the body")
+	if err != nil {
+		return fmt.Errorf("unable to unmarshal the body: %w", err)
+	}
 
 	mapLocations := utils.LoadLocations()
 	countryLocation := mapLocations[countryTemp.Country]
@@ -100,15 +102,22 @@ func DeliverCountryTemperature(d ampq.Delivery, ch *ampq.Channel, queue ampq.Que
 	}, ","))
 
 	res, err := http.Get(fmt.Sprintf("%s?%s", baseUrl, params.Encode()))
-	utils.FailsOnError(err, fmt.Sprintf("unable to get the %s temperature", countryTemp.Country))
+	if err != nil || res.StatusCode >= 400 {
+		return fmt.Errorf("unable to get the %s temperature: %w",
+			countryTemp.Country, err)
+	}
 
 	bodyData, err := io.ReadAll(res.Body)
-	utils.FailsOnError(err, "unable to read the body")
+	if err != nil {
+		return fmt.Errorf("unable to read the body: %w", err)
+	}
 
 	countryTempJSON := &types.CountryTempJSON{}
 
 	err = json.Unmarshal(bodyData, countryTempJSON)
-	utils.FailsOnError(err, "unable to unmarshal the JSON API data")
+	if err != nil {
+		return fmt.Errorf("unable to unmarshal the JSON API data: %w", err)
+	}
 
 	for i := 0; i < len(countryTempJSON.Daily.ApparentTemperatureMax); i++ {
 		countryTemp.DailyTemperatures = append(countryTemp.DailyTemperatures, types.DailyTemp{
@@ -122,9 +131,11 @@ func DeliverCountryTemperature(d ampq.Delivery, ch *ampq.Channel, queue ampq.Que
 	}
 
 	err = PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "temperature", queue, countryTemp)
-	utils.FailsOnError(err, "unable to publish the JSON")
+	if err != nil {
+		return fmt.Errorf("unable to publish the json: %w", err)
+	}
 
-	d.Ack(false)
+	return d.Ack(false)
 }
 
 func DeliverLatestCurrency(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) {
@@ -137,6 +148,7 @@ func DeliverLatestCurrency(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) 
 		utils.FailsOnError(fmt.Errorf("key hasn't been loaded: %s", apiKey), "key not valid")
 	}
 
+	// error while getting the res
 	res, err := http.Get(
 		fmt.Sprintf(
 			"https://v6.exchangerate-api.com/v6/%s/latest/%s", apiKey, currencyData.From))

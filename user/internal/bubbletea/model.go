@@ -75,6 +75,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.list.RemoveItem(m.list.Index())
 			}
 
+			if ok && m.country.From != "" && m.country.To != "" {
+				i.task()
+			}
+
 			return m, nil
 		case key.Matches(msg, m.keys.Quit):
 			m.quitting = true
