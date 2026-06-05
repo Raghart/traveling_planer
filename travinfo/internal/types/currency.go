@@ -33,6 +33,6 @@ const (
 	BolivianCurrency  CurrType = "BOB"
 	ParaguayCurrency  CurrType = "PYG"
 	ChileCurrency     CurrType = "CLP"
-	ArgentinaPeso     CurrType = "ARG"
+	ArgentinaPeso     CurrType = "ARS"
 	UruguayCurrency   CurrType = "UYU"
 )

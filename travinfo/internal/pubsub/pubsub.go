@@ -149,10 +149,17 @@ func DeliverLatestCurrency(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) 
 		return fmt.Errorf("key hasn't been loaded: %s", apiKey)
 	}
 
-	// it needs the country currency to work
+	currMap := utils.LoadCurrencyMap()
+	countryCurrency, isCountry := currMap[string(currencyData.From)]
+
+	if !isCountry {
+		return fmt.Errorf("Unknown country '%s'. It is not a valid america country",
+			currencyData.From)
+	}
+	fmt.Println(countryCurrency)
 	res, err := http.Get(
 		fmt.Sprintf(
-			"https://v6.exchangerate-api.com/v6/%s/latest/%s", apiKey, currencyData.From))
+			"https://v6.exchangerate-api.com/v6/%s/latest/%s", apiKey, countryCurrency))
 	if err != nil || res.StatusCode >= 400 {
 		return fmt.Errorf("unable to contact with the currency api: %w", err)
 	}
@@ -173,7 +180,12 @@ func DeliverLatestCurrency(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) 
 		return fmt.Errorf("unable to pack the dict: %w", err)
 	}
 
-	searchValue := dict[string(currencyData.To)]
+	toCurrency, isCurr := currMap[string(currencyData.To)]
+	if !isCurr {
+		return fmt.Errorf("the country %s is not valid", currencyData.To)
+	}
+
+	searchValue := dict[string(toCurrency)]
 	floatVal, isFloat := searchValue.(float64)
 
 	if !isFloat {
