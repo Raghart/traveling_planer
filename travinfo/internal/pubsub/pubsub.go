@@ -103,8 +103,7 @@ func DeliverCountryTemperature(d ampq.Delivery, ch *ampq.Channel, queue ampq.Que
 
 	res, err := http.Get(fmt.Sprintf("%s?%s", baseUrl, params.Encode()))
 	if err != nil || res.StatusCode >= 400 {
-		return fmt.Errorf("unable to get the %s temperature: %w",
-			countryTemp.Country, err)
+		return fmt.Errorf("unable to contact the weather api temperature: %w", err)
 	}
 
 	bodyData, err := io.ReadAll(res.Body)
@@ -150,12 +149,12 @@ func DeliverLatestCurrency(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) 
 		return fmt.Errorf("key hasn't been loaded: %s", apiKey)
 	}
 
-	// error while getting the res
+	// it needs the country currency to work
 	res, err := http.Get(
 		fmt.Sprintf(
 			"https://v6.exchangerate-api.com/v6/%s/latest/%s", apiKey, currencyData.From))
 	if err != nil || res.StatusCode >= 400 {
-		return fmt.Errorf("unable to contact with the weather api: %w", err)
+		return fmt.Errorf("unable to contact with the currency api: %w", err)
 	}
 
 	resBody, err := io.ReadAll(res.Body)

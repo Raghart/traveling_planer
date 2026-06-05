@@ -1,38 +1,38 @@
 package types
 
-type currType string
+type CurrType string
 
 type Currency struct {
-	From  currType
-	To    currType
+	From  CurrType
+	To    CurrType
 	Value float64
 }
 
 const (
-	CanadianDollars   currType = "CAD"
-	Dollars           currType = "USD"
-	MexicanPeso       currType = "MXN"
-	GuatemaQuetzal    currType = "GTQ"
-	BelizeDollars     currType = "BZD"
-	HondurasCurrency  currType = "HNL"
-	NicaraguaCurrency currType = "NIO"
-	CostaCurrency     currType = "CRC"
-	CubaCurrency      currType = "CUP"
-	JamaicanDollars   currType = "JMD"
-	DominicanCurrency currType = "DOP"
-	BahamasDollars    currType = "BSD"
-	BarbadosDollars   currType = "BBD"
-	TrinidadDollars   currType = "TTD"
-	AntiguaDollars    currType = "XCD"
-	ColombianPeso     currType = "COP"
-	GuyanaDollars     currType = "GYD"
-	SurinameDollars   currType = "SRD"
-	Euros             currType = "EUR"
-	PeruvianCurrency  currType = "PEN"
-	BrazilianCurrency currType = "BRL"
-	BolivianCurrency  currType = "BOB"
-	ParaguayCurrency  currType = "PYG"
-	ChileCurrency     currType = "CLP"
-	ArgentinaPeso     currType = "ARG"
-	UruguayCurrency   currType = "UYU"
+	CanadianDollars   CurrType = "CAD"
+	Dollars           CurrType = "USD"
+	MexicanPeso       CurrType = "MXN"
+	GuatemaQuetzal    CurrType = "GTQ"
+	BelizeDollars     CurrType = "BZD"
+	HondurasCurrency  CurrType = "HNL"
+	NicaraguaCurrency CurrType = "NIO"
+	CostaCurrency     CurrType = "CRC"
+	CubaCurrency      CurrType = "CUP"
+	JamaicanDollars   CurrType = "JMD"
+	DominicanCurrency CurrType = "DOP"
+	BahamasDollars    CurrType = "BSD"
+	BarbadosDollars   CurrType = "BBD"
+	TrinidadDollars   CurrType = "TTD"
+	AntiguaDollars    CurrType = "XCD"
+	ColombianPeso     CurrType = "COP"
+	GuyanaDollars     CurrType = "GYD"
+	SurinameDollars   CurrType = "SRD"
+	Euros             CurrType = "EUR"
+	PeruvianCurrency  CurrType = "PEN"
+	BrazilianCurrency CurrType = "BRL"
+	BolivianCurrency  CurrType = "BOB"
+	ParaguayCurrency  CurrType = "PYG"
+	ChileCurrency     CurrType = "CLP"
+	ArgentinaPeso     CurrType = "ARG"
+	UruguayCurrency   CurrType = "UYU"
 )

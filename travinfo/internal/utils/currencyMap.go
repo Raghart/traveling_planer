@@ -1,0 +1,44 @@
+package utils
+
+import "github.com/Raghart/traveling_planer/travinfo/internal/types"
+
+func LoadCurrencyMap() map[string]types.CurrType {
+	return map[string]types.CurrType{
+		"Argentina":             types.ArgentinaPeso,
+		"Bolivia":               types.BolivianCurrency,
+		"Brazil":                types.BrazilianCurrency,
+		"Canada":                types.CanadianDollars,
+		"Chile":                 types.ChileCurrency,
+		"Colombia":              types.ColombianPeso,
+		"Costa Rica":            types.CostaCurrency,
+		"Cuba":                  types.CubaCurrency,
+		"Dominica":              types.DominicanCurrency,
+		"Dominican Republic":    types.DominicanCurrency,
+		"Ecuador":               types.Dollars,
+		"Grenada":               types.AntiguaDollars,
+		"French Guiana":         types.Euros,
+		"Guyana":                types.GuyanaDollars,
+		"Honduras":              types.HondurasCurrency,
+		"Saint Lucia":           types.AntiguaDollars,
+		"Mexico":                types.MexicanPeso,
+		"Nicaragua":             types.NicaraguaCurrency,
+		"Panama":                types.Dollars,
+		"Peru":                  types.PeruvianCurrency,
+		"Puerto Rico":           types.Dollars,
+		"Paraguay":              types.ParaguayCurrency,
+		"Suriname":              types.SurinameDollars,
+		"El Salvador":           types.Dollars,
+		"Trinidad and Tobago":   types.TrinidadDollars,
+		"United States":         types.Dollars,
+		"Uruguay":               types.UruguayCurrency,
+		"Venezuela":             types.Dollars,
+		"Guatemala":             types.GuatemaQuetzal,
+		"Belize":                types.BelizeDollars,
+		"Jamaica":               types.JamaicanDollars,
+		"Haiti":                 types.Dollars,
+		"Bahamas":               types.BahamasDollars,
+		"Barbados":              types.BarbadosDollars,
+		"Saint Kitts and Nevis": types.AntiguaDollars,
+		"Antigua and Barbuda":   types.AntiguaDollars,
+	}
+}
