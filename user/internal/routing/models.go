@@ -1,9 +1,12 @@
 package routing
 
 type Currency struct {
-	From  string
-	To    string
-	Value float32
+	From         string
+	FromCurrency string
+	To           string
+	ToCurrency   string
+	ExchangeRate float32
+	InverseRate  float32
 }
 
 type CountryTemp struct {

@@ -156,7 +156,7 @@ func DeliverLatestCurrency(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) 
 		return fmt.Errorf("Unknown country '%s'. It is not a valid america country",
 			currencyData.From)
 	}
-	fmt.Println(countryCurrency)
+
 	res, err := http.Get(
 		fmt.Sprintf(
 			"https://v6.exchangerate-api.com/v6/%s/latest/%s", apiKey, countryCurrency))
