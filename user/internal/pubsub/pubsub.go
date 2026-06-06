@@ -191,6 +191,7 @@ func GetHolidays(country string) (festivities *routing.CountryFestivities) {
 				err := json.Unmarshal(d.Body, countryFestivities)
 				utils.FailOnError(err, "unable to unmarshal festivity body")
 				festivities = countryFestivities
+				break
 			}
 		}
 	}()

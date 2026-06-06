@@ -11,7 +11,7 @@ import (
 func FormatHolidays(countryData *routing.CountryFestivities) string {
 	var msgBuilder strings.Builder
 
-	fmt.Fprintf(&msgBuilder, "# %s Holidays", countryData.Country)
+	fmt.Fprintf(&msgBuilder, "# %s Holidays \n", countryData.Country)
 
 	for _, festivity := range countryData.Festivities {
 		fmt.Fprintf(&msgBuilder, "* %s - %s\n", festivity.Date, festivity.Name)
