@@ -127,29 +127,6 @@ func (m Model) View() tea.View {
 	return v
 }
 
-func InitialModel() Model {
-	items := GenerateCountryItems()
-	l := list.New(items, list.NewDefaultDelegate(), 0, 0)
-	l.Title = "Where are you from?"
-	l.SetShowStatusBar(false)
-	l.SetShowHelp(false)
-
-	vp, renderer, err := CreateViewportRenderer()
-	if err != nil {
-		log.Print(err)
-	}
-
-	m := Model{
-		list:     l,
-		keys:     createKeyMap(),
-		help:     help.New(),
-		viewport: vp,
-		renderer: renderer,
-	}
-	m.UpdateStyles(true)
-	return m
-}
-
 func (m Model) GenerateProjectActions() []list.Item {
 	return []list.Item{
 		Item{
@@ -182,4 +159,27 @@ func (m Model) GenerateProjectActions() []list.Item {
 			},
 		},
 	}
+}
+
+func InitialModel() Model {
+	items := GenerateCountryItems()
+	l := list.New(items, list.NewDefaultDelegate(), 0, 0)
+	l.Title = "Where are you from?"
+	l.SetShowStatusBar(false)
+	l.SetShowHelp(false)
+
+	vp, renderer, err := CreateViewportRenderer()
+	if err != nil {
+		log.Print(err)
+	}
+
+	m := Model{
+		list:     l,
+		keys:     createKeyMap(),
+		help:     help.New(),
+		viewport: vp,
+		renderer: renderer,
+	}
+	m.UpdateStyles(true)
+	return m
 }
