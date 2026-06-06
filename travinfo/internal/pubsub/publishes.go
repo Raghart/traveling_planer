@@ -142,9 +142,9 @@ func PublishLatestCurrency(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) 
 	return d.Ack(false)
 }
 
-func GetCountryHolidays(countryData *types.CountryInfo) error {
+func PublishCountryHolidays(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) error {
 	baseUrl := "https://date.nager.at/api/v3/PublicHolidays/"
-	countryFestivities := &types.CountryFestivity{}
+	countryJsonFestivities := &types.CountryFestivity{}
 
 	res, err := http.Get(fmt.Sprintf("%s/%d/%s", baseUrl, time.Now().Year(), countryData.Code))
 	if err != nil || res.StatusCode > 400 {
@@ -158,13 +158,15 @@ func GetCountryHolidays(countryData *types.CountryInfo) error {
 		return fmt.Errorf("unable to read the body: %w", err)
 	}
 
-	err = json.Unmarshal(bodyData, countryFestivities)
+	err = json.Unmarshal(bodyData, countryJsonFestivities)
 	if err != nil {
 		return fmt.Errorf("unable to unmarshal the data: %w", err)
 	}
 
-	for _, data := range *countryFestivities {
-		countryData.Festivities = append(countryData.Festivities, types.FestivityData{
+	countryFestivities := []types.FestivityData{}
+
+	for _, data := range *countryJsonFestivities {
+		countryFestivities = append(countryFestivities, types.FestivityData{
 			Date:        data.Date,
 			LocalName:   data.LocalName,
 			Name:        data.Name,
