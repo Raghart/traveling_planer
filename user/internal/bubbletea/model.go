@@ -54,6 +54,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.list.SetSize(msg.Width, msg.Height-5)
+		m.viewport.SetWidth(msg.Width)
+		m.viewport.SetHeight(msg.Height - 5)
 		return m, nil
 
 	case tea.KeyPressMsg:

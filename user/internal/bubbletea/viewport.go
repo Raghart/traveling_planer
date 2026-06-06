@@ -11,8 +11,6 @@ import (
 
 func CreateViewportRenderer() (viewport.Model, *glamour.TermRenderer, error) {
 	vp := viewport.New()
-	vp.SetWidth(78)
-	vp.SetHeight(20)
 	vp.Style = lipgloss.NewStyle().
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderBackground(lipgloss.Color("62")).
