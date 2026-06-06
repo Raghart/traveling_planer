@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/Raghart/traveling_planer/travinfo/internal/types"
 	"github.com/Raghart/traveling_planer/travinfo/internal/utils"
@@ -139,4 +140,39 @@ func PublishLatestCurrency(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) 
 	}
 
 	return d.Ack(false)
+}
+
+func GetCountryHolidays(countryData *types.CountryInfo) error {
+	baseUrl := "https://date.nager.at/api/v3/PublicHolidays/"
+	countryFestivities := &types.CountryFestivity{}
+
+	res, err := http.Get(fmt.Sprintf("%s/%d/%s", baseUrl, time.Now().Year(), countryData.Code))
+	if err != nil || res.StatusCode > 400 {
+		return fmt.Errorf("unable to get the country festivities: %w", err)
+	}
+
+	defer res.Body.Close()
+
+	bodyData, err := io.ReadAll(res.Body)
+	if err != nil {
+		return fmt.Errorf("unable to read the body: %w", err)
+	}
+
+	err = json.Unmarshal(bodyData, countryFestivities)
+	if err != nil {
+		return fmt.Errorf("unable to unmarshal the data: %w", err)
+	}
+
+	for _, data := range *countryFestivities {
+		countryData.Festivities = append(countryData.Festivities, types.FestivityData{
+			Date:        data.Date,
+			LocalName:   data.LocalName,
+			Name:        data.Name,
+			CountryCode: data.CountryCode,
+			Fixed:       data.Fixed,
+			Global:      data.Global,
+			Types:       data.Types,
+		})
+	}
+	return nil
 }
