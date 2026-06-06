@@ -20,12 +20,12 @@ func main() {
 		for d := range msgs {
 			switch d.Type {
 			case "currency":
-				err := pubsub.DeliverLatestCurrency(d, ch, queue)
+				err := pubsub.PublishLatestCurrency(d, ch, queue)
 				if err != nil {
 					log.Print(err)
 				}
 			case "temperature":
-				err := pubsub.DeliverCountryTemperature(d, ch, queue)
+				err := pubsub.PublishCountryTemperature(d, ch, queue)
 				if err != nil {
 					log.Print(err)
 				}

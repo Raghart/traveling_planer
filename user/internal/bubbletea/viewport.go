@@ -5,7 +5,7 @@ import (
 	"charm.land/lipgloss/v2"
 )
 
-func CreateViewportRenderer() viewport.Model {
+func CreateViewport() viewport.Model {
 	vp := viewport.New()
 	vp.Style = lipgloss.NewStyle().
 		BorderStyle(lipgloss.RoundedBorder()).

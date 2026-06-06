@@ -184,7 +184,7 @@ func InitialModel() Model {
 	l.SetShowStatusBar(false)
 	l.SetShowHelp(false)
 
-	vp := CreateViewportRenderer()
+	vp := CreateViewport()
 
 	m := Model{
 		list:     l,
