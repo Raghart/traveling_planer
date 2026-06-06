@@ -82,9 +82,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			if ok && m.country.From != "" && m.country.To != "" {
-				formattedStr, _ := m.renderer.Render("testing!")
-				m.viewport.SetContent(formattedStr)
-				m.showResults = true
+				i.task()
 			}
 
 			return m, nil
@@ -132,8 +130,8 @@ func (m Model) GenerateProjectActions() []list.Item {
 		Item{
 			title: "Temperature",
 			desc:  fmt.Sprintf("Want to know the weekly temperature of %s?", m.country.To),
-			task: func() {
-				formattedMsg := utils.PresentWeather(pubsub.GetTemperature(m.country.To))
+			task: func() string {
+				return utils.PresentWeather(pubsub.GetTemperature(m.country.To))
 			},
 		},
 		Item{
@@ -142,20 +140,24 @@ func (m Model) GenerateProjectActions() []list.Item {
 				"Want to know the currency difference from %s to %s?",
 				m.country.From,
 				m.country.To),
-			task: func() {
+			task: func() string {
 				currencyInfo := pubsub.GetCurrency(m.country.From, m.country.To)
+				formattedCurrencyMsg := ""
 
-				fmt.Printf("\nExchange rates from %s to %s\n", currencyInfo.From, currencyInfo.To)
+				formattedCurrencyMsg += fmt.Sprintf("\nExchange rates from %s to %s\n",
+					currencyInfo.From, currencyInfo.To)
 
-				fmt.Printf("1 %s = %f %s\n",
+				formattedCurrencyMsg += fmt.Sprintf("1 %s = %f %s\n",
 					currencyInfo.FromCurrency,
 					currencyInfo.ExchangeRate,
 					currencyInfo.ToCurrency)
 
-				fmt.Printf("1 %s = %f %s\n",
+				formattedCurrencyMsg += fmt.Sprintf("1 %s = %f %s\n",
 					currencyInfo.ToCurrency,
 					currencyInfo.InverseRate,
 					currencyInfo.FromCurrency)
+
+				return formattedCurrencyMsg
 			},
 		},
 	}

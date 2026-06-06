@@ -9,7 +9,7 @@ import (
 
 type Item struct {
 	title, desc string
-	task        func()
+	task        func() string
 }
 
 func (i Item) Title() string       { return i.title }
