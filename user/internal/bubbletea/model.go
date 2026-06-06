@@ -11,21 +11,20 @@ import (
 	"charm.land/bubbles/v2/viewport"
 	tea "charm.land/bubbletea/v2"
 	"charm.land/glamour/v2"
-	"charm.land/glamour/v2/styles"
-	"charm.land/lipgloss/v2"
 	"github.com/Raghart/traveling_planer/internal/pubsub"
 	"github.com/Raghart/traveling_planer/internal/utils"
 )
 
 type Model struct {
-	keys     KeyMap
-	list     list.Model
-	styles   Styles
-	quitting bool
-	help     help.Model
-	country  CountryManager
-	viewport viewport.Model
-	renderer *glamour.TermRenderer
+	keys        KeyMap
+	list        list.Model
+	styles      Styles
+	quitting    bool
+	help        help.Model
+	country     CountryManager
+	viewport    viewport.Model
+	renderer    *glamour.TermRenderer
+	showResults bool
 }
 
 type CountryManager struct {
@@ -83,7 +82,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			if ok && m.country.From != "" && m.country.To != "" {
-				i.task()
+				formattedStr, _ := m.renderer.Render("testing!")
+				m.viewport.SetContent(formattedStr)
+				m.showResults = true
 			}
 
 			return m, nil
@@ -102,6 +103,10 @@ func (m Model) View() tea.View {
 
 	if m.quitting {
 		return tea.NewView(m.styles.QuitText.Render("Hope to see you again!"))
+	}
+
+	if m.showResults {
+		return tea.NewView(m.viewport.View())
 	}
 
 	footer := m.styles.Help.Render(
@@ -129,32 +134,10 @@ func InitialModel() Model {
 	l.SetShowStatusBar(false)
 	l.SetShowHelp(false)
 
-	vp := viewport.New()
-	vp.SetWidth(78)
-	vp.SetHeight(20)
-	vp.Style = lipgloss.NewStyle().
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderBackground(lipgloss.Color("62")).
-		PaddingRight(2)
-
-	glamourRenderWidth := 78 - vp.Style.GetHorizontalFrameSize() - 3
-	styles := styles.DarkStyleConfig
-
-	renderer, err := glamour.NewTermRenderer(
-		glamour.WithStyles(styles),
-		glamour.WithWordWrap(glamourRenderWidth),
-	)
-
+	vp, renderer, err := CreateViewportRenderer()
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
-
-	str, err := renderer.Render("testing!")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	vp.SetContent(str)
 
 	m := Model{
 		list:     l,

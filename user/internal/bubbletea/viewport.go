@@ -30,11 +30,5 @@ func CreateViewportRenderer() (viewport.Model, *glamour.TermRenderer, error) {
 		return viewport.Model{}, nil, fmt.Errorf("unable to create the renderer: %w", err)
 	}
 
-	str, err := renderer.Render("testing!")
-	if err != nil {
-		return viewport.Model{}, nil, fmt.Errorf("unable to render the text: %w", err)
-	}
-
-	vp.SetContent(str)
 	return vp, renderer, nil
 }
