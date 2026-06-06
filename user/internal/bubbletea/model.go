@@ -82,7 +82,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			if ok && m.country.From != "" && m.country.To != "" {
-				i.task()
+				formattedMsg := i.task()
+				str, _ := m.renderer.Render(formattedMsg)
+				m.viewport.SetContent(str)
+				m.showResults = true
 			}
 
 			return m, nil
@@ -144,15 +147,15 @@ func (m Model) GenerateProjectActions() []list.Item {
 				currencyInfo := pubsub.GetCurrency(m.country.From, m.country.To)
 				formattedCurrencyMsg := ""
 
-				formattedCurrencyMsg += fmt.Sprintf("\nExchange rates from %s to %s\n",
+				formattedCurrencyMsg += fmt.Sprintf("# Exchange rates from %s to %s\n\n",
 					currencyInfo.From, currencyInfo.To)
 
-				formattedCurrencyMsg += fmt.Sprintf("1 %s = %f %s\n",
+				formattedCurrencyMsg += fmt.Sprintf("* **1 %s** = %f %s\n",
 					currencyInfo.FromCurrency,
 					currencyInfo.ExchangeRate,
 					currencyInfo.ToCurrency)
 
-				formattedCurrencyMsg += fmt.Sprintf("1 %s = %f %s\n",
+				formattedCurrencyMsg += fmt.Sprintf("* **1 %s** = %f %s\n",
 					currencyInfo.ToCurrency,
 					currencyInfo.InverseRate,
 					currencyInfo.FromCurrency)
