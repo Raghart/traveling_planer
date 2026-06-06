@@ -11,10 +11,10 @@ import (
 func FormatHolidays(countryData *routing.CountryFestivities) string {
 	var msgBuilder strings.Builder
 
-	fmt.Fprintf(&msgBuilder, "# %s Holidays \n", countryData.Country)
+	fmt.Fprintf(&msgBuilder, "# %s's Holidays \n", countryData.Country)
 
 	for _, festivity := range countryData.Festivities {
-		fmt.Fprintf(&msgBuilder, "* %s - %s\n", festivity.Date, festivity.Name)
+		fmt.Fprintf(&msgBuilder, "* **%s** - %s\n", festivity.Date, festivity.Name)
 	}
 	return msgBuilder.String()
 }
@@ -35,25 +35,22 @@ func FormatCurrency(currencyInfo *routing.Currency) string {
 	return formattedCurrencyMsg
 }
 
-func PresentWeather(dailyTemps []routing.DailyTemp) string {
-	fullWeatherMsg := fmt.Sprintf("# %d-day Weather Forecast \n\n", len(dailyTemps))
+func FormatWeather(dailyTemps []routing.DailyTemp) string {
+	var msgBuilder strings.Builder
+	fmt.Fprintf(&msgBuilder, "# %d-day Weather Forecast \n\n", len(dailyTemps))
 	today := time.Now()
-	for i := range len(dailyTemps) {
-		//Hoy (Vie): ☀️ 29°C / 24°C - ¡Día perfecto para la playa!
+	for i, tempData := range dailyTemps {
 		timePassed := 24 * i
 		dayTime := time.Duration(timePassed) * time.Hour
 		day := today.Add(dayTime)
 
 		if i == 0 {
-			msgFormatted := formatWeatherMessage("Today", dailyTemps[i])
-			fullWeatherMsg += msgFormatted
+			fmt.Fprint(&msgBuilder, formatWeatherMessage("Today", tempData))
 			continue
 		}
-
-		msgFormatted := formatWeatherMessage(day.Weekday().String()[:3], dailyTemps[i])
-		fullWeatherMsg += msgFormatted
+		fmt.Fprint(&msgBuilder, formatWeatherMessage(day.Weekday().String()[:3], tempData))
 	}
-	return fullWeatherMsg
+	return msgBuilder.String()
 }
 
 func formatWeatherMessage(day string, dailyTemp routing.DailyTemp) string {

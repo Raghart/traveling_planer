@@ -146,7 +146,7 @@ func (m Model) GenerateProjectActions() []list.Item {
 			title: "Temperature",
 			desc:  fmt.Sprintf("Want to know the weekly temperature of %s?", m.country.To),
 			task: func() string {
-				return utils.PresentWeather(pubsub.GetTemperature(m.country.To))
+				return utils.FormatWeather(pubsub.GetTemperature(m.country.To))
 			},
 		},
 		Item{
