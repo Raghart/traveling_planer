@@ -56,12 +56,12 @@ func formatWeatherMessage(day string, dailyTemp routing.DailyTemp) string {
 func getWeatherEmoji(weatherCode int) string {
 	switch {
 	case weatherCode == 0:
-		return "☀️"
+		return "☀"
 	case weatherCode <= 3:
-		return "⛅"
+		return "🌤"
 	case weatherCode >= 61 && weatherCode <= 65:
-		return "🌧️"
+		return "☔"
 	default:
-		return "☁️"
+		return "☁"
 	}
 }
