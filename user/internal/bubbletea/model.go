@@ -2,6 +2,7 @@ package bubbletea
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"charm.land/bubbles/v2/help"
@@ -9,6 +10,9 @@ import (
 	"charm.land/bubbles/v2/list"
 	"charm.land/bubbles/v2/viewport"
 	tea "charm.land/bubbletea/v2"
+	"charm.land/glamour/v2"
+	"charm.land/glamour/v2/styles"
+	"charm.land/lipgloss/v2"
 	"github.com/Raghart/traveling_planer/internal/pubsub"
 	"github.com/Raghart/traveling_planer/internal/utils"
 )
@@ -21,6 +25,7 @@ type Model struct {
 	help     help.Model
 	country  CountryManager
 	viewport viewport.Model
+	renderer *glamour.TermRenderer
 }
 
 type CountryManager struct {
@@ -124,7 +129,40 @@ func InitialModel() Model {
 	l.SetShowStatusBar(false)
 	l.SetShowHelp(false)
 
-	m := Model{list: l, keys: createKeyMap(), help: help.New()}
+	vp := viewport.New()
+	vp.SetWidth(78)
+	vp.SetHeight(20)
+	vp.Style = lipgloss.NewStyle().
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderBackground(lipgloss.Color("62")).
+		PaddingRight(2)
+
+	glamourRenderWidth := 78 - vp.Style.GetHorizontalFrameSize() - 3
+	styles := styles.DarkStyleConfig
+
+	renderer, err := glamour.NewTermRenderer(
+		glamour.WithStyles(styles),
+		glamour.WithWordWrap(glamourRenderWidth),
+	)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	str, err := renderer.Render("testing!")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	vp.SetContent(str)
+
+	m := Model{
+		list:     l,
+		keys:     createKeyMap(),
+		help:     help.New(),
+		viewport: vp,
+		renderer: renderer,
+	}
 	m.UpdateStyles(true)
 	return m
 }
