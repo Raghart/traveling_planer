@@ -157,23 +157,7 @@ func (m Model) GenerateProjectActions() []list.Item {
 				m.country.From,
 				m.country.To),
 			task: func() string {
-				currencyInfo := pubsub.GetCurrency(m.country.From, m.country.To)
-				formattedCurrencyMsg := ""
-
-				formattedCurrencyMsg += fmt.Sprintf("# Exchange rates from %s to %s\n\n",
-					currencyInfo.From, currencyInfo.To)
-
-				formattedCurrencyMsg += fmt.Sprintf("* **1 %s** = %f %s\n",
-					currencyInfo.FromCurrency,
-					currencyInfo.ExchangeRate,
-					currencyInfo.ToCurrency)
-
-				formattedCurrencyMsg += fmt.Sprintf("* **1 %s** = %f %s\n",
-					currencyInfo.ToCurrency,
-					currencyInfo.InverseRate,
-					currencyInfo.FromCurrency)
-
-				return formattedCurrencyMsg
+				return utils.FormatCurrency(pubsub.GetCurrency(m.country.From, m.country.To))
 			},
 		},
 	}

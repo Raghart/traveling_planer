@@ -7,6 +7,24 @@ import (
 	"github.com/Raghart/traveling_planer/internal/routing"
 )
 
+func FormatCurrency(currencyInfo *routing.Currency) string {
+	formattedCurrencyMsg := ""
+
+	formattedCurrencyMsg += fmt.Sprintf("# Exchange rates from %s to %s\n\n",
+		currencyInfo.From, currencyInfo.To)
+
+	formattedCurrencyMsg += fmt.Sprintf("* **1 %s** = %f %s\n",
+		currencyInfo.FromCurrency,
+		currencyInfo.ExchangeRate,
+		currencyInfo.ToCurrency)
+
+	formattedCurrencyMsg += fmt.Sprintf("* **1 %s** = %f %s\n",
+		currencyInfo.ToCurrency,
+		currencyInfo.InverseRate,
+		currencyInfo.FromCurrency)
+	return formattedCurrencyMsg
+}
+
 func PresentWeather(dailyTemps []routing.DailyTemp) string {
 	fullWeatherMsg := fmt.Sprintf("# %d-day Weather Forecast \n\n", len(dailyTemps))
 	today := time.Now()
