@@ -20,19 +20,17 @@ func FormatHolidays(countryData *routing.CountryFestivities) string {
 }
 
 func FormatCurrency(currencyInfo *routing.Currency) string {
-	formattedCurrencyMsg := fmt.Sprintf("# Exchange rates from %s to %s\n\n",
+	var msgBuilder strings.Builder
+	fmt.Fprintf(&msgBuilder, "# Exchange rates from %s to %s\n\n",
 		currencyInfo.From, currencyInfo.To)
 
-	formattedCurrencyMsg += fmt.Sprintf("* **1 %s** = %f %s\n",
-		currencyInfo.FromCurrency,
-		currencyInfo.ExchangeRate,
-		currencyInfo.ToCurrency)
+	fmt.Fprintf(&msgBuilder, "* **1 %s** = %f %s\n", currencyInfo.FromCurrency,
+		currencyInfo.ExchangeRate, currencyInfo.ToCurrency)
 
-	formattedCurrencyMsg += fmt.Sprintf("* **1 %s** = %f %s\n",
-		currencyInfo.ToCurrency,
-		currencyInfo.InverseRate,
-		currencyInfo.FromCurrency)
-	return formattedCurrencyMsg
+	fmt.Fprintf(&msgBuilder, "* **1 %s** = %f %s\n", currencyInfo.ToCurrency,
+		currencyInfo.InverseRate, currencyInfo.FromCurrency)
+
+	return msgBuilder.String()
 }
 
 func FormatWeather(dailyTemps []routing.DailyTemp) string {
