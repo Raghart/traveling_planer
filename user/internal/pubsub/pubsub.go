@@ -171,6 +171,32 @@ func GetTemperature(country string) (tempSlice []routing.DailyTemp) {
 	return
 }
 
+func GetHolidays(country string) (festivities *routing.CountryFestivities) {
+	conn, ch, queue, msgs, err := ConnectBunny()
+	utils.FailOnError(err, "failed to connect with rabbitMQ")
+
+	defer conn.Close()
+	defer ch.Close()
+
+	corrID := uuid.NewString()
+	err = PublishJSON(ch, "", "travinfo-queue", "holidays", corrID, queue, routing.CountryFestivities{
+		Country: country,
+	})
+	utils.FailOnError(err, "unable to publish the json")
+
+	func() {
+		for d := range msgs {
+			if d.CorrelationId == corrID {
+				countryFestivities := &routing.CountryFestivities{}
+				err := json.Unmarshal(d.Body, countryFestivities)
+				utils.FailOnError(err, "unable to unmarshal festivity body")
+				festivities = countryFestivities
+			}
+		}
+	}()
+	return
+}
+
 type SimpleQueueType int
 
 const (

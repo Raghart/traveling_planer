@@ -159,6 +159,11 @@ func (m Model) GenerateProjectActions() []list.Item {
 				return utils.FormatCurrency(pubsub.GetCurrency(m.country.From, m.country.To))
 			},
 		},
+		Item{
+			title: "Holidays",
+			desc: fmt.Sprintf(
+				"Want to know the holidays of %s to plan your adventure?", m.country.To),
+		},
 	}
 }
 
