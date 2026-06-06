@@ -98,6 +98,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			return m, nil
 		case key.Matches(msg, m.keys.Quit):
+			if m.showResults {
+				m.showResults = false
+				return m, nil
+			}
+
 			m.quitting = true
 			return m, tea.Quit
 		}
