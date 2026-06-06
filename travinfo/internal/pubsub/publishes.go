@@ -150,10 +150,13 @@ func PublishCountryHolidays(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue)
 		return fmt.Errorf("unable to unmarshal the user body: %w", err)
 	}
 
+	codesMap := utils.LoadCountryCodesMap()
+	countryCode := codesMap[countryFestivities.Country]
+
 	baseUrl := "https://date.nager.at/api/v3/PublicHolidays/"
 	countryJsonFestivities := &types.CountryJsonFestivities{}
 
-	res, err := http.Get(fmt.Sprintf("%s/%d/%s", baseUrl, time.Now().Year(), countryData.Code))
+	res, err := http.Get(fmt.Sprintf("%s/%d/%s", baseUrl, time.Now().Year(), countryCode))
 	if err != nil || res.StatusCode > 400 {
 		return fmt.Errorf("unable to get the country festivities: %w", err)
 	}
@@ -181,5 +184,11 @@ func PublishCountryHolidays(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue)
 			Types:       data.Types,
 		})
 	}
-	return nil
+
+	err = PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "holidays", queue, countryFestivities)
+	if err != nil {
+		return fmt.Errorf("error while trying to publish the message: %w", err)
+	}
+
+	return d.Ack(false)
 }
