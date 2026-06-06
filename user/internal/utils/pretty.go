@@ -7,7 +7,8 @@ import (
 	"github.com/Raghart/traveling_planer/internal/routing"
 )
 
-func PresentWeather(dailyTemps []routing.DailyTemp) {
+func PresentWeather(dailyTemps []routing.DailyTemp) string {
+	fullWeatherMsg := ""
 	today := time.Now()
 	for i := range len(dailyTemps) {
 		//Hoy (Vie): ☀️ 29°C / 24°C - ¡Día perfecto para la playa!
@@ -17,13 +18,14 @@ func PresentWeather(dailyTemps []routing.DailyTemp) {
 
 		if i == 0 {
 			msgFormatted := formatWeatherMessage("Today", dailyTemps[i])
-			fmt.Println(msgFormatted)
+			fullWeatherMsg += msgFormatted
 			continue
 		}
 
 		msgFormatted := formatWeatherMessage(day.Weekday().String()[:3], dailyTemps[i])
-		fmt.Println(msgFormatted)
+		fullWeatherMsg += msgFormatted
 	}
+	return fullWeatherMsg
 }
 
 func formatWeatherMessage(day string, dailyTemp routing.DailyTemp) string {
@@ -47,7 +49,7 @@ func formatWeatherMessage(day string, dailyTemp routing.DailyTemp) string {
 			dailyTemp.AparentMin,
 		)
 	}
-
+	msg += "\n"
 	return msg
 }
 
