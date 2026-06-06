@@ -11,6 +11,7 @@ import (
 	"charm.land/bubbles/v2/viewport"
 	tea "charm.land/bubbletea/v2"
 	"charm.land/glamour/v2"
+	"charm.land/glamour/v2/styles"
 	"github.com/Raghart/traveling_planer/internal/pubsub"
 	"github.com/Raghart/traveling_planer/internal/utils"
 )
@@ -166,6 +167,21 @@ func (m Model) GenerateProjectActions() []list.Item {
 			},
 		},
 	}
+}
+
+func (m Model) updateRenderer(terminalWidth int) (*glamour.TermRenderer, error) {
+	glamourRenderWidth := terminalWidth - m.viewport.Style.GetHorizontalFrameSize() - 3
+	styles := styles.DarkStyleConfig
+
+	renderer, err := glamour.NewTermRenderer(
+		glamour.WithStyles(styles),
+		glamour.WithWordWrap(glamourRenderWidth),
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("unable to create the renderer: %w", err)
+	}
+	return renderer, nil
 }
 
 func InitialModel() Model {
