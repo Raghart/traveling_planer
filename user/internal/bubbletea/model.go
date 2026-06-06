@@ -57,6 +57,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.list.SetSize(msg.Width, msg.Height-5)
 		m.viewport.SetWidth(msg.Width)
 		m.viewport.SetHeight(msg.Height - 5)
+		renderer, err := m.updateRenderer(msg.Width)
+		if err != nil {
+			log.Print(err)
+		}
+		m.renderer = renderer
 		return m, nil
 
 	case tea.KeyPressMsg:
@@ -191,17 +196,13 @@ func InitialModel() Model {
 	l.SetShowStatusBar(false)
 	l.SetShowHelp(false)
 
-	vp, renderer, err := CreateViewportRenderer()
-	if err != nil {
-		log.Print(err)
-	}
+	vp := CreateViewportRenderer()
 
 	m := Model{
 		list:     l,
 		keys:     createKeyMap(),
 		help:     help.New(),
 		viewport: vp,
-		renderer: renderer,
 	}
 	m.UpdateStyles(true)
 	return m
