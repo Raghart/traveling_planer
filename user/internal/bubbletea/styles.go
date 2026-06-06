@@ -42,3 +42,9 @@ func NewStyles(darkBG bool) Styles {
 	s.InactiveDot = lipgloss.NewStyle().Foreground(lipgloss.Color("#555555"))
 	return s
 }
+
+func helpViewport() string {
+	return lipgloss.NewStyle().
+		Foreground(lipgloss.Color("241")).
+		Render("\n ↑/↓: Navigate • q/esc: Quit\n")
+}

@@ -56,7 +56,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.list.SetSize(msg.Width, msg.Height-5)
 		m.viewport.SetWidth(msg.Width)
-		m.viewport.SetHeight(msg.Height - 5)
+		m.viewport.SetHeight(msg.Height - 8)
 		renderer, err := m.updateRenderer(msg.Width)
 		if err != nil {
 			log.Print(err)
@@ -114,13 +114,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() tea.View {
-
 	if m.quitting {
 		return tea.NewView(m.styles.QuitText.Render("Hope to see you again!"))
 	}
 
 	if m.showResults {
-		return tea.NewView(m.viewport.View())
+		return tea.NewView(m.viewport.View() + helpViewport())
 	}
 
 	footer := m.styles.Help.Render(
