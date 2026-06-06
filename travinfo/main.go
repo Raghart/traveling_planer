@@ -29,6 +29,11 @@ func main() {
 				if err != nil {
 					log.Print(err)
 				}
+			case "holidays":
+				err := pubsub.PublishCountryHolidays(d, ch, queue)
+				if err != nil {
+					log.Print(err)
+				}
 			default:
 				log.Println("Invalid request made!")
 				d.Ack(false)

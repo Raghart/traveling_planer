@@ -143,8 +143,15 @@ func PublishLatestCurrency(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) 
 }
 
 func PublishCountryHolidays(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) error {
+	countryFestivities := &types.CountryFestivities{}
+	err := json.Unmarshal(d.Body, countryFestivities)
+
+	if err != nil {
+		return fmt.Errorf("unable to unmarshal the user body: %w", err)
+	}
+
 	baseUrl := "https://date.nager.at/api/v3/PublicHolidays/"
-	countryJsonFestivities := &types.CountryFestivity{}
+	countryJsonFestivities := &types.CountryJsonFestivities{}
 
 	res, err := http.Get(fmt.Sprintf("%s/%d/%s", baseUrl, time.Now().Year(), countryData.Code))
 	if err != nil || res.StatusCode > 400 {
@@ -163,10 +170,8 @@ func PublishCountryHolidays(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue)
 		return fmt.Errorf("unable to unmarshal the data: %w", err)
 	}
 
-	countryFestivities := []types.FestivityData{}
-
 	for _, data := range *countryJsonFestivities {
-		countryFestivities = append(countryFestivities, types.FestivityData{
+		countryFestivities.Festivities = append(countryFestivities.Festivities, types.FestivityData{
 			Date:        data.Date,
 			LocalName:   data.LocalName,
 			Name:        data.Name,
