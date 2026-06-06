@@ -8,7 +8,7 @@ import (
 )
 
 func PresentWeather(dailyTemps []routing.DailyTemp) string {
-	fullWeatherMsg := ""
+	fullWeatherMsg := fmt.Sprintf("# %d-day Weather Forecast \n\n", len(dailyTemps))
 	today := time.Now()
 	for i := range len(dailyTemps) {
 		//Hoy (Vie): ☀️ 29°C / 24°C - ¡Día perfecto para la playa!
@@ -29,7 +29,7 @@ func PresentWeather(dailyTemps []routing.DailyTemp) string {
 }
 
 func formatWeatherMessage(day string, dailyTemp routing.DailyTemp) string {
-	msg := fmt.Sprintf("%s: %s  %.2f°C / %.2f°C",
+	msg := fmt.Sprintf("* **%s**: %s  **%.2f°C** / **%.2f°C**",
 		day,
 		getWeatherEmoji(dailyTemp.WeatherCode),
 		dailyTemp.Max,
@@ -38,14 +38,14 @@ func formatWeatherMessage(day string, dailyTemp routing.DailyTemp) string {
 
 	if dailyTemp.AparentMax > dailyTemp.Max+3 {
 		msg += fmt.Sprintf(
-			" - Prepare for a sunny day! 🔅 The sensation will be %.2f°C",
+			" - Prepare for a **sunny** day! 🔅 The sensation will be **%.2f°C**",
 			dailyTemp.AparentMax,
 		)
 	}
 
 	if dailyTemp.AparentMin < dailyTemp.AparentMin-3 {
 		msg += fmt.Sprintf(
-			" - Wrap up with a Coat to survive the freeze! ❄️ The sensation will be %.2f°C",
+			" - **Wrap up** with a coat to survive the freeze! ❄️ The sensation will be **%.2f°C**",
 			dailyTemp.AparentMin,
 		)
 	}
