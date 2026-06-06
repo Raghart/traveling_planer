@@ -2,15 +2,25 @@ package utils
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/Raghart/traveling_planer/internal/routing"
 )
 
-func FormatCurrency(currencyInfo *routing.Currency) string {
-	formattedCurrencyMsg := ""
+func FormatHolidays(countryData *routing.CountryFestivities) string {
+	var msgBuilder strings.Builder
 
-	formattedCurrencyMsg += fmt.Sprintf("# Exchange rates from %s to %s\n\n",
+	fmt.Fprintf(&msgBuilder, "# %s Holidays", countryData.Country)
+
+	for _, festivity := range countryData.Festivities {
+		fmt.Fprintf(&msgBuilder, "* %s - %s\n", festivity.Date, festivity.Name)
+	}
+	return msgBuilder.String()
+}
+
+func FormatCurrency(currencyInfo *routing.Currency) string {
+	formattedCurrencyMsg := fmt.Sprintf("# Exchange rates from %s to %s\n\n",
 		currencyInfo.From, currencyInfo.To)
 
 	formattedCurrencyMsg += fmt.Sprintf("* **1 %s** = %f %s\n",

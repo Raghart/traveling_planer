@@ -163,6 +163,9 @@ func (m Model) GenerateProjectActions() []list.Item {
 			title: "Holidays",
 			desc: fmt.Sprintf(
 				"Want to know the holidays of %s to plan your adventure?", m.country.To),
+			task: func() string {
+				return utils.FormatHolidays(pubsub.GetHolidays(m.country.To))
+			},
 		},
 	}
 }
