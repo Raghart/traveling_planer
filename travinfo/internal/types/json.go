@@ -25,6 +25,21 @@ type CountryJsonFestivities []struct {
 	Types       []string `json:"types"`
 }
 
+type WikipediaJson struct {
+	Batchcomplete string `json:"batchcomplete"`
+	Query         struct {
+		Normalized []struct {
+			From string `json:"from"`
+			To   string `json:"to"`
+		} `json:"normalized"`
+		Pages map[string]struct {
+			Pageid  int    `json:"pageid"`
+			Title   string `json:"title"`
+			Extract string `json:"extract"`
+		} `json:"pages"`
+	} `json:"query"`
+}
+
 type CurrencyJSON struct {
 	Result          string `json:"result"`
 	BaseCode        string `json:"base_code"`
