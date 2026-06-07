@@ -198,6 +198,33 @@ func GetHolidays(country string) (festivities *routing.CountryFestivities) {
 	return
 }
 
+func GetCountryDescription(country string) (description *routing.CountryDescription) {
+	conn, ch, queue, msgs, err := ConnectBunny()
+	utils.FailOnError(err, "unable to connect with RabbitMQ")
+
+	defer conn.Close()
+	defer ch.Close()
+
+	corrID := uuid.NewString()
+	err = PublishJSON(ch, "", "travinfo-queue", "description", corrID, queue, routing.CountryDescription{
+		Name: country,
+	})
+	utils.FailOnError(err, "unable to publish the data")
+
+	go func() {
+		for d := range msgs {
+			if d.CorrelationId == corrID {
+				countryData := &routing.CountryDescription{}
+				err := json.Unmarshal(d.Body, countryData)
+				utils.FailOnError(err, "unable to unmarshal the data")
+				description = countryData
+				break
+			}
+		}
+	}()
+	return
+}
+
 type SimpleQueueType int
 
 const (

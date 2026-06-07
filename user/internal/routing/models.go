@@ -9,6 +9,11 @@ type Currency struct {
 	InverseRate  float32
 }
 
+type CountryDescription struct {
+	Name        string
+	Description string
+}
+
 type CountryTemp struct {
 	Country           string
 	DailyTemperatures []DailyTemp
