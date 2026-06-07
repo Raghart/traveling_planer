@@ -192,3 +192,49 @@ func PublishCountryHolidays(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue)
 
 	return d.Ack(false)
 }
+
+func GetCountryDescription() error {
+	baseUrl := "https://en.wikipedia.org/w/api.php"
+	params := url.Values{}
+	params.Add("action", "query")
+	params.Add("prop", "extracts")
+	params.Add("exlimit", "1")
+	params.Add("explaintext", "1")
+	params.Add("exsectionformat", "plain")
+	params.Add("format", "json")
+	params.Add("titles", countryData.Name)
+
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s?%s", baseUrl, params.Encode()), nil)
+	if err != nil {
+		return fmt.Errorf("unable to create the http request: %w", err)
+	}
+
+	req.Header.Set("User-Agent", "CountryCLI/1.0 (github.com/Raghart/country-cli)")
+
+	client := &http.Client{}
+
+	res, err := client.Do(req)
+	if err != nil || res.StatusCode > 400 {
+		return fmt.Errorf("unable to obtain the description: %w", err)
+	}
+
+	defer res.Body.Close()
+
+	bodyData, err := io.ReadAll(res.Body)
+	if err != nil {
+		return fmt.Errorf("unable to read the data from the body: %w", err)
+	}
+
+	wikipediaJsonData := &types.WikipediaJson{}
+	err = json.Unmarshal(bodyData, wikipediaJsonData)
+	if err != nil {
+		return fmt.Errorf("unable to unmarshal the data: %w", err)
+	}
+
+	for _, page := range wikipediaJsonData.Query.Pages {
+		wikipediaInfSlice := strings.Split(page.Extract, "\n")
+		countryData.Description = wikipediaInfSlice[0]
+		break
+	}
+	return nil
+}
