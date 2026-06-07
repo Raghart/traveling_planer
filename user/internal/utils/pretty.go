@@ -52,28 +52,25 @@ func FormatWeather(dailyTemps []routing.DailyTemp) string {
 }
 
 func formatWeatherMessage(day string, dailyTemp routing.DailyTemp) string {
-	msg := fmt.Sprintf("* **%s**: %s  **%.2f°C** / **%.2f°C**",
-		day,
-		getWeatherEmoji(dailyTemp.WeatherCode),
-		dailyTemp.Max,
-		dailyTemp.Min,
-	)
+	var msgBuilder strings.Builder
+
+	fmt.Fprintf(&msgBuilder, "* **%s**: %s  **%.2f°C** / **%.2f°C**",
+		day, getWeatherEmoji(dailyTemp.WeatherCode), dailyTemp.Max, dailyTemp.Min)
 
 	if dailyTemp.AparentMax > dailyTemp.Max+3 {
-		msg += fmt.Sprintf(
+		fmt.Fprintf(&msgBuilder,
 			" - Prepare for a **sunny** day! 🔅 The sensation will be **%.2f°C**",
-			dailyTemp.AparentMax,
-		)
+			dailyTemp.AparentMax)
 	}
 
 	if dailyTemp.AparentMin < dailyTemp.AparentMin-3 {
-		msg += fmt.Sprintf(
+		fmt.Fprintf(&msgBuilder,
 			" - **Wrap up** with a coat to survive the freeze! ❄️ The sensation will be **%.2f°C**",
-			dailyTemp.AparentMin,
-		)
+			dailyTemp.AparentMin)
 	}
-	msg += "\n"
-	return msg
+
+	fmt.Fprint(&msgBuilder, "\n")
+	return msgBuilder.String()
 }
 
 func getWeatherEmoji(weatherCode int) string {
