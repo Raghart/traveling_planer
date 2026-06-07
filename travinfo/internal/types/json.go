@@ -5,6 +5,11 @@ type CountryFestivities struct {
 	Festivities []FestivityData
 }
 
+type CountryDescription struct {
+	Name        string
+	Description string
+}
+
 type FestivityData struct {
 	Date        string
 	LocalName   string

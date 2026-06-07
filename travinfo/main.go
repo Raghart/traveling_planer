@@ -34,6 +34,11 @@ func main() {
 				if err != nil {
 					log.Print(err)
 				}
+			case "description":
+				err := pubsub.PublishCountryDescription(d, ch, queue)
+				if err != nil {
+					log.Print(err)
+				}
 			default:
 				log.Println("Invalid request made!")
 				d.Ack(false)

@@ -193,7 +193,13 @@ func PublishCountryHolidays(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue)
 	return d.Ack(false)
 }
 
-func GetCountryDescription() error {
+func PublishCountryDescription(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) error {
+	countryData := &types.CountryDescription{}
+	err := json.Unmarshal(d.Body, countryData)
+	if err != nil {
+		return fmt.Errorf("unable to unpack body: %w", err)
+	}
+
 	baseUrl := "https://en.wikipedia.org/w/api.php"
 	params := url.Values{}
 	params.Add("action", "query")
@@ -236,5 +242,10 @@ func GetCountryDescription() error {
 		countryData.Description = wikipediaInfSlice[0]
 		break
 	}
-	return nil
+
+	err = PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "description", queue, countryData)
+	if err != nil {
+		return fmt.Errorf("unable to publish the json: %w", err)
+	}
+	return d.Ack(false)
 }
