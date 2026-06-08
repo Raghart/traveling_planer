@@ -239,7 +239,7 @@ func PublishCountryDescription(d ampq.Delivery, ch *ampq.Channel, queue ampq.Que
 
 	for _, page := range wikipediaJsonData.Query.Pages {
 		wikipediaInfSlice := strings.Split(page.Extract, "\n")
-		countryData.Description = wikipediaInfSlice[0]
+		countryData.Description = strings.Join(wikipediaInfSlice, "\n\n")
 		break
 	}
 
