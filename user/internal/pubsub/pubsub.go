@@ -211,17 +211,15 @@ func GetCountryDescription(country string) (description *routing.CountryDescript
 	})
 	utils.FailOnError(err, "unable to publish the data")
 
-	go func() {
-		for d := range msgs {
-			if d.CorrelationId == corrID {
-				countryData := &routing.CountryDescription{}
-				err := json.Unmarshal(d.Body, countryData)
-				utils.FailOnError(err, "unable to unmarshal the data")
-				description = countryData
-				break
-			}
+	for d := range msgs {
+		if d.CorrelationId == corrID {
+			countryData := &routing.CountryDescription{}
+			err := json.Unmarshal(d.Body, countryData)
+			utils.FailOnError(err, "unable to unmarshal the data")
+			description = countryData
+			break
 		}
-	}()
+	}
 	return
 }
 

@@ -171,6 +171,9 @@ func (m Model) GenerateProjectActions() []list.Item {
 			title: "Description",
 			desc: fmt.Sprintf(
 				"Want to read a short description about %s?", m.country.To),
+			task: func() string {
+				return utils.FormatDescription(pubsub.GetCountryDescription(m.country.To))
+			},
 		},
 	}
 }

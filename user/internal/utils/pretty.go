@@ -19,6 +19,13 @@ func FormatHolidays(countryData *routing.CountryFestivities) string {
 	return msgBuilder.String()
 }
 
+func FormatDescription(countryData *routing.CountryDescription) string {
+	var msgBuilder strings.Builder
+	fmt.Fprintf(&msgBuilder, "# %s's Description \n", countryData.Name)
+	fmt.Fprint(&msgBuilder, countryData.Description)
+	return msgBuilder.String()
+}
+
 func FormatCurrency(currencyInfo *routing.Currency) string {
 	var msgBuilder strings.Builder
 	fmt.Fprintf(&msgBuilder, "# Exchange rates from %s to %s\n\n",
