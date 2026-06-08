@@ -45,6 +45,29 @@ type WikipediaJson struct {
 	} `json:"query"`
 }
 
+type PhotoJsonURL struct {
+	Total      int `json:"total"`
+	TotalPages int `json:"total_pages"`
+	Results    []struct {
+		ID             string `json:"id"`
+		Slug           string `json:"slug"`
+		Width          int    `json:"width"`
+		Height         int    `json:"height"`
+		Color          string `json:"color"`
+		Description    string `json:"description"`
+		AltDescription string `json:"alt_description"`
+		Urls           struct {
+			Raw     string `json:"raw"`
+			Full    string `json:"full"`
+			Regular string `json:"regular"`
+			Small   string `json:"small"`
+			Thumb   string `json:"thumb"`
+			SmallS3 string `json:"small_s3"`
+		} `json:"urls"`
+		Likes int `json:"likes"`
+	} `json:"results"`
+}
+
 type CurrencyJSON struct {
 	Result          string `json:"result"`
 	BaseCode        string `json:"base_code"`

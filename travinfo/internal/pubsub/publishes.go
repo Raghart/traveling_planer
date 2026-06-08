@@ -3,6 +3,7 @@ package pubsub
 import (
 	"encoding/json"
 	"fmt"
+	"image"
 	"io"
 	"net/http"
 	"net/url"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/Raghart/traveling_planer/travinfo/internal/types"
 	"github.com/Raghart/traveling_planer/travinfo/internal/utils"
+	"github.com/qeesung/image2ascii/convert"
 	ampq "github.com/rabbitmq/amqp091-go"
 )
 
@@ -248,4 +250,49 @@ func PublishCountryDescription(d ampq.Delivery, ch *ampq.Channel, queue ampq.Que
 		return fmt.Errorf("unable to publish the json: %w", err)
 	}
 	return d.Ack(false)
+}
+
+func ConvertImageAscii(res *http.Response) (string, error) {
+	defer res.Body.Close()
+	imgData, _, err := image.Decode(res.Body)
+	if err != nil {
+		return "", fmt.Errorf("unable to decode the image data: %w", err)
+	}
+
+	convertOptions := convert.DefaultOptions
+	convertOptions.FixedWidth = utils.GetTerminalWidth()
+	convertOptions.FixedHeight = 40
+
+	converter := convert.NewImageConverter()
+	return converter.Image2ASCIIString(imgData, &convertOptions), nil
+}
+
+func GetPhotoUrl(countryName string) (string, error) {
+	baseUrl := "https://api.unsplash.com/search/photos"
+	params := url.Values{}
+	params.Add("query", countryName)
+	params.Add("order_by", "relevant")
+	params.Add("per_page", "3")
+	params.Add("client_id", os.Getenv("ACESSKEY"))
+
+	photoUrl := fmt.Sprintf("%s?%s", baseUrl, params.Encode())
+	res, err := http.Get(photoUrl)
+	if err != nil || res.StatusCode > 400 {
+		return "", fmt.Errorf("error trying to get the photos: %w", err)
+	}
+
+	defer res.Body.Close()
+
+	bodyData, err := io.ReadAll(res.Body)
+	if err != nil {
+		return "", fmt.Errorf("unable to read the body of the photos: %w", err)
+	}
+
+	jsonPhotos := &types.PhotoJsonURL{}
+	err = json.Unmarshal(bodyData, jsonPhotos)
+	if err != nil {
+		return "", fmt.Errorf("unable to unmarshal the json: %w", err)
+	}
+
+	return jsonPhotos.Results[0].Urls.Raw, nil
 }
