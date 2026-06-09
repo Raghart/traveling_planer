@@ -177,7 +177,7 @@ func (m Model) GenerateProjectActions() []list.Item {
 			},
 		},
 		Item{
-			title: fmt.Sprintf("%s's Image", m.country.To),
+			title: fmt.Sprintf("%s's Images", m.country.To),
 			desc:  fmt.Sprintf("Want to see an Ascii of %s?", m.country.To),
 			task: func() string {
 				return utils.FormatImage(pubsub.GetAsciiImage(m.country.To))

@@ -39,7 +39,7 @@ func main() {
 				if err != nil {
 					log.Print(err)
 				}
-			case "image":
+			case "images":
 				err := pubsub.PublishCountryImage(d, ch, queue)
 				if err != nil {
 					log.Print(err)

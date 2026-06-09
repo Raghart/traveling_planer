@@ -231,7 +231,7 @@ func GetAsciiImage(country string) (asciiImg *routing.CountryAsciiImg) {
 	defer ch.Close()
 
 	corrID := uuid.NewString()
-	err = PublishJSON(ch, "", "travinfo-queue", "image", corrID, queue, routing.CountryAsciiImg{
+	err = PublishJSON(ch, "", "travinfo-queue", "images", corrID, queue, routing.CountryAsciiImg{
 		Name: country,
 	})
 	utils.FailOnError(err, "unable to publish json")

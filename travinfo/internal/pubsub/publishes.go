@@ -264,7 +264,7 @@ func PublishCountryImage(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) er
 
 	countryAsciiImg.ImageUrls = photoUrls
 
-	err = PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "image", queue, countryAsciiImg)
+	err = PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "images", queue, countryAsciiImg)
 
 	if err != nil {
 		return fmt.Errorf("unable to publish the json")
