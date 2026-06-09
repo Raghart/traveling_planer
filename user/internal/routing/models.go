@@ -14,6 +14,11 @@ type CountryDescription struct {
 	Description string
 }
 
+type CountryAsciiImg struct {
+	Name  string
+	Image string
+}
+
 type CountryTemp struct {
 	Country           string
 	DailyTemperatures []DailyTemp

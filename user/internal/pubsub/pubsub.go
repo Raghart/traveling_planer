@@ -223,6 +223,31 @@ func GetCountryDescription(country string) (description *routing.CountryDescript
 	return
 }
 
+func GetAsciiImage(country string) (asciiImg *routing.CountryAsciiImg) {
+	conn, ch, queue, msgs, err := ConnectBunny()
+	utils.FailOnError(err, "unable to connect to RabbitMQ")
+
+	defer conn.Close()
+	defer ch.Close()
+
+	corrID := uuid.NewString()
+	err = PublishJSON(ch, "", "travinfo-queue", "image", corrID, queue, routing.CountryAsciiImg{
+		Name: country,
+	})
+	utils.FailOnError(err, "unable to publish json")
+
+	for d := range msgs {
+		if d.CorrelationId == corrID {
+			countryAsciiImg := &routing.CountryAsciiImg{}
+			err := json.Unmarshal(d.Body, countryAsciiImg)
+			utils.FailOnError(err, "unable to unmarshal the json")
+			asciiImg = countryAsciiImg
+			break
+		}
+	}
+	return
+}
+
 type SimpleQueueType int
 
 const (
