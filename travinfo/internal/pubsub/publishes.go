@@ -262,17 +262,7 @@ func PublishCountryImage(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) er
 		return err
 	}
 
-	res, err := http.Get(photoUrl)
-	if err != nil || res.StatusCode >= 400 {
-		return fmt.Errorf("error while trying to get the response: %w", err)
-	}
-
-	asciiImg, err := utils.ConvertImageAscii(res)
-	if err != nil {
-		return err
-	}
-
-	countryAsciiImg.Image = asciiImg
+	countryAsciiImg.ImageUrl = photoUrl
 
 	err = PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "image", queue, countryAsciiImg)
 

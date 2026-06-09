@@ -39,6 +39,11 @@ func main() {
 				if err != nil {
 					log.Print(err)
 				}
+			case "image":
+				err := pubsub.PublishCountryImage(d, ch, queue)
+				if err != nil {
+					log.Print(err)
+				}
 			default:
 				log.Println("Invalid request made!")
 				d.Ack(false)

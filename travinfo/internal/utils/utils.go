@@ -3,16 +3,17 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
-	"image"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 
+	_ "image/jpeg"
+	_ "image/png"
+
 	"github.com/Raghart/traveling_planer/travinfo/internal/types"
 	"github.com/charmbracelet/x/term"
-	"github.com/qeesung/image2ascii/convert"
 )
 
 func StructToDict(obj interface{}) (map[string]interface{}, error) {
@@ -37,21 +38,6 @@ func FailsOnError(err error, msg string) {
 	if err != nil {
 		log.Fatalf("%s: %v", msg, err)
 	}
-}
-
-func ConvertImageAscii(res *http.Response) (string, error) {
-	defer res.Body.Close()
-	imgData, _, err := image.Decode(res.Body)
-	if err != nil {
-		return "", fmt.Errorf("unable to decode the image data: %w", err)
-	}
-
-	convertOptions := convert.DefaultOptions
-	convertOptions.FixedWidth = GetTerminalWidth()
-	convertOptions.FixedHeight = 40
-
-	converter := convert.NewImageConverter()
-	return converter.Image2ASCIIString(imgData, &convertOptions), nil
 }
 
 func GetPhotoUrl(countryName string) (string, error) {
