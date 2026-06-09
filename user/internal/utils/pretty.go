@@ -10,8 +10,8 @@ import (
 
 func FormatImage(countryData *routing.CountryAsciiImg) string {
 	var msgBuilder strings.Builder
-	fmt.Fprintf(&msgBuilder, "%s's Image", countryData.Name)
-	fmt.Fprint(&msgBuilder, countryData.Image)
+	fmt.Fprintf(&msgBuilder, "# %s's Image\n", countryData.Name)
+	fmt.Fprintf(&msgBuilder, "![Click Here!](%s)", countryData.ImageUrl)
 	return msgBuilder.String()
 }
 
