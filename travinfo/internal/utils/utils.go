@@ -40,12 +40,11 @@ func FailsOnError(err error, msg string) {
 	}
 }
 
-func GetPhotoUrl(countryName string) ([]string, error) {
+func GetPhotoUrls(countryName string) ([]string, error) {
 	baseUrl := "https://api.unsplash.com/search/photos"
 	params := url.Values{}
 	params.Add("query", countryName)
 	params.Add("order_by", "relevant")
-	params.Add("per_page", "3")
 	params.Add("client_id", os.Getenv("ACESSKEY"))
 
 	photoUrl := fmt.Sprintf("%s?%s", baseUrl, params.Encode())
@@ -69,8 +68,8 @@ func GetPhotoUrl(countryName string) ([]string, error) {
 
 	photosUrls := []string{}
 
-	for i := range 3 {
-		photosUrls = append(photosUrls, jsonPhotos.Results[i].Urls.Raw)
+	for _, data := range jsonPhotos.Results {
+		photosUrls = append(photosUrls, data.Urls.Raw)
 	}
 
 	return photosUrls, nil

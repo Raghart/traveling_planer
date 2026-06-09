@@ -257,7 +257,7 @@ func PublishCountryImage(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) er
 		return fmt.Errorf("unable to unmarshal the body: %w", err)
 	}
 
-	photoUrls, err := utils.GetPhotoUrl(countryAsciiImg.Name)
+	photoUrls, err := utils.GetPhotoUrls(countryAsciiImg.Name)
 	if err != nil {
 		return err
 	}
