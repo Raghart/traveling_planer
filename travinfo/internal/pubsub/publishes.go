@@ -3,7 +3,6 @@ package pubsub
 import (
 	"encoding/json"
 	"fmt"
-	"image"
 	"io"
 	"net/http"
 	"net/url"
@@ -13,7 +12,6 @@ import (
 
 	"github.com/Raghart/traveling_planer/travinfo/internal/types"
 	"github.com/Raghart/traveling_planer/travinfo/internal/utils"
-	"github.com/qeesung/image2ascii/convert"
 	ampq "github.com/rabbitmq/amqp091-go"
 )
 
@@ -252,47 +250,35 @@ func PublishCountryDescription(d ampq.Delivery, ch *ampq.Channel, queue ampq.Que
 	return d.Ack(false)
 }
 
-func ConvertImageAscii(res *http.Response) (string, error) {
-	defer res.Body.Close()
-	imgData, _, err := image.Decode(res.Body)
+func PublishCountryImage(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) error {
+	countryAsciiImg := &types.CountryAsciiImg{}
+	err := json.Unmarshal(d.Body, countryAsciiImg)
 	if err != nil {
-		return "", fmt.Errorf("unable to decode the image data: %w", err)
+		return fmt.Errorf("unable to unmarshal the body: %w", err)
 	}
 
-	convertOptions := convert.DefaultOptions
-	convertOptions.FixedWidth = utils.GetTerminalWidth()
-	convertOptions.FixedHeight = 40
+	photoUrl, err := utils.GetPhotoUrl(countryAsciiImg.Name)
+	if err != nil {
+		return err
+	}
 
-	converter := convert.NewImageConverter()
-	return converter.Image2ASCIIString(imgData, &convertOptions), nil
-}
-
-func GetPhotoUrl(countryName string) (string, error) {
-	baseUrl := "https://api.unsplash.com/search/photos"
-	params := url.Values{}
-	params.Add("query", countryName)
-	params.Add("order_by", "relevant")
-	params.Add("per_page", "3")
-	params.Add("client_id", os.Getenv("ACESSKEY"))
-
-	photoUrl := fmt.Sprintf("%s?%s", baseUrl, params.Encode())
 	res, err := http.Get(photoUrl)
-	if err != nil || res.StatusCode > 400 {
-		return "", fmt.Errorf("error trying to get the photos: %w", err)
+	if err != nil || res.StatusCode >= 400 {
+		return fmt.Errorf("error while trying to get the response: %w", err)
 	}
 
-	defer res.Body.Close()
-
-	bodyData, err := io.ReadAll(res.Body)
+	asciiImg, err := utils.ConvertImageAscii(res)
 	if err != nil {
-		return "", fmt.Errorf("unable to read the body of the photos: %w", err)
+		return err
 	}
 
-	jsonPhotos := &types.PhotoJsonURL{}
-	err = json.Unmarshal(bodyData, jsonPhotos)
+	countryAsciiImg.Image = asciiImg
+
+	err = PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "image", queue, countryAsciiImg)
+
 	if err != nil {
-		return "", fmt.Errorf("unable to unmarshal the json: %w", err)
+		return fmt.Errorf("unable to publish the json")
 	}
 
-	return jsonPhotos.Results[0].Urls.Raw, nil
+	return d.Ack(false)
 }

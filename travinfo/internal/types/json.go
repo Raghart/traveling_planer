@@ -10,6 +10,11 @@ type CountryDescription struct {
 	Description string
 }
 
+type CountryAsciiImg struct {
+	Name  string
+	Image string
+}
+
 type FestivityData struct {
 	Date        string
 	LocalName   string
