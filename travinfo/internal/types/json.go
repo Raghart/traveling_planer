@@ -11,8 +11,8 @@ type CountryDescription struct {
 }
 
 type CountryAsciiImg struct {
-	Name     string
-	ImageUrl string
+	Name      string
+	ImageUrls []string
 }
 
 type FestivityData struct {

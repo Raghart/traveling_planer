@@ -257,12 +257,12 @@ func PublishCountryImage(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue) er
 		return fmt.Errorf("unable to unmarshal the body: %w", err)
 	}
 
-	photoUrl, err := utils.GetPhotoUrl(countryAsciiImg.Name)
+	photoUrls, err := utils.GetPhotoUrl(countryAsciiImg.Name)
 	if err != nil {
 		return err
 	}
 
-	countryAsciiImg.ImageUrl = photoUrl
+	countryAsciiImg.ImageUrls = photoUrls
 
 	err = PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "image", queue, countryAsciiImg)
 

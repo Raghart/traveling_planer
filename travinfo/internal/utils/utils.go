@@ -40,7 +40,7 @@ func FailsOnError(err error, msg string) {
 	}
 }
 
-func GetPhotoUrl(countryName string) (string, error) {
+func GetPhotoUrl(countryName string) ([]string, error) {
 	baseUrl := "https://api.unsplash.com/search/photos"
 	params := url.Values{}
 	params.Add("query", countryName)
@@ -51,21 +51,27 @@ func GetPhotoUrl(countryName string) (string, error) {
 	photoUrl := fmt.Sprintf("%s?%s", baseUrl, params.Encode())
 	res, err := http.Get(photoUrl)
 	if err != nil || res.StatusCode > 400 {
-		return "", fmt.Errorf("error trying to get the photos: %w", err)
+		return nil, fmt.Errorf("error trying to get the photos: %w", err)
 	}
 
 	defer res.Body.Close()
 
 	bodyData, err := io.ReadAll(res.Body)
 	if err != nil {
-		return "", fmt.Errorf("unable to read the body of the photos: %w", err)
+		return nil, fmt.Errorf("unable to read the body of the photos: %w", err)
 	}
 
 	jsonPhotos := &types.PhotoJsonURL{}
 	err = json.Unmarshal(bodyData, jsonPhotos)
 	if err != nil {
-		return "", fmt.Errorf("unable to unmarshal the json: %w", err)
+		return nil, fmt.Errorf("unable to unmarshal the json: %w", err)
 	}
 
-	return jsonPhotos.Results[0].Urls.Raw, nil
+	photosUrls := []string{}
+
+	for i := range 3 {
+		photosUrls = append(photosUrls, jsonPhotos.Results[i].Urls.Raw)
+	}
+
+	return photosUrls, nil
 }
