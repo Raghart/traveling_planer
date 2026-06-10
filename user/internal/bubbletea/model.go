@@ -8,11 +8,13 @@ import (
 	"charm.land/bubbles/v2/help"
 	"charm.land/bubbles/v2/key"
 	"charm.land/bubbles/v2/list"
+	"charm.land/bubbles/v2/progress"
 	"charm.land/bubbles/v2/viewport"
 	tea "charm.land/bubbletea/v2"
 	"charm.land/glamour/v2"
 	"charm.land/glamour/v2/styles"
 	"github.com/Raghart/traveling_planer/internal/pubsub"
+	"github.com/Raghart/traveling_planer/internal/routing"
 	"github.com/Raghart/traveling_planer/internal/utils"
 )
 
@@ -22,15 +24,11 @@ type Model struct {
 	styles      Styles
 	quitting    bool
 	help        help.Model
-	country     CountryManager
+	country     routing.CountryManager
+	progress    progress.Model
 	viewport    viewport.Model
 	renderer    *glamour.TermRenderer
 	showResults bool
-}
-
-type CountryManager struct {
-	From string
-	To   string
 }
 
 func (m *Model) UpdateStyles(isDark bool) {

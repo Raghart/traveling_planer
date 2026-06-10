@@ -1,5 +1,14 @@
 package routing
 
+type CountryManager struct {
+	From              string
+	To                string
+	Description       string
+	ImageUrls         []string
+	DailyTemperatures []DailyTemp
+	Festivities       []FestivityData
+}
+
 type Currency struct {
 	From         string
 	FromCurrency string
