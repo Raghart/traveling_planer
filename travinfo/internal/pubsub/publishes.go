@@ -29,6 +29,7 @@ func PublishCountryTemperature(d ampq.Delivery, ch *ampq.Channel, queue ampq.Que
 	params := url.Values{}
 	params.Add("latitude", fmt.Sprintf("%f", countryLocation.Latitude))
 	params.Add("longitude", fmt.Sprintf("%f", countryLocation.Longitude))
+	params.Add("forecast_days", "14")
 	params.Add("daily", strings.Join([]string{
 		"temperature_2m_max",
 		"temperature_2m_min",
