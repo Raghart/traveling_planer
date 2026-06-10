@@ -44,13 +44,13 @@ func (m *Model) UpdateStyles(isDark bool) {
 	m.list.Paginator.InactiveDot = m.styles.InactiveDot.Render("•")
 }
 
-func (m Model) Init() tea.Cmd {
+func (m *Model) Init() tea.Cmd {
 	return tea.Batch(
 		tea.RequestBackgroundColor,
 	)
 }
 
-func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.list.SetSize(msg.Width, msg.Height-5)
@@ -74,9 +74,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.help.ShowAll = !m.help.ShowAll
 		case key.Matches(msg, m.keys.Enter):
 			i, ok := m.list.SelectedItem().(Item)
-			if ok && m.country.From != "" && m.country.To == "" {
-				m.country.To = i.title
-				m.list.Title = fmt.Sprintf("Traveling from %s to %s", m.country.From, m.country.To)
+			if ok && m.country.From != "" && m.country.Destination == "" {
+				m.country.Destination = i.title
+				m.list.Title = fmt.Sprintf("Traveling from %s to %s", m.country.From, m.country.Destination)
 				m.list.NewStatusMessage("")
 				m.loadingData = true
 				return m, nil
@@ -93,7 +93,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.list.RemoveItem(m.list.Index())
 			}
 
-			if ok && m.country.From != "" && m.country.To != "" {
+			if ok && m.country.From != "" && m.country.Destination != "" {
 				formattedMsg := i.task()
 				str, _ := m.renderer.Render(formattedMsg)
 				m.viewport.SetContent(str)
@@ -119,9 +119,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m Model) View() tea.View {
+func (m *Model) View() tea.View {
 	if m.loadingData {
-		return tea.NewView("\n" + m.progress.View() + "\n\n" + "Press 'q' to quit")
+		return tea.NewView("\n" + m.progress.View() + "\n\n" + HelpStyle("Press 'q' to quit"))
 	}
 
 	if m.quitting {
@@ -150,13 +150,13 @@ func (m Model) View() tea.View {
 	return v
 }
 
-func (m Model) GenerateProjectActions() []list.Item {
+func (m *Model) GenerateProjectActions() []list.Item {
 	return []list.Item{
 		Item{
 			title: "Temperature",
-			desc:  fmt.Sprintf("Want to know the weekly temperature of %s?", m.country.To),
+			desc:  fmt.Sprintf("Want to know the weekly temperature of %s?", m.country.Destination),
 			task: func() string {
-				return utils.FormatWeather(pubsub.GetTemperature(m.country.To))
+				return utils.FormatWeather(pubsub.GetTemperature(m.country.Destination))
 			},
 		},
 		Item{
@@ -164,38 +164,38 @@ func (m Model) GenerateProjectActions() []list.Item {
 			desc: fmt.Sprintf(
 				"Want to know the currency difference from %s to %s?",
 				m.country.From,
-				m.country.To),
+				m.country.Destination),
 			task: func() string {
-				return utils.FormatCurrency(pubsub.GetCurrency(m.country.From, m.country.To))
+				return utils.FormatCurrency(pubsub.GetCurrency(m.country.From, m.country.Destination))
 			},
 		},
 		Item{
 			title: "Holidays",
 			desc: fmt.Sprintf(
-				"Want to know the holidays of %s to plan your adventure?", m.country.To),
+				"Want to know the holidays of %s to plan your adventure?", m.country.Destination),
 			task: func() string {
-				return utils.FormatHolidays(pubsub.GetHolidays(m.country.To))
+				return utils.FormatHolidays(pubsub.GetHolidays(m.country.Destination))
 			},
 		},
 		Item{
 			title: "Description",
 			desc: fmt.Sprintf(
-				"Want to read a short description about %s?", m.country.To),
+				"Want to read a short description about %s?", m.country.Destination),
 			task: func() string {
-				return utils.FormatDescription(pubsub.GetCountryDescription(m.country.To))
+				return utils.FormatDescription(pubsub.GetCountryDescription(m.country.Destination))
 			},
 		},
 		Item{
-			title: fmt.Sprintf("%s's Images", m.country.To),
-			desc:  fmt.Sprintf("Want to see an Ascii of %s?", m.country.To),
+			title: fmt.Sprintf("%s's Images", m.country.Destination),
+			desc:  fmt.Sprintf("Want to see an Ascii of %s?", m.country.Destination),
 			task: func() string {
-				return utils.FormatImageUrls(pubsub.GetUrlImages(m.country.To))
+				return utils.FormatImageUrls(pubsub.GetUrlImages(m.country.Destination))
 			},
 		},
 	}
 }
 
-func (m Model) updateRenderer(terminalWidth int) (*glamour.TermRenderer, error) {
+func (m *Model) updateRenderer(terminalWidth int) (*glamour.TermRenderer, error) {
 	glamourRenderWidth := terminalWidth - m.viewport.Style.GetHorizontalFrameSize() - 3
 	styles := styles.DarkStyleConfig
 
@@ -210,7 +210,11 @@ func (m Model) updateRenderer(terminalWidth int) (*glamour.TermRenderer, error) 
 	return renderer, nil
 }
 
-func InitialModel() Model {
+func (m *Model) LoadCountryManagerData() error {
+	return nil
+}
+
+func InitialModel() *Model {
 	items := GenerateCountryItems()
 	l := list.New(items, list.NewDefaultDelegate(), 0, 0)
 	l.Title = "Where are you from?"
@@ -219,7 +223,7 @@ func InitialModel() Model {
 
 	vp := CreateViewport()
 
-	m := Model{
+	m := &Model{
 		list:     l,
 		keys:     createKeyMap(),
 		help:     help.New(),

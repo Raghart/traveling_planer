@@ -43,6 +43,10 @@ func NewStyles(darkBG bool) Styles {
 	return s
 }
 
+func HelpStyle(text string) string {
+	return lipgloss.NewStyle().Foreground(lipgloss.Color("#626262")).Render(text)
+}
+
 func helpViewport() string {
 	return lipgloss.NewStyle().
 		Foreground(lipgloss.Color("241")).
