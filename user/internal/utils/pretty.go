@@ -8,7 +8,7 @@ import (
 	"github.com/Raghart/traveling_planer/internal/routing"
 )
 
-func FormatImage(countryData *routing.CountryAsciiImg) string {
+func FormatImageUrls(countryData *routing.CountryAsciiImg) string {
 	var msgBuilder strings.Builder
 	fmt.Fprintf(&msgBuilder, "# %s's Image\n", countryData.Name)
 

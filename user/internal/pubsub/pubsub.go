@@ -223,7 +223,7 @@ func GetCountryDescription(country string) (description *routing.CountryDescript
 	return
 }
 
-func GetAsciiImage(country string) (asciiImg *routing.CountryAsciiImg) {
+func GetUrlImages(country string) (asciiImg *routing.CountryAsciiImg) {
 	conn, ch, queue, msgs, err := ConnectBunny()
 	utils.FailOnError(err, "unable to connect to RabbitMQ")
 
