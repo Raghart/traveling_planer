@@ -21,3 +21,4 @@ Implementarás el famoso problema de ciencias de la computación TSP (Traveling 
 Escribirás un algoritmo (como Dijkstra o un algoritmo voraz de búsqueda heurística) para encontrar el camino más corto entre nodos (ciudades).
 Manejarás matrices de adyacencia o listas de adyacencia en memoria para representar las distancias de transporte.
 Por qué impresiona: Demuestra que dominas algoritmos complejos y teoría de grafos, resolviendo un problema real de optimización logística.
+- https://en.wikipedia.org/w/api.php?action=query&list=geosearch&gscoord=35.6894|139.6917&gsradius=10000&gslimit=5&format=json

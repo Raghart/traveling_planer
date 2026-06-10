@@ -22,13 +22,14 @@ type Model struct {
 	keys        KeyMap
 	list        list.Model
 	styles      Styles
-	quitting    bool
 	help        help.Model
 	country     routing.CountryManager
 	progress    progress.Model
 	viewport    viewport.Model
 	renderer    *glamour.TermRenderer
 	showResults bool
+	quitting    bool
+	loadingData bool
 }
 
 func (m *Model) UpdateStyles(isDark bool) {
@@ -62,6 +63,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.renderer = renderer
 		return m, nil
 
+	case progress.FrameMsg:
+		var cmd tea.Cmd
+		m.progress, cmd = m.progress.Update(msg)
+		return m, cmd
+
 	case tea.KeyPressMsg:
 		switch {
 		case key.Matches(msg, m.keys.Help):
@@ -70,13 +76,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			i, ok := m.list.SelectedItem().(Item)
 			if ok && m.country.From != "" && m.country.To == "" {
 				m.country.To = i.title
-
-				newItems := m.GenerateProjectActions()
-				cmd := m.list.SetItems(newItems)
-
 				m.list.Title = fmt.Sprintf("Traveling from %s to %s", m.country.From, m.country.To)
 				m.list.NewStatusMessage("")
-				return m, cmd
+				m.loadingData = true
+				return m, nil
+				//newItems := m.GenerateProjectActions()
+				//cmd := m.list.SetItems(newItems)
+				//return m, cmd
 			}
 
 			if ok && m.country.From == "" {
@@ -98,6 +104,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, m.keys.Quit):
 			if m.showResults {
 				m.showResults = false
+				m.loadingData = false
 				return m, nil
 			}
 
@@ -113,6 +120,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() tea.View {
+	if m.loadingData {
+		return tea.NewView("\n" + m.progress.View() + "\n\n" + "Press 'q' to quit")
+	}
+
 	if m.quitting {
 		return tea.NewView(m.styles.QuitText.Render("Hope to see you again!"))
 	}
@@ -213,6 +224,7 @@ func InitialModel() Model {
 		keys:     createKeyMap(),
 		help:     help.New(),
 		viewport: vp,
+		progress: progress.New(progress.WithDefaultBlend()),
 	}
 	m.UpdateStyles(true)
 	return m
