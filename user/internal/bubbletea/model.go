@@ -73,7 +73,13 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "temp":
 			tempSlice, _ := msg.Data.([]routing.DailyTemp)
 			m.country.DailyTemperatures = tempSlice
-			return m, nil
+			cmd := m.progress.IncrPercent(.20)
+			return m, cmd
+		case "currency":
+			currencyData, _ := msg.Data.(routing.Currency)
+			m.country.Currency = currencyData
+			cmd := m.progress.IncrPercent(.20)
+			return m, cmd
 		}
 
 	case tea.KeyPressMsg:
@@ -220,12 +226,19 @@ func (m *Model) updateRenderer(terminalWidth int) (*glamour.TermRenderer, error)
 }
 
 func (m *Model) LoadCountryData() chan tea.Msg {
-	results := make(chan tea.Msg, 1)
+	results := make(chan tea.Msg, 2)
 	go func() {
 		dailyTemps := pubsub.GetTemperature(m.country.Destination)
 		results <- routing.CountryData{
 			DataType: "temp",
 			Data:     dailyTemps,
+		}
+	}()
+	go func() {
+		currencyData := pubsub.GetCurrency(m.country.From, m.country.Destination)
+		results <- routing.CountryData{
+			DataType: "currency",
+			Data:     currencyData,
 		}
 	}()
 	return results

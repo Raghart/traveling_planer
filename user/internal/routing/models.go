@@ -4,6 +4,7 @@ type CountryManager struct {
 	From              string
 	Destination       string
 	Description       string
+	Currency          Currency
 	ImageUrls         []string
 	DailyTemperatures []DailyTemp
 	Festivities       []FestivityData
