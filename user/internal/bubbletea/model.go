@@ -210,8 +210,16 @@ func (m *Model) updateRenderer(terminalWidth int) (*glamour.TermRenderer, error)
 	return renderer, nil
 }
 
-func (m *Model) LoadCountryManagerData() error {
-	return nil
+func (m *Model) LoadCountryData() chan tea.Msg {
+	results := make(chan tea.Msg, 1)
+	go func() {
+		dailyTemps := pubsub.GetTemperature(m.country.Destination)
+		results <- routing.CountryData{
+			DataType: "temp",
+			Data:     dailyTemps,
+		}
+	}()
+	return results
 }
 
 func InitialModel() *Model {

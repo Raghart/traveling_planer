@@ -9,6 +9,11 @@ type CountryManager struct {
 	Festivities       []FestivityData
 }
 
+type CountryData struct {
+	DataType string
+	Data     interface{}
+}
+
 type Currency struct {
 	From         string
 	FromCurrency string
@@ -43,7 +48,7 @@ type DailyTemp struct {
 	AparentMin  float64
 }
 
-type CountryData struct {
+type TestingData struct {
 	IsCountry bool
 }
 

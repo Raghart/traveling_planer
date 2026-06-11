@@ -94,14 +94,14 @@ func GetTestingRPC() (res string) {
 	defer rabbitCh.Close()
 
 	corrID := uuid.NewString()
-	err = PublishJSON(rabbitCh, "", "rpc_queue", "", corrID, q, routing.CountryData{
+	err = PublishJSON(rabbitCh, "", "rpc_queue", "", corrID, q, routing.TestingData{
 		IsCountry: false,
 	})
 	utils.FailOnError(err, "error while trying to publish the client json")
 
 	for d := range msgs {
 		if d.CorrelationId == corrID {
-			countryData := &routing.CountryData{}
+			countryData := &routing.TestingData{}
 			err = json.Unmarshal(d.Body, countryData)
 			utils.FailOnError(err, "unable to unmarshal data")
 
