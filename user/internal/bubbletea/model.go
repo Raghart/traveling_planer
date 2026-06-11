@@ -80,6 +80,9 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "holidays":
 			holidaysData, _ := msg.Data.([]routing.FestivityData)
 			m.country.Festivities = holidaysData
+		case "description":
+			description, _ := msg.Data.(string)
+			m.country.Description = description
 		}
 		return m, tea.Batch(m.progress.IncrPercent(.20), ListenCountryData(m.dataCh))
 
@@ -227,7 +230,7 @@ func (m *Model) updateRenderer(terminalWidth int) (*glamour.TermRenderer, error)
 }
 
 func (m *Model) LoadCountryData() chan tea.Msg {
-	results := make(chan tea.Msg, 3)
+	results := make(chan tea.Msg, 4)
 	go func() {
 		dailyTemps := pubsub.GetTemperature(m.country.Destination)
 		results <- routing.CountryData{
@@ -247,6 +250,13 @@ func (m *Model) LoadCountryData() chan tea.Msg {
 		results <- routing.CountryData{
 			DataType: "holidays",
 			Data:     holidays,
+		}
+	}()
+	go func() {
+		description := pubsub.GetCountryDescription(m.country.Destination)
+		results <- routing.CountryData{
+			DataType: "description",
+			Data:     description,
 		}
 	}()
 	return results
