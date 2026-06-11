@@ -83,6 +83,9 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "description":
 			description, _ := msg.Data.(string)
 			m.country.Description = description
+		case "images":
+			urlImages, _ := msg.Data.([]string)
+			m.country.ImageUrls = urlImages
 		}
 		return m, tea.Batch(m.progress.IncrPercent(.20), ListenCountryData(m.dataCh))
 
@@ -230,7 +233,7 @@ func (m *Model) updateRenderer(terminalWidth int) (*glamour.TermRenderer, error)
 }
 
 func (m *Model) LoadCountryData() chan tea.Msg {
-	results := make(chan tea.Msg, 4)
+	results := make(chan tea.Msg, 5)
 	go func() {
 		dailyTemps := pubsub.GetTemperature(m.country.Destination)
 		results <- routing.CountryData{
@@ -257,6 +260,13 @@ func (m *Model) LoadCountryData() chan tea.Msg {
 		results <- routing.CountryData{
 			DataType: "description",
 			Data:     description,
+		}
+	}()
+	go func() {
+		urlImages := pubsub.GetUrlImages(m.country.Destination)
+		results <- routing.CountryData{
+			DataType: "images",
+			Data:     urlImages,
 		}
 	}()
 	return results
