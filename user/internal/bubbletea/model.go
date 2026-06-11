@@ -68,6 +68,14 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.progress, cmd = m.progress.Update(msg)
 		return m, cmd
 
+	case routing.CountryData:
+		switch msg.DataType {
+		case "temp":
+			tempSlice, _ := msg.Data.([]routing.DailyTemp)
+			m.country.DailyTemperatures = tempSlice
+			return m, nil
+		}
+
 	case tea.KeyPressMsg:
 		switch {
 		case key.Matches(msg, m.keys.Help):
@@ -79,7 +87,8 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.list.Title = fmt.Sprintf("Traveling from %s to %s", m.country.From, m.country.Destination)
 				m.list.NewStatusMessage("")
 				m.loadingData = true
-				return m, nil
+				dataCh := m.LoadCountryData()
+				return m, tea.Batch(m.progress.IncrPercent(.20), ListenCountryData(dataCh))
 				//newItems := m.GenerateProjectActions()
 				//cmd := m.list.SetItems(newItems)
 				//return m, cmd
@@ -220,6 +229,13 @@ func (m *Model) LoadCountryData() chan tea.Msg {
 		}
 	}()
 	return results
+}
+
+func ListenCountryData(dataChannel chan tea.Msg) tea.Cmd {
+	return func() tea.Msg {
+		msg := <-dataChannel
+		return msg
+	}
 }
 
 func InitialModel() *Model {
