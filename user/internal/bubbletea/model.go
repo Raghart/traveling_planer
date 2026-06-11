@@ -26,6 +26,7 @@ type Model struct {
 	country     routing.CountryManager
 	progress    progress.Model
 	viewport    viewport.Model
+	dataCh      chan tea.Msg
 	renderer    *glamour.TermRenderer
 	showResults bool
 	quitting    bool
@@ -73,14 +74,14 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "temp":
 			tempSlice, _ := msg.Data.([]routing.DailyTemp)
 			m.country.DailyTemperatures = tempSlice
-			cmd := m.progress.IncrPercent(.20)
-			return m, cmd
 		case "currency":
 			currencyData, _ := msg.Data.(routing.Currency)
 			m.country.Currency = currencyData
-			cmd := m.progress.IncrPercent(.20)
-			return m, cmd
+		case "holidays":
+			holidaysData, _ := msg.Data.([]routing.FestivityData)
+			m.country.Festivities = holidaysData
 		}
+		return m, tea.Batch(m.progress.IncrPercent(.20), ListenCountryData(m.dataCh))
 
 	case tea.KeyPressMsg:
 		switch {
@@ -93,8 +94,8 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.list.Title = fmt.Sprintf("Traveling from %s to %s", m.country.From, m.country.Destination)
 				m.list.NewStatusMessage("")
 				m.loadingData = true
-				dataCh := m.LoadCountryData()
-				return m, tea.Batch(m.progress.IncrPercent(.20), ListenCountryData(dataCh))
+				m.dataCh = m.LoadCountryData()
+				return m, ListenCountryData(m.dataCh)
 				//newItems := m.GenerateProjectActions()
 				//cmd := m.list.SetItems(newItems)
 				//return m, cmd
@@ -226,7 +227,7 @@ func (m *Model) updateRenderer(terminalWidth int) (*glamour.TermRenderer, error)
 }
 
 func (m *Model) LoadCountryData() chan tea.Msg {
-	results := make(chan tea.Msg, 2)
+	results := make(chan tea.Msg, 3)
 	go func() {
 		dailyTemps := pubsub.GetTemperature(m.country.Destination)
 		results <- routing.CountryData{
@@ -239,6 +240,13 @@ func (m *Model) LoadCountryData() chan tea.Msg {
 		results <- routing.CountryData{
 			DataType: "currency",
 			Data:     currencyData,
+		}
+	}()
+	go func() {
+		holidays := pubsub.GetHolidays(m.country.Destination)
+		results <- routing.CountryData{
+			DataType: "holidays",
+			Data:     holidays,
 		}
 	}()
 	return results
