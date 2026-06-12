@@ -130,8 +130,8 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.viewport.SetContent(str)
 				m.showResults = true
 			}
-
 			return m, nil
+
 		case key.Matches(msg, m.keys.Quit):
 			if m.showResults {
 				m.showResults = false
@@ -152,7 +152,8 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m *Model) View() tea.View {
 	if m.loadingData {
-		return tea.NewView("\n" + fmt.Sprintf("Loading data from %s...\n\n", m.country.Destination) +
+		return tea.NewView("\n" +
+			fmt.Sprintf("Loading data from %s...\n\n", m.country.Destination) +
 			fmt.Sprintf("%s\n\n", m.dataMsg) +
 			m.progress.View() + "\n\n" + HelpStyle("Press 'q' to quit"))
 	}

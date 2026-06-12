@@ -1,6 +1,11 @@
 package utils
 
-import "github.com/Raghart/traveling_planer/travinfo/internal/types"
+import (
+	"fmt"
+	"time"
+
+	"github.com/Raghart/traveling_planer/travinfo/internal/types"
+)
 
 func LoadCurrencyMap() map[string]types.CurrType {
 	return map[string]types.CurrType{
@@ -81,5 +86,46 @@ func LoadCountryCodesMap() map[string]string {
 		"Barbados":              "BB",
 		"Saint Kitts and Nevis": "KN",
 		"Antigua and Barbuda":   "AG",
+	}
+}
+
+func LoadSpecialCountryFestivities() map[string][]types.FestivityData {
+	actualYear := time.Now().Year()
+	return map[string][]types.FestivityData{
+		"Saint Kitts and Nevis": []types.FestivityData{},
+		"Antigua and Barbuda":   []types.FestivityData{},
+		"Trinidad and Tobago":   []types.FestivityData{},
+		"Saint Lucia": {
+			{
+				Name: "Saint Lucia Jazz & Arts Festival",
+				Date: fmt.Sprintf("April 30th - May 9th, %d", actualYear),
+			},
+			{
+				Name: "Saint Lucia Carnival",
+				Date: fmt.Sprintf("July 1st - 22nd, %d", actualYear),
+			},
+			{
+				Name: "Mercury Fest Weekend",
+				Date: fmt.Sprintf("August 14th - 16th, %d", actualYear),
+			},
+			{
+				Name: "La Rose Flower Festival",
+				Date: fmt.Sprintf("August 30th, %d", actualYear),
+			},
+			{
+				Name: "Creole Heritage Month",
+				Date: fmt.Sprintf("October %d", actualYear),
+			},
+			{
+				Name: "La Marguerite Flower Festival",
+				Date: fmt.Sprintf("October 17, %d", actualYear),
+			},
+			{
+				Name: "National Day - Festival of Lights & Renewal",
+				Date: fmt.Sprintf("December 13, %d", actualYear),
+			},
+		},
+		"French Guiana": []types.FestivityData{},
+		"Dominica":      []types.FestivityData{},
 	}
 }
