@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"slices"
 	"strings"
 	"time"
 
@@ -149,6 +150,18 @@ func PublishCountryHolidays(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue)
 
 	if err != nil {
 		return fmt.Errorf("unable to unmarshal the user body: %w", err)
+	}
+
+	if slices.Contains([]string{"Saint Kitts and Nevis", "Antigua and Barbuda",
+		"Trinidad and Tobago", "Saint Lucia", "French Guiana", "Dominica"},
+		countryFestivities.Country) {
+		countryMap := utils.LoadSpecialCountryFestivities()
+		countryFestivities.Festivities = countryMap[countryFestivities.Country]
+		err := PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "holidays", queue, countryFestivities)
+		if err != nil {
+			return fmt.Errorf("unable to publish the json festivities")
+		}
+		return d.Ack(false)
 	}
 
 	codesMap := utils.LoadCountryCodesMap()
