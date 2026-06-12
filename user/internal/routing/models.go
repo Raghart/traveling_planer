@@ -3,11 +3,11 @@ package routing
 type CountryManager struct {
 	From              string
 	Destination       string
-	Description       string
+	Description       CountryDescription
 	Currency          Currency
-	ImageUrls         []string
+	ImageUrls         CountryAsciiImg
 	DailyTemperatures []DailyTemp
-	Festivities       []FestivityData
+	Festivities       CountryFestivities
 }
 
 type CountryData struct {

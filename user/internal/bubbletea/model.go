@@ -78,13 +78,13 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			currencyData, _ := msg.Data.(routing.Currency)
 			m.country.Currency = currencyData
 		case "holidays":
-			holidaysData, _ := msg.Data.([]routing.FestivityData)
+			holidaysData, _ := msg.Data.(routing.CountryFestivities)
 			m.country.Festivities = holidaysData
 		case "description":
-			description, _ := msg.Data.(string)
+			description, _ := msg.Data.(routing.CountryDescription)
 			m.country.Description = description
 		case "images":
-			urlImages, _ := msg.Data.([]string)
+			urlImages, _ := msg.Data.(routing.CountryAsciiImg)
 			m.country.ImageUrls = urlImages
 		}
 		return m, tea.Batch(
@@ -180,7 +180,7 @@ func (m *Model) GenerateProjectActions() []list.Item {
 			title: "Temperature",
 			desc:  fmt.Sprintf("Want to know the weekly temperature of %s?", m.country.Destination),
 			task: func() string {
-				return utils.FormatWeather(pubsub.GetTemperature(m.country.Destination))
+				return utils.FormatWeather(m.country.DailyTemperatures)
 			},
 		},
 		Item{
@@ -190,7 +190,7 @@ func (m *Model) GenerateProjectActions() []list.Item {
 				m.country.From,
 				m.country.Destination),
 			task: func() string {
-				return utils.FormatCurrency(pubsub.GetCurrency(m.country.From, m.country.Destination))
+				return utils.FormatCurrency(&m.country.Currency)
 			},
 		},
 		Item{
@@ -198,7 +198,7 @@ func (m *Model) GenerateProjectActions() []list.Item {
 			desc: fmt.Sprintf(
 				"Want to know the holidays of %s to plan your adventure?", m.country.Destination),
 			task: func() string {
-				return utils.FormatHolidays(pubsub.GetHolidays(m.country.Destination))
+				return utils.FormatHolidays(&m.country.Festivities)
 			},
 		},
 		Item{
@@ -206,14 +206,14 @@ func (m *Model) GenerateProjectActions() []list.Item {
 			desc: fmt.Sprintf(
 				"Want to read a short description about %s?", m.country.Destination),
 			task: func() string {
-				return utils.FormatDescription(pubsub.GetCountryDescription(m.country.Destination))
+				return utils.FormatDescription(&m.country.Description)
 			},
 		},
 		Item{
 			title: fmt.Sprintf("%s's Images", m.country.Destination),
 			desc:  fmt.Sprintf("Want to see an Ascii of %s?", m.country.Destination),
 			task: func() string {
-				return utils.FormatImageUrls(pubsub.GetUrlImages(m.country.Destination))
+				return utils.FormatImageUrls(&m.country.ImageUrls)
 			},
 		},
 	}

@@ -115,7 +115,7 @@ func GetTestingRPC() (res string) {
 	return
 }
 
-func GetCurrency(fromCurr, toCurr string) (currencyStruct *routing.Currency) {
+func GetCurrency(fromCurr, toCurr string) (currencyStruct routing.Currency) {
 	conn, ch, q, msgs, err := ConnectBunny()
 	utils.FailOnError(err, "unable to load to bunny")
 
@@ -136,7 +136,7 @@ func GetCurrency(fromCurr, toCurr string) (currencyStruct *routing.Currency) {
 				currencyData := &routing.Currency{}
 				err = json.Unmarshal(d.Body, currencyData)
 				utils.FailOnError(err, "unable to unmarshal the recieved data")
-				currencyStruct = currencyData
+				currencyStruct = *currencyData
 				break
 			}
 		}
