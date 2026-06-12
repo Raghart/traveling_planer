@@ -26,11 +26,12 @@ type Model struct {
 	country     routing.CountryManager
 	progress    progress.Model
 	viewport    viewport.Model
-	dataCh      chan tea.Msg
 	renderer    *glamour.TermRenderer
 	showResults bool
 	quitting    bool
 	loadingData bool
+	dataCh      chan tea.Msg
+	dataMsg     string
 }
 
 func (m *Model) UpdateStyles(isDark bool) {
@@ -74,18 +75,23 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "temp":
 			tempSlice, _ := msg.Data.([]routing.DailyTemp)
 			m.country.DailyTemperatures = tempSlice
+			m.dataMsg = fmt.Sprintf("%s temperature loaded (+20%%)", m.country.Destination)
 		case "currency":
 			currencyData, _ := msg.Data.(routing.Currency)
 			m.country.Currency = currencyData
+			m.dataMsg = fmt.Sprintf("%s currency loaded (+20%%)", m.country.Destination)
 		case "holidays":
 			holidaysData, _ := msg.Data.([]routing.FestivityData)
 			m.country.Festivities = holidaysData
+			m.dataMsg = fmt.Sprintf("%s holidays loaded (+20%%)", m.country.Destination)
 		case "description":
 			description, _ := msg.Data.(string)
 			m.country.Description = description
+			m.dataMsg = fmt.Sprintf("%s description loaded (+20%%)", m.country.Destination)
 		case "images":
 			urlImages, _ := msg.Data.([]string)
 			m.country.ImageUrls = urlImages
+			m.dataMsg = fmt.Sprintf("%s url images loaded (+20%%)", m.country.Destination)
 		}
 		return m, tea.Batch(
 			m.progress.IncrPercent(.20),
@@ -146,7 +152,8 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m *Model) View() tea.View {
 	if m.loadingData {
-		return tea.NewView(fmt.Sprintf("\n"+"Loading data from %s...\n\n", m.country.Destination) +
+		return tea.NewView("\n" + fmt.Sprintf("Loading data from %s...\n\n", m.country.Destination) +
+			fmt.Sprintf("%s\n\n", m.dataMsg) +
 			m.progress.View() + "\n\n" + HelpStyle("Press 'q' to quit"))
 	}
 
@@ -308,6 +315,7 @@ func InitialModel() *Model {
 		help:     help.New(),
 		viewport: vp,
 		progress: progress.New(progress.WithDefaultBlend()),
+		dataMsg:  "Downloading required data...",
 	}
 	m.UpdateStyles(true)
 	return m
