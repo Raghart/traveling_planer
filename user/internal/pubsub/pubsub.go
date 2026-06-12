@@ -198,7 +198,7 @@ func GetHolidays(country string) (festivities []routing.FestivityData) {
 	return
 }
 
-func GetCountryDescription(country string) (description routing.CountryDescription) {
+func GetCountryDescription(country string) (description string) {
 	conn, ch, queue, msgs, err := ConnectBunny()
 	utils.FailOnError(err, "unable to connect with RabbitMQ")
 
@@ -216,7 +216,7 @@ func GetCountryDescription(country string) (description routing.CountryDescripti
 			countryData := &routing.CountryDescription{}
 			err := json.Unmarshal(d.Body, countryData)
 			utils.FailOnError(err, "unable to unmarshal the data")
-			description = *countryData
+			description = countryData.Description
 			break
 		}
 	}

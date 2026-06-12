@@ -3,7 +3,7 @@ package routing
 type CountryManager struct {
 	From              string
 	Destination       string
-	Description       CountryDescription
+	Description       string
 	Currency          Currency
 	ImageUrls         CountryAsciiImg
 	DailyTemperatures []DailyTemp

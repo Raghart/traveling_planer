@@ -81,7 +81,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			holidaysData, _ := msg.Data.([]routing.FestivityData)
 			m.country.Festivities = holidaysData
 		case "description":
-			description, _ := msg.Data.(routing.CountryDescription)
+			description, _ := msg.Data.(string)
 			m.country.Description = description
 		case "images":
 			urlImages, _ := msg.Data.(routing.CountryAsciiImg)
@@ -206,7 +206,7 @@ func (m *Model) GenerateProjectActions() []list.Item {
 			desc: fmt.Sprintf(
 				"Want to read a short description about %s?", m.country.Destination),
 			task: func() string {
-				return utils.FormatDescription(m.country.Description)
+				return utils.FormatDescription(m.country.Destination, m.country.Description)
 			},
 		},
 		Item{

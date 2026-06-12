@@ -30,10 +30,10 @@ func FormatHolidays(country string, countryFestivities []routing.FestivityData) 
 	return msgBuilder.String()
 }
 
-func FormatDescription(countryData routing.CountryDescription) string {
+func FormatDescription(countryName, countryDescription string) string {
 	var msgBuilder strings.Builder
-	fmt.Fprintf(&msgBuilder, "# %s's Description \n", countryData.Name)
-	fmt.Fprint(&msgBuilder, countryData.Description)
+	fmt.Fprintf(&msgBuilder, "# %s's Description \n", countryName)
+	fmt.Fprint(&msgBuilder, countryDescription)
 	return msgBuilder.String()
 }
 
