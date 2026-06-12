@@ -19,12 +19,12 @@ func FormatImageUrls(countryData routing.CountryAsciiImg) string {
 	return msgBuilder.String()
 }
 
-func FormatHolidays(countryData routing.CountryFestivities) string {
+func FormatHolidays(country string, countryFestivities []routing.FestivityData) string {
 	var msgBuilder strings.Builder
 
-	fmt.Fprintf(&msgBuilder, "# %s's Holidays \n", countryData.Country)
+	fmt.Fprintf(&msgBuilder, "# %s's Holidays \n", country)
 
-	for _, festivity := range countryData.Festivities {
+	for _, festivity := range countryFestivities {
 		fmt.Fprintf(&msgBuilder, "* **%s** - %s\n", festivity.Date, festivity.Name)
 	}
 	return msgBuilder.String()

@@ -78,7 +78,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			currencyData, _ := msg.Data.(routing.Currency)
 			m.country.Currency = currencyData
 		case "holidays":
-			holidaysData, _ := msg.Data.(routing.CountryFestivities)
+			holidaysData, _ := msg.Data.([]routing.FestivityData)
 			m.country.Festivities = holidaysData
 		case "description":
 			description, _ := msg.Data.(routing.CountryDescription)
@@ -198,7 +198,7 @@ func (m *Model) GenerateProjectActions() []list.Item {
 			desc: fmt.Sprintf(
 				"Want to know the holidays of %s to plan your adventure?", m.country.Destination),
 			task: func() string {
-				return utils.FormatHolidays(m.country.Festivities)
+				return utils.FormatHolidays(m.country.Destination, m.country.Festivities)
 			},
 		},
 		Item{

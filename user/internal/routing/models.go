@@ -7,7 +7,7 @@ type CountryManager struct {
 	Currency          Currency
 	ImageUrls         CountryAsciiImg
 	DailyTemperatures []DailyTemp
-	Festivities       CountryFestivities
+	Festivities       []FestivityData
 }
 
 type CountryData struct {

@@ -171,7 +171,7 @@ func GetTemperature(country string) (tempSlice []routing.DailyTemp) {
 	return
 }
 
-func GetHolidays(country string) (festivities routing.CountryFestivities) {
+func GetHolidays(country string) (festivities []routing.FestivityData) {
 	conn, ch, queue, msgs, err := ConnectBunny()
 	utils.FailOnError(err, "failed to connect with rabbitMQ")
 
@@ -190,7 +190,7 @@ func GetHolidays(country string) (festivities routing.CountryFestivities) {
 				countryFestivities := &routing.CountryFestivities{}
 				err := json.Unmarshal(d.Body, countryFestivities)
 				utils.FailOnError(err, "unable to unmarshal festivity body")
-				festivities = *countryFestivities
+				festivities = countryFestivities.Festivities
 				break
 			}
 		}
