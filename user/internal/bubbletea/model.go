@@ -97,6 +97,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch {
 		case key.Matches(msg, m.keys.Help):
 			m.help.ShowAll = !m.help.ShowAll
+
 		case key.Matches(msg, m.keys.Enter):
 			i, ok := m.list.SelectedItem().(Item)
 			if ok && m.country.From != "" && m.country.Destination == "" {
@@ -145,7 +146,8 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m *Model) View() tea.View {
 	if m.loadingData {
-		return tea.NewView("\n" + m.progress.View() + "\n\n" + HelpStyle("Press 'q' to quit"))
+		return tea.NewView(fmt.Sprintf("\n"+"Loading data from %s...\n\n", m.country.Destination) +
+			m.progress.View() + "\n\n" + HelpStyle("Press 'q' to quit"))
 	}
 
 	if m.quitting {

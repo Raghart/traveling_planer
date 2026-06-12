@@ -2,7 +2,7 @@
 
 ## Future feature ideas
 - SQLite para Caché
-- Sincronización y Cola de Tareas en segundo plano con RabbitMQ: Cuando el usuario busque un país, en lugar de hacerlo esperar en la terminal a que se hagan las 5 requests de las APIs una por una, la terminal envía un mensaje a la cola de RabbitMQ y muestra un progreso.
+- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Sincronización y Cola de Tareas en segundo plano con RabbitMQ: Cuando el usuario busque un país, en lugar de hacerlo esperar en la terminal a que se hagan las 5 requests de las APIs una por una, la terminal envía un mensaje a la cola de RabbitMQ y muestra un progreso.
 Un proceso de Go independiente (un "worker" o servicio secundario) recibe la tarea, hace las requests a las APIs en paralelo, y guarda el resultado en la base de datos (caché).
 La terminal (tu frontend de Bubble Tea) está escuchando otra cola de RabbitMQ. En cuanto el worker termina de guardar los datos, le avisa a la terminal: "¡Oye, ya descargué todo el viaje de Bolivia!", y la terminal actualiza la pantalla al instante.
 Esto es exactamente cómo funcionan las arquitecturas de microservicios modernas y distribuidas en empresas gigantes.
