@@ -223,7 +223,7 @@ func GetCountryDescription(country string) (description string) {
 	return
 }
 
-func GetUrlImages(country string) (asciiImg routing.CountryAsciiImg) {
+func GetUrlImages(country string) (urlImages []string) {
 	conn, ch, queue, msgs, err := ConnectBunny()
 	utils.FailOnError(err, "unable to connect to RabbitMQ")
 
@@ -241,7 +241,7 @@ func GetUrlImages(country string) (asciiImg routing.CountryAsciiImg) {
 			countryAsciiImg := &routing.CountryAsciiImg{}
 			err := json.Unmarshal(d.Body, countryAsciiImg)
 			utils.FailOnError(err, "unable to unmarshal the json")
-			asciiImg = *countryAsciiImg
+			urlImages = countryAsciiImg.ImageUrls
 			break
 		}
 	}

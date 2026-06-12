@@ -8,11 +8,11 @@ import (
 	"github.com/Raghart/traveling_planer/internal/routing"
 )
 
-func FormatImageUrls(countryData routing.CountryAsciiImg) string {
+func FormatImageUrls(country string, imageUrls []string) string {
 	var msgBuilder strings.Builder
-	fmt.Fprintf(&msgBuilder, "# %s's Image\n", countryData.Name)
+	fmt.Fprintf(&msgBuilder, "# %s's Image\n", country)
 
-	for idx, url := range countryData.ImageUrls {
+	for idx, url := range imageUrls {
 		fmt.Fprintf(&msgBuilder, "📷 **Image %d**\n\n", idx+1)
 		fmt.Fprintf(&msgBuilder, "![Click Here!](%s) \n\n", url)
 	}

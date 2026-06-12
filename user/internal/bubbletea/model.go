@@ -84,7 +84,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			description, _ := msg.Data.(string)
 			m.country.Description = description
 		case "images":
-			urlImages, _ := msg.Data.(routing.CountryAsciiImg)
+			urlImages, _ := msg.Data.([]string)
 			m.country.ImageUrls = urlImages
 		}
 		return m, tea.Batch(
@@ -204,16 +204,16 @@ func (m *Model) GenerateProjectActions() []list.Item {
 		Item{
 			title: "Description",
 			desc: fmt.Sprintf(
-				"Want to read a short description about %s?", m.country.Destination),
+				"Want to read more about %s?", m.country.Destination),
 			task: func() string {
 				return utils.FormatDescription(m.country.Destination, m.country.Description)
 			},
 		},
 		Item{
 			title: fmt.Sprintf("%s's Images", m.country.Destination),
-			desc:  fmt.Sprintf("Want to see an Ascii of %s?", m.country.Destination),
+			desc:  fmt.Sprintf("Check out images of %s!", m.country.Destination),
 			task: func() string {
-				return utils.FormatImageUrls(m.country.ImageUrls)
+				return utils.FormatImageUrls(m.country.Destination, m.country.ImageUrls)
 			},
 		},
 	}
