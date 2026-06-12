@@ -87,7 +87,11 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			urlImages, _ := msg.Data.([]string)
 			m.country.ImageUrls = urlImages
 		}
-		return m, tea.Batch(m.progress.IncrPercent(.20), ListenCountryData(m.dataCh))
+		return m, tea.Batch(
+			m.progress.IncrPercent(.20),
+			ListenCountryData(m.dataCh),
+			m.CheckPercentage(),
+		)
 
 	case tea.KeyPressMsg:
 		switch {
@@ -97,14 +101,12 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			i, ok := m.list.SelectedItem().(Item)
 			if ok && m.country.From != "" && m.country.Destination == "" {
 				m.country.Destination = i.title
-				m.list.Title = fmt.Sprintf("Traveling from %s to %s", m.country.From, m.country.Destination)
+				m.list.Title = fmt.Sprintf("Traveling from %s to %s",
+					m.country.From, m.country.Destination)
 				m.list.NewStatusMessage("")
 				m.loadingData = true
 				m.dataCh = m.LoadCountryData()
 				return m, ListenCountryData(m.dataCh)
-				//newItems := m.GenerateProjectActions()
-				//cmd := m.list.SetItems(newItems)
-				//return m, cmd
 			}
 
 			if ok && m.country.From == "" {
@@ -270,6 +272,16 @@ func (m *Model) LoadCountryData() chan tea.Msg {
 		}
 	}()
 	return results
+}
+
+func (m *Model) CheckPercentage() tea.Cmd {
+	if m.progress.Percent() >= 1.0 {
+		m.loadingData = false
+		cmd := m.list.SetItems(m.GenerateProjectActions())
+		return cmd
+	}
+
+	return nil
 }
 
 func ListenCountryData(dataChannel chan tea.Msg) tea.Cmd {
