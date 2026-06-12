@@ -171,7 +171,7 @@ func GetTemperature(country string) (tempSlice []routing.DailyTemp) {
 	return
 }
 
-func GetHolidays(country string) (festivities *routing.CountryFestivities) {
+func GetHolidays(country string) (festivities routing.CountryFestivities) {
 	conn, ch, queue, msgs, err := ConnectBunny()
 	utils.FailOnError(err, "failed to connect with rabbitMQ")
 
@@ -190,7 +190,7 @@ func GetHolidays(country string) (festivities *routing.CountryFestivities) {
 				countryFestivities := &routing.CountryFestivities{}
 				err := json.Unmarshal(d.Body, countryFestivities)
 				utils.FailOnError(err, "unable to unmarshal festivity body")
-				festivities = countryFestivities
+				festivities = *countryFestivities
 				break
 			}
 		}
@@ -198,7 +198,7 @@ func GetHolidays(country string) (festivities *routing.CountryFestivities) {
 	return
 }
 
-func GetCountryDescription(country string) (description *routing.CountryDescription) {
+func GetCountryDescription(country string) (description routing.CountryDescription) {
 	conn, ch, queue, msgs, err := ConnectBunny()
 	utils.FailOnError(err, "unable to connect with RabbitMQ")
 
@@ -216,14 +216,14 @@ func GetCountryDescription(country string) (description *routing.CountryDescript
 			countryData := &routing.CountryDescription{}
 			err := json.Unmarshal(d.Body, countryData)
 			utils.FailOnError(err, "unable to unmarshal the data")
-			description = countryData
+			description = *countryData
 			break
 		}
 	}
 	return
 }
 
-func GetUrlImages(country string) (asciiImg *routing.CountryAsciiImg) {
+func GetUrlImages(country string) (asciiImg routing.CountryAsciiImg) {
 	conn, ch, queue, msgs, err := ConnectBunny()
 	utils.FailOnError(err, "unable to connect to RabbitMQ")
 
@@ -241,7 +241,7 @@ func GetUrlImages(country string) (asciiImg *routing.CountryAsciiImg) {
 			countryAsciiImg := &routing.CountryAsciiImg{}
 			err := json.Unmarshal(d.Body, countryAsciiImg)
 			utils.FailOnError(err, "unable to unmarshal the json")
-			asciiImg = countryAsciiImg
+			asciiImg = *countryAsciiImg
 			break
 		}
 	}

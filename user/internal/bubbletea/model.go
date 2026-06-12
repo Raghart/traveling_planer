@@ -190,7 +190,7 @@ func (m *Model) GenerateProjectActions() []list.Item {
 				m.country.From,
 				m.country.Destination),
 			task: func() string {
-				return utils.FormatCurrency(&m.country.Currency)
+				return utils.FormatCurrency(m.country.Currency)
 			},
 		},
 		Item{
@@ -198,7 +198,7 @@ func (m *Model) GenerateProjectActions() []list.Item {
 			desc: fmt.Sprintf(
 				"Want to know the holidays of %s to plan your adventure?", m.country.Destination),
 			task: func() string {
-				return utils.FormatHolidays(&m.country.Festivities)
+				return utils.FormatHolidays(m.country.Festivities)
 			},
 		},
 		Item{
@@ -206,14 +206,14 @@ func (m *Model) GenerateProjectActions() []list.Item {
 			desc: fmt.Sprintf(
 				"Want to read a short description about %s?", m.country.Destination),
 			task: func() string {
-				return utils.FormatDescription(&m.country.Description)
+				return utils.FormatDescription(m.country.Description)
 			},
 		},
 		Item{
 			title: fmt.Sprintf("%s's Images", m.country.Destination),
 			desc:  fmt.Sprintf("Want to see an Ascii of %s?", m.country.Destination),
 			task: func() string {
-				return utils.FormatImageUrls(&m.country.ImageUrls)
+				return utils.FormatImageUrls(m.country.ImageUrls)
 			},
 		},
 	}
