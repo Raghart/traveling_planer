@@ -155,6 +155,27 @@ func LoadSpecialCountryFestivities() map[string][]types.FestivityData {
 			},
 		},
 		"French Guiana": []types.FestivityData{},
-		"Dominica":      []types.FestivityData{},
+		"Dominica": {
+			{
+				Name: "Dominica Carnival",
+				Date: fmt.Sprintf("February 16th to 17th, %d", actualYear),
+			},
+			{
+				Name: "Goûté Domnik – Taste of Dominica",
+				Date: fmt.Sprintf("July 19 - 26, %d", actualYear),
+			},
+			{
+				Name: "Poker Run",
+				Date: fmt.Sprintf("July 26th, %d", actualYear),
+			},
+			{
+				Name: "Summer Daybreak Breakfast Fete",
+				Date: fmt.Sprintf("August 7th–10th, %d", actualYear),
+			},
+			{
+				Name: "Soufriere DiveFest 2026",
+				Date: fmt.Sprintf("August 29th - 30th, %d", actualYear),
+			},
+		},
 	}
 }
