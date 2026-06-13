@@ -141,9 +141,11 @@ func GetHolidays(country string) ([]routing.FestivityData, error) {
 	return festivities, nil
 }
 
-func GetCountryDescription(country string) (description string) {
+func GetCountryDescription(country string) (string, error) {
 	conn, ch, queue, msgs, err := ConnectBunny()
-	utils.FailOnError(err, "unable to connect with RabbitMQ")
+	if err != nil {
+		return "", fmt.Errorf("unable to connect with RabbitMQ: %w", err)
+	}
 
 	defer conn.Close()
 	defer ch.Close()
@@ -152,8 +154,11 @@ func GetCountryDescription(country string) (description string) {
 	err = PublishJSON(ch, "", "travinfo-queue", "description", corrID, queue, routing.CountryDescription{
 		Name: country,
 	})
-	utils.FailOnError(err, "unable to publish the data")
+	if err != nil {
+		return "", fmt.Errorf("unable to publish the data: %w", err)
+	}
 
+	var description string
 	for d := range msgs {
 		if d.CorrelationId == corrID {
 			countryData := &routing.CountryDescription{}
@@ -163,7 +168,8 @@ func GetCountryDescription(country string) (description string) {
 			break
 		}
 	}
-	return
+
+	return description, nil
 }
 
 func GetUrlImages(country string) (urlImages []string) {

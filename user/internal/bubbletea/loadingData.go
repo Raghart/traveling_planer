@@ -33,10 +33,11 @@ func (m *Model) LoadCountryData() chan tea.Msg {
 		}
 	}()
 	go func() {
-		description := pubsub.GetCountryDescription(m.country.Destination)
+		description, err := pubsub.GetCountryDescription(m.country.Destination)
 		results <- routing.CountryData{
 			DataType: "description",
 			Data:     description,
+			Error:    err,
 		}
 	}()
 	go func() {
