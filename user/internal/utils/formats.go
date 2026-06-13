@@ -72,8 +72,9 @@ func FormatWeather(dailyTemps []routing.DailyTemp) string {
 func formatWeatherMessage(day string, date time.Time, dailyTemp routing.DailyTemp) string {
 	var msgBuilder strings.Builder
 
-	fmt.Fprintf(&msgBuilder, "* **%s**(%s): %s  **%.2f°C** / **%.2f°C**",
-		day, date.GoString(),
+	fmt.Fprintf(&msgBuilder, "* **%s** (%s): %s  **%.2f°C** / **%.2f°C**",
+		day,
+		date.Format("2006-01-02"),
 		getWeatherEmoji(dailyTemp.WeatherCode),
 		dailyTemp.Max, dailyTemp.Min)
 
