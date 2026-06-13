@@ -29,6 +29,7 @@ type Model struct {
 	loadingData bool
 	dataCh      chan tea.Msg
 	dataMsg     string
+	err         error
 }
 
 func (m *Model) Init() tea.Cmd {
@@ -49,6 +50,10 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		m.renderer = renderer
 		return m, nil
+
+	case routing.MsgError:
+		m.err = msg.Error
+		return m, tea.Quit
 
 	case progress.FrameMsg:
 		var cmd tea.Cmd
@@ -137,6 +142,10 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) View() tea.View {
+	if m.err != nil {
+		return tea.NewView(m.styles.QuitText.Render(fmt.Sprintf("%v", m.err)))
+	}
+
 	if m.loadingData {
 		return tea.NewView("\n" +
 			fmt.Sprintf("Loading data from %s...\n\n", m.country.Destination) +

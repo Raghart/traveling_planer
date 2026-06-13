@@ -49,6 +49,10 @@ type DailyTemp struct {
 	AparentMin  float64
 }
 
+type MsgError struct {
+	Error error
+}
+
 type TestingData struct {
 	IsCountry bool
 }
