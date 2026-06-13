@@ -57,7 +57,7 @@ func GetCurrency(fromCurr, toCurr string) (routing.Currency, error) {
 		return routing.Currency{}, fmt.Errorf("unable to ask for currency: %w", err)
 	}
 
-	var currencyStruct routing.Currency
+	currencyStruct := routing.Currency{}
 	for d := range msgs {
 		if d.CorrelationId == corrID {
 			currencyData := &routing.Currency{}
@@ -74,9 +74,11 @@ func GetCurrency(fromCurr, toCurr string) (routing.Currency, error) {
 	return currencyStruct, nil
 }
 
-func GetTemperature(country string) (tempSlice []routing.DailyTemp) {
+func GetTemperature(country string) ([]routing.DailyTemp, error) {
 	conn, ch, queue, msgs, err := ConnectBunny()
-	utils.FailOnError(err, "unable to connect to bunny server")
+	if err != nil {
+		return []routing.DailyTemp{}, fmt.Errorf("unable to connect to RabbitMQ: %w", err)
+	}
 
 	defer conn.Close()
 	defer ch.Close()
@@ -85,20 +87,22 @@ func GetTemperature(country string) (tempSlice []routing.DailyTemp) {
 	err = PublishJSON(ch, "", "travinfo-queue", "temperature", corrID, queue, routing.CountryTemp{
 		Country: country,
 	})
-	utils.FailOnError(err, "unable to publish the temperature request")
+	if err != nil {
+		return []routing.DailyTemp{}, fmt.Errorf("unable to publish the temperature request: %w", err)
+	}
 
-	func() {
-		for d := range msgs {
-			if d.CorrelationId == corrID {
-				countryTemp := &routing.CountryTemp{}
-				err = json.Unmarshal(d.Body, countryTemp)
-				utils.FailOnError(err, "unable to unmarshal the body")
-				tempSlice = countryTemp.DailyTemperatures
-				break
-			}
+	tempSlice := []routing.DailyTemp{}
+	for d := range msgs {
+		if d.CorrelationId == corrID {
+			countryTemp := &routing.CountryTemp{}
+			err = json.Unmarshal(d.Body, countryTemp)
+			utils.FailOnError(err, "unable to unmarshal the body")
+			tempSlice = countryTemp.DailyTemperatures
+			break
 		}
-	}()
-	return
+	}
+
+	return tempSlice, nil
 }
 
 func GetHolidays(country string) (festivities []routing.FestivityData) {

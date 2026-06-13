@@ -9,10 +9,11 @@ import (
 func (m *Model) LoadCountryData() chan tea.Msg {
 	results := make(chan tea.Msg, 5)
 	go func() {
-		dailyTemps := pubsub.GetTemperature(m.country.Destination)
+		dailyTemps, err := pubsub.GetTemperature(m.country.Destination)
 		results <- routing.CountryData{
 			DataType: "temp",
 			Data:     dailyTemps,
+			Error:    err,
 		}
 	}()
 	go func() {
