@@ -154,7 +154,48 @@ func LoadSpecialCountryFestivities() map[string][]types.FestivityData {
 				Date: fmt.Sprintf("December 13, %d", actualYear),
 			},
 		},
-		"French Guiana": []types.FestivityData{},
+		"French Guiana": {
+			{
+				Name: "New Year's Day",
+				Date: fmt.Sprintf("January 1, %d", actualYear),
+			},
+			{
+				Name: "Labour Day",
+				Date: fmt.Sprintf("May 1, %d", actualYear),
+			},
+			{
+				Name: "Victory Day",
+				Date: fmt.Sprintf("May 8, %d", actualYear),
+			},
+			{
+				Name: "Emancipation Day",
+				Date: fmt.Sprintf("June 10th, %d", actualYear),
+			},
+			{
+				Name: "National Day",
+				Date: fmt.Sprintf("July 14th, %d", actualYear),
+			},
+			{
+				Name: "Assumption Day",
+				Date: fmt.Sprintf("August 15th, %d", actualYear),
+			},
+			{
+				Name: "Cayenne Festival",
+				Date: fmt.Sprintf("October 15th, %d", actualYear),
+			},
+			{
+				Name: "All Saints' Day",
+				Date: fmt.Sprintf("November 1st, %d", actualYear),
+			},
+			{
+				Name: "Armistice Day",
+				Date: fmt.Sprintf("November 11th, %d", actualYear),
+			},
+			{
+				Name: "Christmas Day",
+				Date: fmt.Sprintf("December 25th, %d", actualYear),
+			},
+		},
 		"Dominica": {
 			{
 				Name: "Dominica Carnival",
