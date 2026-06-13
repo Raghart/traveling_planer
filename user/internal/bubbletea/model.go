@@ -135,6 +135,11 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, nil
 			}
 
+			if m.err != nil {
+				m.err = nil
+				return m, nil
+			}
+
 			m.quitting = true
 			return m, tea.Quit
 		}
@@ -148,7 +153,9 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m *Model) View() tea.View {
 	if m.err != nil {
-		return tea.NewView(m.styles.QuitText.Render(fmt.Sprintf("%v", m.err)))
+		return tea.NewView(m.styles.QuitText.Render(
+			fmt.Sprintf("%v\n\n", m.err) +
+				HelpStyle("Press 'q' to exit error window")))
 	}
 
 	if m.loadingData {
