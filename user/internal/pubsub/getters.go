@@ -96,7 +96,9 @@ func GetTemperature(country string) ([]routing.DailyTemp, error) {
 		if d.CorrelationId == corrID {
 			countryTemp := &routing.CountryTemp{}
 			err = json.Unmarshal(d.Body, countryTemp)
-			utils.FailOnError(err, "unable to unmarshal the body")
+			if err != nil {
+				return []routing.DailyTemp{}, fmt.Errorf("unable to unmarshal the body: %w", err)
+			}
 			tempSlice = countryTemp.DailyTemperatures
 			break
 		}
@@ -105,9 +107,11 @@ func GetTemperature(country string) ([]routing.DailyTemp, error) {
 	return tempSlice, nil
 }
 
-func GetHolidays(country string) (festivities []routing.FestivityData) {
+func GetHolidays(country string) ([]routing.FestivityData, error) {
 	conn, ch, queue, msgs, err := ConnectBunny()
-	utils.FailOnError(err, "failed to connect with rabbitMQ")
+	if err != nil {
+		return []routing.FestivityData{}, fmt.Errorf("failed to connect with RabbitMQ: %w", err)
+	}
 
 	defer conn.Close()
 	defer ch.Close()
@@ -116,20 +120,25 @@ func GetHolidays(country string) (festivities []routing.FestivityData) {
 	err = PublishJSON(ch, "", "travinfo-queue", "holidays", corrID, queue, routing.CountryFestivities{
 		Country: country,
 	})
-	utils.FailOnError(err, "unable to publish the json")
+	if err != nil {
+		return []routing.FestivityData{}, fmt.Errorf("unable to publish the json: %w", err)
+	}
 
-	func() {
-		for d := range msgs {
-			if d.CorrelationId == corrID {
-				countryFestivities := &routing.CountryFestivities{}
-				err := json.Unmarshal(d.Body, countryFestivities)
-				utils.FailOnError(err, "unable to unmarshal festivity body")
-				festivities = countryFestivities.Festivities
-				break
+	festivities := []routing.FestivityData{}
+	for d := range msgs {
+		if d.CorrelationId == corrID {
+			countryFestivities := &routing.CountryFestivities{}
+			err := json.Unmarshal(d.Body, countryFestivities)
+			if err != nil {
+				return []routing.FestivityData{},
+					fmt.Errorf("unable to unmarshal festivity body: %w", err)
 			}
+			festivities = countryFestivities.Festivities
+			break
 		}
-	}()
-	return
+	}
+
+	return festivities, nil
 }
 
 func GetCountryDescription(country string) (description string) {

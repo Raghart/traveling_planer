@@ -25,10 +25,11 @@ func (m *Model) LoadCountryData() chan tea.Msg {
 		}
 	}()
 	go func() {
-		holidays := pubsub.GetHolidays(m.country.Destination)
+		holidays, err := pubsub.GetHolidays(m.country.Destination)
 		results <- routing.CountryData{
 			DataType: "holidays",
 			Data:     holidays,
+			Error:    err,
 		}
 	}()
 	go func() {
