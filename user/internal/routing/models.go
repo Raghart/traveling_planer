@@ -13,6 +13,7 @@ type CountryManager struct {
 type CountryData struct {
 	DataType string
 	Data     interface{}
+	Error    error
 }
 
 type Currency struct {

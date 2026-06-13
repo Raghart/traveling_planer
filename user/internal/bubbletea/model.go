@@ -61,6 +61,11 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, cmd
 
 	case routing.CountryData:
+		if msg.Error != nil {
+			m.err = msg.Error
+			return m, nil
+		}
+
 		switch msg.DataType {
 		case "temp":
 			tempSlice, _ := msg.Data.([]routing.DailyTemp)
@@ -83,6 +88,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.country.ImageUrls = urlImages
 			m.dataMsg = fmt.Sprintf("%s url images loaded (+20%%)", m.country.Destination)
 		}
+
 		return m, tea.Batch(
 			m.progress.IncrPercent(.20),
 			ListenCountryData(m.dataCh),

@@ -16,10 +16,11 @@ func (m *Model) LoadCountryData() chan tea.Msg {
 		}
 	}()
 	go func() {
-		currencyData := pubsub.GetCurrency(m.country.From, m.country.Destination)
+		currencyData, err := pubsub.GetCurrency(m.country.From, m.country.Destination)
 		results <- routing.CountryData{
 			DataType: "currency",
 			Data:     currencyData,
+			Error:    err,
 		}
 	}()
 	go func() {
