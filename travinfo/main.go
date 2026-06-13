@@ -18,35 +18,26 @@ func main() {
 
 	func() {
 		for d := range msgs {
+			var err error
 			switch d.Type {
 			case "currency":
-				err := pubsub.PublishLatestCurrency(d, ch, queue)
-				if err != nil {
-					log.Print(err)
-				}
+				err = pubsub.PublishLatestCurrency(d, ch, queue)
 			case "temperature":
-				err := pubsub.PublishCountryTemperature(d, ch, queue)
-				if err != nil {
-					log.Print(err)
-				}
+				err = pubsub.PublishCountryTemperature(d, ch, queue)
 			case "holidays":
-				err := pubsub.PublishCountryHolidays(d, ch, queue)
-				if err != nil {
-					log.Print(err)
-				}
+				err = pubsub.PublishCountryHolidays(d, ch, queue)
 			case "description":
-				err := pubsub.PublishCountryDescription(d, ch, queue)
-				if err != nil {
-					log.Print(err)
-				}
+				err = pubsub.PublishCountryDescription(d, ch, queue)
 			case "images":
-				err := pubsub.PublishCountryImage(d, ch, queue)
-				if err != nil {
-					log.Print(err)
-				}
+				err = pubsub.PublishCountryImage(d, ch, queue)
 			default:
 				log.Println("Invalid request made!")
 				d.Ack(false)
+			}
+
+			if err != nil {
+				log.Print(err)
+				d.Nack(false, false)
 			}
 		}
 	}()
