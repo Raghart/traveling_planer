@@ -94,7 +94,36 @@ func LoadSpecialCountryFestivities() map[string][]types.FestivityData {
 	return map[string][]types.FestivityData{
 		"Saint Kitts and Nevis": []types.FestivityData{},
 		"Antigua and Barbuda":   []types.FestivityData{},
-		"Trinidad and Tobago":   []types.FestivityData{},
+		"Trinidad and Tobago": {
+			{
+				Name: "Trinidad & Tobago Carnival",
+				Date: fmt.Sprintf("February 16th to 17th, %d", actualYear),
+			},
+			{
+				Name: "Buccoo goat & Crab race festival",
+				Date: fmt.Sprintf("April 7th, %d", actualYear),
+			},
+			{
+				Name: "Tobago Jazz, Music & Golf Weekend",
+				Date: fmt.Sprintf("May 1st to 3rd, %d", actualYear),
+			},
+			{
+				Name: "Tobago Heritage Festival",
+				Date: fmt.Sprintf("July 1st to August 1st %d", actualYear),
+			},
+			{
+				Name: "Great race",
+				Date: fmt.Sprintf("August 15th %d", actualYear),
+			},
+			{
+				Name: "Tobago blue Food Festival",
+				Date: fmt.Sprintf("October 18th %d", actualYear),
+			},
+			{
+				Name: "Tobago Carnival",
+				Date: fmt.Sprintf("October 30th - November 1st %d", actualYear),
+			},
+		},
 		"Saint Lucia": {
 			{
 				Name: "Saint Lucia Jazz & Arts Festival",
