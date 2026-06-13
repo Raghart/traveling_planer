@@ -7,10 +7,10 @@ import (
 )
 
 func (m *Model) LoadCountryData() chan tea.Msg {
-	results := make(chan tea.Msg, 5)
+	countryDataCh := make(chan tea.Msg, 5)
 	go func() {
 		dailyTemps, err := pubsub.GetTemperature(m.country.Destination)
-		results <- routing.CountryData{
+		countryDataCh <- routing.CountryData{
 			DataType: "temp",
 			Data:     dailyTemps,
 			Error:    err,
@@ -18,7 +18,7 @@ func (m *Model) LoadCountryData() chan tea.Msg {
 	}()
 	go func() {
 		currencyData, err := pubsub.GetCurrency(m.country.From, m.country.Destination)
-		results <- routing.CountryData{
+		countryDataCh <- routing.CountryData{
 			DataType: "currency",
 			Data:     currencyData,
 			Error:    err,
@@ -26,7 +26,7 @@ func (m *Model) LoadCountryData() chan tea.Msg {
 	}()
 	go func() {
 		holidays, err := pubsub.GetHolidays(m.country.Destination)
-		results <- routing.CountryData{
+		countryDataCh <- routing.CountryData{
 			DataType: "holidays",
 			Data:     holidays,
 			Error:    err,
@@ -34,7 +34,7 @@ func (m *Model) LoadCountryData() chan tea.Msg {
 	}()
 	go func() {
 		description, err := pubsub.GetCountryDescription(m.country.Destination)
-		results <- routing.CountryData{
+		countryDataCh <- routing.CountryData{
 			DataType: "description",
 			Data:     description,
 			Error:    err,
@@ -42,13 +42,13 @@ func (m *Model) LoadCountryData() chan tea.Msg {
 	}()
 	go func() {
 		urlImages, err := pubsub.GetUrlImages(m.country.Destination)
-		results <- routing.CountryData{
+		countryDataCh <- routing.CountryData{
 			DataType: "images",
 			Data:     urlImages,
 			Error:    err,
 		}
 	}()
-	return results
+	return countryDataCh
 }
 
 func (m *Model) CheckPercentage() tea.Cmd {

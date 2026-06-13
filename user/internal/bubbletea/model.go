@@ -2,7 +2,6 @@ package bubbletea
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"charm.land/bubbles/v2/help"
@@ -46,14 +45,12 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.viewport.SetHeight(msg.Height - 8)
 		renderer, err := m.updateRenderer(msg.Width)
 		if err != nil {
-			log.Print(err)
+			m.err = err
+			return m, nil
 		}
+
 		m.renderer = renderer
 		return m, nil
-
-	case routing.MsgError:
-		m.err = msg.Error
-		return m, tea.Quit
 
 	case progress.FrameMsg:
 		var cmd tea.Cmd
@@ -121,13 +118,13 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			if ok && m.country.From != "" && m.country.Destination != "" {
-				if i.err != nil {
-					m.err = i.err
+				formattedMsg := i.task()
+				str, err := m.renderer.Render(formattedMsg)
+				if err != nil {
+					m.err = err
 					return m, nil
 				}
 
-				formattedMsg := i.task()
-				str, _ := m.renderer.Render(formattedMsg)
 				m.viewport.SetContent(str)
 				m.showResults = true
 			}
