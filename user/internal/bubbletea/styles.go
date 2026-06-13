@@ -52,3 +52,15 @@ func helpViewport() string {
 		Foreground(lipgloss.Color("241")).
 		Render("\n ↑/↓: Navigate • q/esc: Quit\n")
 }
+
+func (m *Model) UpdateStyles(isDark bool) {
+	m.styles = NewStyles(isDark)
+	m.list.Styles.Title = m.styles.Title
+	m.list.Styles.PaginationStyle = m.styles.Pagination
+	m.list.Styles.HelpStyle = m.styles.Help
+
+	m.list.Styles.ActivePaginationDot = m.styles.ActiveDot
+	m.list.Styles.InactivePaginationDot = m.styles.InactiveDot
+	m.list.Paginator.ActiveDot = m.styles.ActiveDot.Render("•")
+	m.list.Paginator.InactiveDot = m.styles.InactiveDot.Render("•")
+}

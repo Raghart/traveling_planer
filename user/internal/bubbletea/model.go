@@ -12,10 +12,8 @@ import (
 	"charm.land/bubbles/v2/viewport"
 	tea "charm.land/bubbletea/v2"
 	"charm.land/glamour/v2"
-	"charm.land/glamour/v2/styles"
 	"github.com/Raghart/traveling_planer/internal/pubsub"
 	"github.com/Raghart/traveling_planer/internal/routing"
-	"github.com/Raghart/traveling_planer/internal/utils"
 )
 
 type Model struct {
@@ -32,18 +30,6 @@ type Model struct {
 	loadingData bool
 	dataCh      chan tea.Msg
 	dataMsg     string
-}
-
-func (m *Model) UpdateStyles(isDark bool) {
-	m.styles = NewStyles(isDark)
-	m.list.Styles.Title = m.styles.Title
-	m.list.Styles.PaginationStyle = m.styles.Pagination
-	m.list.Styles.HelpStyle = m.styles.Help
-
-	m.list.Styles.ActivePaginationDot = m.styles.ActiveDot
-	m.list.Styles.InactivePaginationDot = m.styles.InactiveDot
-	m.list.Paginator.ActiveDot = m.styles.ActiveDot.Render("•")
-	m.list.Paginator.InactiveDot = m.styles.InactiveDot.Render("•")
 }
 
 func (m *Model) Init() tea.Cmd {
@@ -182,66 +168,6 @@ func (m *Model) View() tea.View {
 	v := tea.NewView(strView)
 	v.AltScreen = true
 	return v
-}
-
-func (m *Model) GenerateProjectActions() []list.Item {
-	return []list.Item{
-		Item{
-			title: "Temperature",
-			desc:  fmt.Sprintf("Want to know the weekly temperature of %s?", m.country.Destination),
-			task: func() string {
-				return utils.FormatWeather(m.country.DailyTemperatures)
-			},
-		},
-		Item{
-			title: "Currency",
-			desc: fmt.Sprintf(
-				"Want to know the currency difference from %s to %s?",
-				m.country.From,
-				m.country.Destination),
-			task: func() string {
-				return utils.FormatCurrency(m.country.Currency)
-			},
-		},
-		Item{
-			title: "Holidays",
-			desc: fmt.Sprintf(
-				"Want to know the holidays of %s to plan your adventure?", m.country.Destination),
-			task: func() string {
-				return utils.FormatHolidays(m.country.Destination, m.country.Festivities)
-			},
-		},
-		Item{
-			title: "Description",
-			desc: fmt.Sprintf(
-				"Want to read more about %s?", m.country.Destination),
-			task: func() string {
-				return utils.FormatDescription(m.country.Destination, m.country.Description)
-			},
-		},
-		Item{
-			title: fmt.Sprintf("%s's Images", m.country.Destination),
-			desc:  fmt.Sprintf("Check out images of %s!", m.country.Destination),
-			task: func() string {
-				return utils.FormatImageUrls(m.country.Destination, m.country.ImageUrls)
-			},
-		},
-	}
-}
-
-func (m *Model) updateRenderer(terminalWidth int) (*glamour.TermRenderer, error) {
-	glamourRenderWidth := terminalWidth - m.viewport.Style.GetHorizontalFrameSize() - 3
-	styles := styles.DarkStyleConfig
-
-	renderer, err := glamour.NewTermRenderer(
-		glamour.WithStyles(styles),
-		glamour.WithWordWrap(glamourRenderWidth),
-	)
-
-	if err != nil {
-		return nil, fmt.Errorf("unable to create the renderer: %w", err)
-	}
-	return renderer, nil
 }
 
 func (m *Model) LoadCountryData() chan tea.Msg {

@@ -158,6 +158,7 @@ func PublishCountryHolidays(d ampq.Delivery, ch *ampq.Channel, queue ampq.Queue)
 		countryMap := utils.LoadSpecialCountryFestivities()
 		countryFestivities.Festivities = countryMap[countryFestivities.Country]
 		err := PublishJSON(ch, "", d.ReplyTo, d.CorrelationId, "holidays", queue, countryFestivities)
+
 		if err != nil {
 			return fmt.Errorf("unable to publish the json festivities")
 		}
