@@ -41,10 +41,11 @@ func (m *Model) LoadCountryData() chan tea.Msg {
 		}
 	}()
 	go func() {
-		urlImages := pubsub.GetUrlImages(m.country.Destination)
+		urlImages, err := pubsub.GetUrlImages(m.country.Destination)
 		results <- routing.CountryData{
 			DataType: "images",
 			Data:     urlImages,
+			Error:    err,
 		}
 	}()
 	return results

@@ -172,9 +172,11 @@ func GetCountryDescription(country string) (string, error) {
 	return description, nil
 }
 
-func GetUrlImages(country string) (urlImages []string) {
+func GetUrlImages(country string) ([]string, error) {
 	conn, ch, queue, msgs, err := ConnectBunny()
-	utils.FailOnError(err, "unable to connect to RabbitMQ")
+	if err != nil {
+		return []string{}, fmt.Errorf("unable to connect to RabbitMQ: %w", err)
+	}
 
 	defer conn.Close()
 	defer ch.Close()
@@ -183,16 +185,22 @@ func GetUrlImages(country string) (urlImages []string) {
 	err = PublishJSON(ch, "", "travinfo-queue", "images", corrID, queue, routing.CountryAsciiImg{
 		Name: country,
 	})
-	utils.FailOnError(err, "unable to publish json")
+	if err != nil {
+		return []string{}, fmt.Errorf("unable to publish json: %w", err)
+	}
 
+	urlImages := []string{}
 	for d := range msgs {
 		if d.CorrelationId == corrID {
 			countryAsciiImg := &routing.CountryAsciiImg{}
 			err := json.Unmarshal(d.Body, countryAsciiImg)
-			utils.FailOnError(err, "unable to unmarshal the json")
+			if err != nil {
+				return []string{}, fmt.Errorf("unable to unmarshal the json: %w", err)
+			}
 			urlImages = countryAsciiImg.ImageUrls
 			break
 		}
 	}
-	return
+
+	return urlImages, nil
 }
