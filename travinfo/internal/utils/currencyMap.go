@@ -92,7 +92,36 @@ func LoadCountryCodesMap() map[string]string {
 func LoadSpecialCountryFestivities() map[string][]types.FestivityData {
 	actualYear := time.Now().Year()
 	return map[string][]types.FestivityData{
-		"Saint Kitts and Nevis": []types.FestivityData{},
+		"Saint Kitts and Nevis": {
+			{
+				Name: "New Year's Day",
+				Date: fmt.Sprintf("1 January %d", actualYear),
+			},
+			{
+				Name: "Carnival Day",
+				Date: fmt.Sprintf("2 January %d", actualYear),
+			},
+			{
+				Name: "Buckley's Uprising Day",
+				Date: fmt.Sprintf("28 January %d", actualYear),
+			},
+			{
+				Name: "National Heroes' Day",
+				Date: fmt.Sprintf("16 September %d", actualYear),
+			},
+			{
+				Name: "Independence Day",
+				Date: fmt.Sprintf("19 September %d", actualYear),
+			},
+			{
+				Name: "Christmas Day",
+				Date: fmt.Sprintf("25 December %d", actualYear),
+			},
+			{
+				Name: "Boxing Day",
+				Date: fmt.Sprintf("26 December %d", actualYear),
+			},
+		},
 		"Antigua and Barbuda": {
 			{
 				Name: "New Years Day",
