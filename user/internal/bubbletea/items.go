@@ -1,6 +1,7 @@
 package bubbletea
 
 import (
+	"errors"
 	"fmt"
 	"io"
 
@@ -12,6 +13,7 @@ import (
 type Item struct {
 	title, desc string
 	task        func() string
+	err         error
 }
 
 func (i Item) Title() string       { return i.title }
@@ -109,6 +111,14 @@ func (m *Model) GenerateProjectActions() []list.Item {
 			task: func() string {
 				return utils.FormatImageUrls(m.country.Destination, m.country.ImageUrls)
 			},
+		},
+		Item{
+			title: "Test Error",
+			desc:  "Throw an error to test TUI reaction",
+			task: func() string {
+				return ""
+			},
+			err: errors.New("Testing error!"),
 		},
 	}
 }

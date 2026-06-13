@@ -115,6 +115,11 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			if ok && m.country.From != "" && m.country.Destination != "" {
+				if i.err != nil {
+					m.err = i.err
+					return m, nil
+				}
+
 				formattedMsg := i.task()
 				str, _ := m.renderer.Render(formattedMsg)
 				m.viewport.SetContent(str)
