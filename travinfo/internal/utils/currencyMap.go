@@ -93,7 +93,56 @@ func LoadSpecialCountryFestivities() map[string][]types.FestivityData {
 	actualYear := time.Now().Year()
 	return map[string][]types.FestivityData{
 		"Saint Kitts and Nevis": []types.FestivityData{},
-		"Antigua and Barbuda":   []types.FestivityData{},
+		"Antigua and Barbuda": {
+			{
+				Name: "New Years Day",
+				Date: fmt.Sprintf("01 January %d", actualYear),
+			},
+			{
+				Name: "Good Friday",
+				Date: fmt.Sprintf("10 April %d", actualYear),
+			},
+			{
+				Name: "Easter Monday",
+				Date: fmt.Sprintf("13 April %d", actualYear),
+			},
+			{
+				Name: "Labour Day Holiday",
+				Date: fmt.Sprintf("04 May %d", actualYear),
+			},
+			{
+				Name: "Whit Monday",
+				Date: fmt.Sprintf("01 June %d", actualYear),
+			},
+			{
+				Name: "Carnival Monday",
+				Date: fmt.Sprintf("03 August %d", actualYear),
+			},
+			{
+				Name: "Carnival Tuesday",
+				Date: fmt.Sprintf("04 August %d", actualYear),
+			},
+			{
+				Name: "Independence Day",
+				Date: fmt.Sprintf("01 November %d", actualYear),
+			},
+			{
+				Name: "Independence Day Holiday",
+				Date: fmt.Sprintf("02 November %d", actualYear),
+			},
+			{
+				Name: "V.C. Bird Day",
+				Date: fmt.Sprintf("09 December %d", actualYear),
+			},
+			{
+				Name: "Christmas Day",
+				Date: fmt.Sprintf("25 December %d", actualYear),
+			},
+			{
+				Name: "Boxing Day",
+				Date: fmt.Sprintf("26 December %d", actualYear),
+			},
+		},
 		"Trinidad and Tobago": {
 			{
 				Name: "Trinidad & Tobago Carnival",
