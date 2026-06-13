@@ -2,6 +2,7 @@ package pubsub
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/Raghart/traveling_planer/internal/routing"
 	"github.com/Raghart/traveling_planer/internal/utils"
@@ -37,9 +38,11 @@ func GetTestingRPC() (res string) {
 	return
 }
 
-func GetCurrency(fromCurr, toCurr string) (currencyStruct routing.Currency) {
+func GetCurrency(fromCurr, toCurr string) (routing.Currency, error) {
 	conn, ch, q, msgs, err := ConnectBunny()
-	utils.FailOnError(err, "unable to load to bunny")
+	if err != nil {
+		return routing.Currency{}, fmt.Errorf("unable to connect with RabbitMQ: %w", err)
+	}
 
 	defer conn.Close()
 	defer ch.Close()
@@ -50,20 +53,25 @@ func GetCurrency(fromCurr, toCurr string) (currencyStruct routing.Currency) {
 		From: fromCurr,
 		To:   toCurr,
 	})
-	utils.FailOnError(err, "unable to ask for currency")
+	if err != nil {
+		return routing.Currency{}, fmt.Errorf("unable to ask for currency: %w", err)
+	}
 
-	func() {
-		for d := range msgs {
-			if d.CorrelationId == corrID {
-				currencyData := &routing.Currency{}
-				err = json.Unmarshal(d.Body, currencyData)
-				utils.FailOnError(err, "unable to unmarshal the recieved data")
-				currencyStruct = *currencyData
-				break
+	var currencyStruct routing.Currency
+	for d := range msgs {
+		if d.CorrelationId == corrID {
+			currencyData := &routing.Currency{}
+			err = json.Unmarshal(d.Body, currencyData)
+			if err != nil {
+				return routing.Currency{},
+					fmt.Errorf("unable to unmarshal the recieved data: %w", err)
 			}
+			currencyStruct = *currencyData
+			break
 		}
-	}()
-	return
+	}
+
+	return currencyStruct, nil
 }
 
 func GetTemperature(country string) (tempSlice []routing.DailyTemp) {
