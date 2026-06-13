@@ -5,38 +5,8 @@ import (
 	"fmt"
 
 	"github.com/Raghart/traveling_planer/internal/routing"
-	"github.com/Raghart/traveling_planer/internal/utils"
 	"github.com/google/uuid"
 )
-
-func GetTestingRPC() (res string) {
-	conn, rabbitCh, q, msgs, err := ConnectBunny()
-	utils.FailOnError(err, "unable to connect to bunny")
-
-	defer conn.Close()
-	defer rabbitCh.Close()
-
-	corrID := uuid.NewString()
-	err = PublishJSON(rabbitCh, "", "rpc_queue", "", corrID, q, routing.TestingData{
-		IsCountry: false,
-	})
-	utils.FailOnError(err, "error while trying to publish the client json")
-
-	for d := range msgs {
-		if d.CorrelationId == corrID {
-			countryData := &routing.TestingData{}
-			err = json.Unmarshal(d.Body, countryData)
-			utils.FailOnError(err, "unable to unmarshal data")
-
-			res = "unknown"
-			if countryData.IsCountry == true {
-				res = "There is a country in the horizon!"
-			}
-			break
-		}
-	}
-	return
-}
 
 func GetCurrency(fromCurr, toCurr string) (routing.Currency, error) {
 	conn, ch, q, msgs, err := ConnectBunny()
@@ -163,7 +133,9 @@ func GetCountryDescription(country string) (string, error) {
 		if d.CorrelationId == corrID {
 			countryData := &routing.CountryDescription{}
 			err := json.Unmarshal(d.Body, countryData)
-			utils.FailOnError(err, "unable to unmarshal the data")
+			if err != nil {
+				return "", fmt.Errorf("unable to unmarshal the data: %w", err)
+			}
 			description = countryData.Description
 			break
 		}
