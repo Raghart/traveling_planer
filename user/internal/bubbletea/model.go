@@ -12,7 +12,6 @@ import (
 	"charm.land/bubbles/v2/viewport"
 	tea "charm.land/bubbletea/v2"
 	"charm.land/glamour/v2"
-	"github.com/Raghart/traveling_planer/internal/pubsub"
 	"github.com/Raghart/traveling_planer/internal/routing"
 )
 
@@ -116,6 +115,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.viewport.SetContent(str)
 				m.showResults = true
 			}
+
 			return m, nil
 
 		case key.Matches(msg, m.keys.Quit):
@@ -168,63 +168,6 @@ func (m *Model) View() tea.View {
 	v := tea.NewView(strView)
 	v.AltScreen = true
 	return v
-}
-
-func (m *Model) LoadCountryData() chan tea.Msg {
-	results := make(chan tea.Msg, 5)
-	go func() {
-		dailyTemps := pubsub.GetTemperature(m.country.Destination)
-		results <- routing.CountryData{
-			DataType: "temp",
-			Data:     dailyTemps,
-		}
-	}()
-	go func() {
-		currencyData := pubsub.GetCurrency(m.country.From, m.country.Destination)
-		results <- routing.CountryData{
-			DataType: "currency",
-			Data:     currencyData,
-		}
-	}()
-	go func() {
-		holidays := pubsub.GetHolidays(m.country.Destination)
-		results <- routing.CountryData{
-			DataType: "holidays",
-			Data:     holidays,
-		}
-	}()
-	go func() {
-		description := pubsub.GetCountryDescription(m.country.Destination)
-		results <- routing.CountryData{
-			DataType: "description",
-			Data:     description,
-		}
-	}()
-	go func() {
-		urlImages := pubsub.GetUrlImages(m.country.Destination)
-		results <- routing.CountryData{
-			DataType: "images",
-			Data:     urlImages,
-		}
-	}()
-	return results
-}
-
-func (m *Model) CheckPercentage() tea.Cmd {
-	if m.progress.Percent() >= 1.0 {
-		m.loadingData = false
-		cmd := m.list.SetItems(m.GenerateProjectActions())
-		return cmd
-	}
-
-	return nil
-}
-
-func ListenCountryData(dataChannel chan tea.Msg) tea.Cmd {
-	return func() tea.Msg {
-		msg := <-dataChannel
-		return msg
-	}
 }
 
 func InitialModel() *Model {
