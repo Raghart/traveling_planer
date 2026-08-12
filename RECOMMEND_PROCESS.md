@@ -1,13 +1,19 @@
 # Process steps for new Brain
 
-- Gather user data for his/her desired travel.
+1. Gather user data for his/her desired travel.
+   - How: TUI. 
   
-- Save the data in the cache (Redis / some other cache framework).
+2. Save the data in the cache (Redis / some other cache framework).
+    - How: Redis / PostgreSQL.
    
-- If cache empty, gather the required data from the DB or from the APIs.
+3. If cache empty, gather the required data from the DB or from the APIs.
+    - How: Go's routine concurrency.
   
-- Execute the analyze algorithm to determine which country would be best given X user data.
+4. Execute the analyze algorithm to determine which country would be best given X user data.
+    - How: Using the data gathered in the previous step to calculate which country matches best to the user wanted data. 
   
-- Deliver the data for the user to check out.
+5. Deliver the data for the user to check out.
+    - How: Delivered the most recommended country data to show through RabbitMQ.
   
-- Inform the user about the option of inputing a traveling advice through a PDF.
+6. Inform the user about the option of inputing a traveling advice through a PDF.
+    - How: TUI to show the data / N8N Microservice with data
