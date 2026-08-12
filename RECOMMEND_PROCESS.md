@@ -3,6 +3,11 @@
 1. Gather user data for his/her desired travel.
    - **How**: TUI. 
    - **Language**: Go.
+   - **Questions**:
+     - Where are you from?
+     - When are you planning to travel?
+     - Do you prefer hotter or colder enviroments?
+     - What adventure activities would you like to try(e.g., hiking, snorkeling, or rock climbing)?
 
 2. Check **if** there is a similar request in the cache.
 
