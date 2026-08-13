@@ -28,12 +28,12 @@
     - **How**: Using the data gathered in the previous step to calculate which country matches best to the user wanted data.
     - **Language**: A language that does calculations and comparations fastly.
 
-    - Information to add points:
+    - Algorithm Logic:
       - Is **OG** currency > **DEST** currency?.
-      - Is there a Holiday proximate to the travel date in the country?.
-      - Is there a variety of good hotels in the country's Capital?
-      - Is there any festivals near the travel date in the country?
-      - Origin Language == Destination Language?
+      - Is there a **Holiday** proximate to the travel date in the country?.
+      - Is there a variety of **good hotels** in the country's Capital?.
+      - Is there any **festivals** near the travel date in the country?.
+      - **OG** Language == **DEST** Language?.
   
 4. Deliver the data for the user to check out.
     - **How**: Delivered the most recommended country data to show through RabbitMQ.
