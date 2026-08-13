@@ -27,11 +27,12 @@
 3. Execute the analyze algorithm to determine which country would be best given X user data.
     - **How**: Using the data gathered in the previous step to calculate which country matches best to the user wanted data.
     - **Language**: A language that does calculations and comparations fastly.
+
     - Information to add points:
-      - Is origin currency > destination currency?.
-      - Is there a Holiday near the travel date in the country?
-      - Are there a variety of good hotels in the country's Capital?
-      - Are there any festivals near the travel date in the country?
+      - Is **OG** currency > **DEST** currency?.
+      - Is there a Holiday proximate to the travel date in the country?.
+      - Is there a variety of good hotels in the country's Capital?
+      - Is there any festivals near the travel date in the country?
       - Origin Language == Destination Language?
   
 4. Deliver the data for the user to check out.
@@ -41,3 +42,6 @@
 5. Inform the user about the option of inputing a traveling inform through a PDF.
     - **How**: TUI to show the data / N8N Microservice with data.
     - **Language**: Go *(TUI)* / Python *(PDF)*
+
+## Ideas
+- What if the required data is saved in a .Parquet and loaded in a PostgreSQL database?
