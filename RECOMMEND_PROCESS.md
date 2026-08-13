@@ -6,8 +6,8 @@
    - **Questions**:
      - Where are you from?
      - When are you planning to travel?
-     - Do you prefer hotter or colder enviroments?
-     - What adventure activities would you like to try(e.g., hiking, snorkeling, or rock climbing)?
+     - Do you prefer *hotter* or *colder* enviroments?
+     - Which factor calls your attention when choosing for a place to travel? (*Nature-wilderness*, *City-life style*, *History-culture*)
 
 2. Check **if** there is a similar request in the cache.
 
