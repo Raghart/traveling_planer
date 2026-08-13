@@ -18,7 +18,7 @@
          - ***Temperature*** during travel.
          - ***Currency*** / ***Language*** from the ***origin*** country.
          - Is each America country **hotter** or **colder**?
-         - What ***factor*** stand out more in the country? (*Nature-wilderness*, *City-life style*, *History-culture*)
+         - What ***factor*** stand out more in the America country? (*Nature-wilderness*, *City-life style*, *History-culture*)
   
     2. If cache has a match, deliver the required data to the algorithm.
        - **How**: Redis / PostgreSQL.
