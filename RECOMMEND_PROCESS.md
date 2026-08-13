@@ -14,6 +14,11 @@
     1. If the cache doesn't have a match, gather the required data from the DB or from the APIs and save it.
        - **How**: Go's routine concurrency / Redis or other cache framework to save the data.
        - **Language**: Go / Redis (*Cache*).
+       - Information ***needed*** to know:
+         - ***Temperature*** during travel.
+         - ***Currency*** / ***Language*** from the ***origin*** country.
+         - Is each America country **hotter** or **colder**?
+         - What ***factor*** stand out more in the country? (*Nature-wilderness*, *City-life style*, *History-culture*)
   
     2. If cache has a match, deliver the required data to the algorithm.
        - **How**: Redis / PostgreSQL.
@@ -27,6 +32,6 @@
     - **How**: Delivered the most recommended country data to show through RabbitMQ.
     - **Language**: RabbitMQ.
   
-5. Inform the user about the option of inputing a traveling advice through a PDF.
+5. Inform the user about the option of inputing a traveling inform through a PDF.
     - **How**: TUI to show the data / N8N Microservice with data.
     - **Language**: Go *(TUI)* / Python *(PDF)*
