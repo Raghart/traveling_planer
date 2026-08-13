@@ -26,7 +26,13 @@
   
 3. Execute the analyze algorithm to determine which country would be best given X user data.
     - **How**: Using the data gathered in the previous step to calculate which country matches best to the user wanted data.
-    - **Language**: A language that does calculations and comparations fastly.  
+    - **Language**: A language that does calculations and comparations fastly.
+    - Information to add points:
+      - Is origin currency > destination currency?.
+      - Is there a Holiday near the travel date in the country?
+      - Are there a variety of good hotels in the country's Capital?
+      - Are there any festivals near the travel date in the country?
+      - Origin Language == Destination Language?
   
 4. Deliver the data for the user to check out.
     - **How**: Delivered the most recommended country data to show through RabbitMQ.
