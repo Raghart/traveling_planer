@@ -29,7 +29,7 @@
     - **Language**: A language that does calculations and comparations fastly.
 
     - Algorithm Logic:
-      - Is **OG** currency > **DEST** currency?.
+      - Is **OG budget** able to keep up with **DEST** ***Cost of Living***? (**Budget** > **Cost of Living**).
       - Is there a **Holiday** proximate to the travel date in the country?.
       - Is there a variety of **good hotels** in the country's Capital?.
       - Is there any **festivals** near the travel date in the country?.
