@@ -14,12 +14,22 @@ type CountryManager struct {
 	UserData UserPreferences
 }
 
+type CountryDestination struct {
+	Destination       string
+	Description       string
+	Currency          Currency
+	ImageUrls         []string
+	DailyTemperatures []DailyTemp
+	Festivities       []FestivityData
+}
+
 type UserPreferences struct {
-	From           string
-	Budget         BudgetType
-	TravelDate     time.Time
-	TravelDuration int
-	PrefersWarmth  bool
+	From               string
+	Budget             BudgetType
+	TravelDate         time.Time
+	TravelDuration     int
+	PrefersWarmth      bool
+	PreferedActivities []string
 }
 
 type CountryData struct {
