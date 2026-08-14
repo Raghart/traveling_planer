@@ -11,16 +11,17 @@ type CountryManager struct {
 	DailyTemperatures []DailyTemp
 	Festivities       []FestivityData
 
-	UserData UserPreferences
+	Recommendations []CountryDestination
+	UserData        UserPreferences
 }
 
 type CountryDestination struct {
-	Destination       string
+	Name              string
 	Description       string
 	Currency          Currency
-	ImageUrls         []string
 	DailyTemperatures []DailyTemp
 	Festivities       []FestivityData
+	ImageUrls         []string
 }
 
 type UserPreferences struct {
