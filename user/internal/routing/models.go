@@ -8,6 +8,8 @@ type CountryManager struct {
 	ImageUrls         []string
 	DailyTemperatures []DailyTemp
 	Festivities       []FestivityData
+
+	Budget BudgetType
 }
 
 type CountryData struct {
@@ -15,6 +17,14 @@ type CountryData struct {
 	Data     interface{}
 	Error    error
 }
+
+type BudgetType int
+
+const (
+	Economic BudgetType = iota
+	Moderate
+	HighLevel
+)
 
 type Currency struct {
 	From         string
