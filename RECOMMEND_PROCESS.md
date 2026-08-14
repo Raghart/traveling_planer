@@ -41,11 +41,13 @@
       
       - Is there a **Holiday** proximate to the travel date in the country?.
       
-      - Is there a variety of **Good Hotels** in the country's Capital?.
+      - The **DEST Country** has a good variety of **Good Hotels**(or Good Tourism index)?.
       
       - Is there any **Festivals** near the travel date in the country?.
       
       - Is the country politically stable (Secure)? 
+      
+      - Does the **User** feel comfortable in the country ***General Temperature***?  
   
 4. Deliver the data for the user to check out.
     - **How**: Delivered the most recommended country data to show through RabbitMQ.
