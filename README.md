@@ -1,4 +1,4 @@
-# Traveling
+# Traveling Recommender 2.0 The Comeback
 
 ## Project Ideas
 --> popular sights, best months to visit
