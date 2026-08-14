@@ -38,10 +38,14 @@
 
     - Algorithm Logic:
       - Is **OG budget** able to keep up with **DEST** ***Cost of Living***? (**Budget** > **Cost of Living**).
+      
       - Is there a **Holiday** proximate to the travel date in the country?.
-      - Is there a variety of **good hotels** in the country's Capital?.
-      - Is there any **festivals** near the travel date in the country?.
-      - **OG** Language == **DEST** Language?.
+      
+      - Is there a variety of **Good Hotels** in the country's Capital?.
+      
+      - Is there any **Festivals** near the travel date in the country?.
+      
+      - Is the country politically stable (Secure)? 
   
 4. Deliver the data for the user to check out.
     - **How**: Delivered the most recommended country data to show through RabbitMQ.
