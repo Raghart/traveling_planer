@@ -77,7 +77,7 @@ func GenerateFromCountryItems() []list.Item {
 
 	countryItems := []list.Item{}
 	for _, countryData := range countryList {
-		countryItems = append(countryItems, Item{title: countryData.Name, desc: ""})
+		countryItems = append(countryItems, Item{title: countryData.Name, desc: "To input..."})
 	}
 
 	return countryItems

@@ -3,13 +3,14 @@ package bubbletea
 import "charm.land/bubbles/v2/key"
 
 type KeyMap struct {
-	Up    key.Binding
-	Down  key.Binding
-	Left  key.Binding
-	Right key.Binding
-	Enter key.Binding
-	Help  key.Binding
-	Quit  key.Binding
+	Up     key.Binding
+	Down   key.Binding
+	Left   key.Binding
+	Right  key.Binding
+	Enter  key.Binding
+	Help   key.Binding
+	Quit   key.Binding
+	Filter key.Binding
 }
 
 func (k KeyMap) ShortHelp() []key.Binding {
@@ -19,7 +20,7 @@ func (k KeyMap) ShortHelp() []key.Binding {
 func (k KeyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
 		{k.Up, k.Down, k.Left, k.Right},
-		{k.Help, k.Quit},
+		{k.Help, k.Quit, k.Filter},
 	}
 }
 
@@ -52,6 +53,10 @@ func createKeyMap() KeyMap {
 		Quit: key.NewBinding(
 			key.WithKeys("q", "esc", "ctrl+c"),
 			key.WithHelp("q", "quit"),
+		),
+		Filter: key.NewBinding(
+			key.WithKeys("/"),
+			key.WithHelp("/", "filter countries"),
 		),
 	}
 }

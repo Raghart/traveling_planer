@@ -93,6 +93,12 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		)
 
 	case tea.KeyPressMsg:
+		if m.list.FilterState() == list.Filtering {
+			newList, cmd := m.list.Update(msg)
+			m.list = newList
+			return m, cmd
+		}
+
 		switch {
 		case key.Matches(msg, m.keys.Help):
 			m.help.ShowAll = !m.help.ShowAll
@@ -195,10 +201,7 @@ func (m *Model) View() tea.View {
 }
 
 func InitialModel() *Model {
-	items := GenerateCountryItems()
-	fromCountries := GenerateFromCountryItems()
-	fmt.Println(fromCountries)
-
+	items := GenerateFromCountryItems()
 	l := list.New(items, list.NewDefaultDelegate(), 0, 0)
 	l.Title = "Where are you from?"
 	l.SetShowStatusBar(false)
@@ -214,6 +217,8 @@ func InitialModel() *Model {
 		progress: progress.New(progress.WithDefaultBlend()),
 		dataMsg:  "Downloading required data...",
 	}
+	m.list.FilterInput.Placeholder = "testing..."
+	m.list.SetFilteringEnabled(true)
 	m.UpdateStyles(true)
 	return m
 }
