@@ -196,6 +196,9 @@ func (m *Model) View() tea.View {
 
 func InitialModel() *Model {
 	items := GenerateCountryItems()
+	fromCountries := GenerateFromCountryItems()
+	fmt.Println(fromCountries)
+
 	l := list.New(items, list.NewDefaultDelegate(), 0, 0)
 	l.Title = "Where are you from?"
 	l.SetShowStatusBar(false)

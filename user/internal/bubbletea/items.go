@@ -3,6 +3,7 @@ package bubbletea
 import (
 	"fmt"
 	"io"
+	"log"
 
 	"charm.land/bubbles/v2/list"
 	tea "charm.land/bubbletea/v2"
@@ -66,6 +67,20 @@ func GenerateCountryItems() []list.Item {
 		Item{title: "Saint Kitts and Nevis", desc: "Historic fortresses and scenic railway journeys."},
 		Item{title: "Antigua and Barbuda", desc: "365 distinct beaches—one for every day of the year."},
 	}
+}
+
+func GenerateFromCountryItems() []list.Item {
+	countryList, err := utils.GetAllCountriesData()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	countryItems := []list.Item{}
+	for _, countryData := range countryList {
+		countryItems = append(countryItems, Item{title: countryData.Name, desc: ""})
+	}
+
+	return countryItems
 }
 
 func (m *Model) GenerateProjectActions() []list.Item {
