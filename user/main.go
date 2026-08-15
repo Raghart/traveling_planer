@@ -30,7 +30,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to unmarshal the body: %v", err)
 	}
-	fmt.Printf("There are currently %d in the json!\n", len(*jsonData))
+	fmt.Printf("There are currently %d countries in the json!\n", len(*jsonData))
 
 	return
 	if _, err := tea.NewProgram(bubbletea.InitialModel()).Run(); err != nil {
