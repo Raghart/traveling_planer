@@ -105,22 +105,29 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case key.Matches(msg, m.keys.Enter):
 			i, ok := m.list.SelectedItem().(Item)
+
 			if ok && m.country.From != "" && m.country.Destination == "" {
 				m.country.Destination = i.title
 				m.list.Title = fmt.Sprintf("Traveling from %s to %s",
 					m.country.From, m.country.Destination)
 				m.list.NewStatusMessage("")
-				m.loadingData = true
-				m.dataCh = m.LoadCountryData()
-				return m, ListenCountryData(m.dataCh)
+				return m, tea.Quit
+
+				// Old loading data logic
+				//m.loadingData = true
+				//m.dataCh = m.LoadCountryData()
+				//return m, ListenCountryData(m.dataCh)
 			}
 
 			if ok && m.country.From == "" {
 				m.country.From = i.title
-				m.list.Title = "Where do you want to go?"
+				m.country.UserData.From = i.title
+
+				m.list.Title = "How big is your budget?"
 				m.list.NewStatusMessage(
 					m.styles.StatusMessage.Render("From: " + i.title))
-				m.list.RemoveItem(m.list.Index())
+
+				m.list.SetItems(GenerateBudgetItems())
 			}
 
 			if ok && m.country.From != "" && m.country.Destination != "" {

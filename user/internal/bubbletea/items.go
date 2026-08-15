@@ -69,6 +69,14 @@ func GenerateCountryItems() []list.Item {
 	}
 }
 
+func GenerateBudgetItems() []list.Item {
+	return []list.Item{
+		Item{title: "Economic", desc: "Budget equal or lower than 5.000$"},
+		Item{title: "Moderate", desc: "Budget Between 5.000$ and 10.000$"},
+		Item{title: "Rich Boy", desc: "Budget highter than 10.000$"},
+	}
+}
+
 func GenerateFromCountryItems() []list.Item {
 	countryList, err := utils.GetAllCountriesData()
 	if err != nil {
