@@ -1,5 +1,7 @@
 # Traveling Recommender 2.0 The Comeback
 
+!["testing_imng"](https://media1.tenor.com/m/1Dt2ec97O08AAAAd/eddie-murphy.gif)
+
 ## Project Ideas
 --> popular sights, best months to visit
 --> where to buy sim card, how to take taxis, what time does restaurants close, which applications to download, how to take public transportation
