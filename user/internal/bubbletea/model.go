@@ -106,19 +106,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, m.keys.Enter):
 			i, ok := m.list.SelectedItem().(Item)
 
-			if ok && m.country.From != "" && m.country.Destination == "" {
-				m.country.Destination = i.title
-				m.list.Title = fmt.Sprintf("Traveling from %s to %s",
-					m.country.From, m.country.Destination)
-				m.list.NewStatusMessage("")
-				return m, tea.Quit
-
-				// Old loading data logic
-				//m.loadingData = true
-				//m.dataCh = m.LoadCountryData()
-				//return m, ListenCountryData(m.dataCh)
-			}
-
 			if ok && m.country.From == "" {
 				m.country.From = i.title
 				m.country.UserData.From = i.title
@@ -129,18 +116,29 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 				m.list.SetItems(GenerateBudgetItems())
 				m.list.ResetFilter()
+				return m, nil
+			}
+
+			if ok && m.country.From != "" && m.country.UserData.Budget == "" {
+				m.country.UserData.Budget = i.title
+				m.list.NewStatusMessage(m.styles.StatusMessage.Render(
+					fmt.Sprintf("%s budget registered!", i.title),
+				))
+				return m, nil
 			}
 
 			if ok && m.country.From != "" && m.country.Destination != "" {
-				formattedMsg := i.task()
-				str, err := m.renderer.Render(formattedMsg)
-				if err != nil {
-					m.err = err
-					return m, nil
-				}
 
-				m.viewport.SetContent(str)
-				m.showResults = true
+				return m, tea.Quit
+				//formattedMsg := i.task()
+				//str, err := m.renderer.Render(formattedMsg)
+				//if err != nil {
+				//	m.err = err
+				//	return m, nil
+				//}
+
+				//m.viewport.SetContent(str)
+				//m.showResults = true
 			}
 
 			return m, nil

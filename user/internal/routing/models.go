@@ -26,7 +26,7 @@ type CountryDestination struct {
 
 type UserPreferences struct {
 	From               string
-	Budget             BudgetType
+	Budget             string
 	TravelDate         time.Time
 	TravelDuration     int
 	PrefersWarmth      bool
@@ -38,14 +38,6 @@ type CountryData struct {
 	Data     interface{}
 	Error    error
 }
-
-type BudgetType int
-
-const (
-	Economic BudgetType = iota
-	Moderate
-	HighLevel
-)
 
 type Currency struct {
 	From         string
