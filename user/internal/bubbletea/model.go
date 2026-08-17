@@ -128,6 +128,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.styles.StatusMessage.Render("From: " + i.title))
 
 				m.list.SetItems(GenerateBudgetItems())
+				m.list.ResetFilter()
 			}
 
 			if ok && m.country.From != "" && m.country.Destination != "" {

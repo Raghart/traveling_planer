@@ -45,7 +45,7 @@
       
       - Is there any **Festivals** near the travel date in the country?.
       
-      - Is the country politically stable (Secure)? 
+      - Is the country politically stable (Secure)?
       
       - Does the **User** feel comfortable in the country ***General Temperature***?  
   
