@@ -3,6 +3,7 @@ package bubbletea
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"charm.land/bubbles/v2/help"
 	"charm.land/bubbles/v2/key"
@@ -12,6 +13,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/glamour/v2"
 	"github.com/Raghart/traveling_planer/internal/routing"
+	datepicker "github.com/ethanefung/bubble-datepicker"
 )
 
 type Model struct {
@@ -23,6 +25,7 @@ type Model struct {
 	progress    progress.Model
 	viewport    viewport.Model
 	renderer    *glamour.TermRenderer
+	DatePicker  datepicker.Model
 	showResults bool
 	quitting    bool
 	loadingData bool
@@ -119,12 +122,16 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, nil
 			}
 
-			if ok && m.country.From != "" && m.country.UserData.Budget == "" {
+			if ok && m.country.UserData.Budget == "" {
 				m.country.UserData.Budget = i.title
 				m.list.NewStatusMessage(m.styles.StatusMessage.Render(
 					fmt.Sprintf("%s budget registered!", i.title),
 				))
 				return m, nil
+			}
+
+			if ok && m.country.UserData.TravelDate.IsZero() {
+
 			}
 
 			if ok && m.country.From != "" && m.country.Destination != "" {
@@ -213,15 +220,19 @@ func InitialModel() *Model {
 	l.SetShowStatusBar(false)
 	l.SetShowHelp(false)
 
+	dp := datepicker.New(time.Now())
+	dp.SelectDate()
+
 	vp := CreateViewport()
 
 	m := &Model{
-		list:     l,
-		keys:     createKeyMap(),
-		help:     help.New(),
-		viewport: vp,
-		progress: progress.New(progress.WithDefaultBlend()),
-		dataMsg:  "Downloading required data...",
+		list:       l,
+		keys:       createKeyMap(),
+		help:       help.New(),
+		viewport:   vp,
+		DatePicker: dp,
+		progress:   progress.New(progress.WithDefaultBlend()),
+		dataMsg:    "Downloading required data...",
 	}
 	m.list.FilterInput.Placeholder = "testing..."
 	m.list.SetFilteringEnabled(true)
