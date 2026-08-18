@@ -8,28 +8,31 @@ import (
 	"charm.land/bubbles/v2/key"
 	"charm.land/bubbles/v2/list"
 	"charm.land/bubbles/v2/progress"
+	"charm.land/bubbles/v2/textinput"
 	"charm.land/bubbles/v2/viewport"
 	tea "charm.land/bubbletea/v2"
 	"charm.land/glamour/v2"
+	"charm.land/lipgloss/v2"
 	"github.com/Raghart/traveling_planer/internal/routing"
 )
 
 type Model struct {
-	keys            KeyMap
-	list            list.Model
-	styles          Styles
-	help            help.Model
-	country         routing.CountryManager
-	progress        progress.Model
-	viewport        viewport.Model
-	renderer        *glamour.TermRenderer
-	isSelectingDate bool
-	showResults     bool
-	quitting        bool
-	loadingData     bool
-	dataCh          chan tea.Msg
-	dataMsg         string
-	err             error
+	keys          KeyMap
+	list          list.Model
+	styles        Styles
+	help          help.Model
+	country       routing.CountryManager
+	progress      progress.Model
+	viewport      viewport.Model
+	renderer      *glamour.TermRenderer
+	isWritingDate bool
+	TextInput     textinput.Model
+	showResults   bool
+	quitting      bool
+	loadingData   bool
+	dataCh        chan tea.Msg
+	dataMsg       string
+	err           error
 }
 
 func (m *Model) Init() tea.Cmd {
@@ -100,9 +103,10 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, cmd
 		}
 
-		if m.isSelectingDate {
-			return m, tea.Quit
-			// Remove old selecting date
+		if m.isWritingDate {
+			newTi, cmd := m.TextInput.Update(msg)
+			m.TextInput = newTi
+			return m, cmd
 		}
 
 		switch {
@@ -130,7 +134,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.list.NewStatusMessage(m.styles.StatusMessage.Render(
 					fmt.Sprintf("%s budget registered!", i.title),
 				))
-				m.isSelectingDate = true
+				m.isWritingDate = true
 				return m, nil
 			}
 
@@ -209,15 +213,22 @@ func (m *Model) View() tea.View {
 
 	var strView string
 
-	if m.isSelectingDate {
+	if m.isWritingDate {
+		headerView := "When are you planning to travel?"
+		var c *tea.Cursor
+		if !m.TextInput.VirtualCursor() {
+			c = m.TextInput.Cursor()
+			c.Y += lipgloss.Height(headerView)
+		}
+
 		strView = strings.Join([]string{
-			"When are you planning to travel?",
-			"Here goes the date selector",
+			headerView,
+			m.TextInput.View(),
 			footer,
 		}, "\n")
 	}
 
-	if !m.isSelectingDate {
+	if !m.isWritingDate {
 		strView = strings.Join([]string{
 			m.list.View(),
 			footer,
@@ -236,15 +247,23 @@ func InitialModel() *Model {
 	l.SetShowStatusBar(false)
 	l.SetShowHelp(false)
 
+	ti := textinput.New()
+	ti.Placeholder = "Testing"
+	ti.SetVirtualCursor(false)
+	ti.Focus()
+	ti.CharLimit = 10
+	ti.SetWidth(20)
+
 	vp := CreateViewport()
 
 	m := &Model{
-		list:     l,
-		keys:     createKeyMap(),
-		help:     help.New(),
-		viewport: vp,
-		progress: progress.New(progress.WithDefaultBlend()),
-		dataMsg:  "Downloading required data...",
+		list:      l,
+		keys:      createKeyMap(),
+		help:      help.New(),
+		viewport:  vp,
+		TextInput: ti,
+		progress:  progress.New(progress.WithDefaultBlend()),
+		dataMsg:   "Downloading required data...",
 	}
 	m.list.FilterInput.Placeholder = "testing..."
 	m.list.SetFilteringEnabled(true)
