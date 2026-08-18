@@ -17,21 +17,22 @@ import (
 )
 
 type Model struct {
-	keys        KeyMap
-	list        list.Model
-	styles      Styles
-	help        help.Model
-	country     routing.CountryManager
-	progress    progress.Model
-	viewport    viewport.Model
-	renderer    *glamour.TermRenderer
-	DatePicker  datepicker.Model
-	showResults bool
-	quitting    bool
-	loadingData bool
-	dataCh      chan tea.Msg
-	dataMsg     string
-	err         error
+	keys            KeyMap
+	list            list.Model
+	styles          Styles
+	help            help.Model
+	country         routing.CountryManager
+	progress        progress.Model
+	viewport        viewport.Model
+	renderer        *glamour.TermRenderer
+	DatePicker      datepicker.Model
+	isSelectingDate bool
+	showResults     bool
+	quitting        bool
+	loadingData     bool
+	dataCh          chan tea.Msg
+	dataMsg         string
+	err             error
 }
 
 func (m *Model) Init() tea.Cmd {
@@ -127,6 +128,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.list.NewStatusMessage(m.styles.StatusMessage.Render(
 					fmt.Sprintf("%s budget registered!", i.title),
 				))
+				m.isSelectingDate = true
 				return m, nil
 			}
 
@@ -203,10 +205,22 @@ func (m *Model) View() tea.View {
 			"q/esc: Exit",
 		}, " • "))
 
-	strView := strings.Join([]string{
-		m.list.View(),
-		footer,
-	}, "\n")
+	var strView string
+
+	if m.isSelectingDate {
+		strView = strings.Join([]string{
+			"When are you planning to travel?",
+			m.DatePicker.View(),
+			footer,
+		}, "\n")
+	}
+
+	if !m.isSelectingDate {
+		strView = strings.Join([]string{
+			m.list.View(),
+			footer,
+		}, "\n")
+	}
 
 	v := tea.NewView(strView)
 	v.AltScreen = true
