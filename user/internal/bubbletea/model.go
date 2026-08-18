@@ -3,7 +3,6 @@ package bubbletea
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"charm.land/bubbles/v2/help"
 	"charm.land/bubbles/v2/key"
@@ -13,7 +12,6 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/glamour/v2"
 	"github.com/Raghart/traveling_planer/internal/routing"
-	datepicker "github.com/ethanefung/bubble-datepicker"
 )
 
 type Model struct {
@@ -25,7 +23,6 @@ type Model struct {
 	progress        progress.Model
 	viewport        viewport.Model
 	renderer        *glamour.TermRenderer
-	DatePicker      datepicker.Model
 	isSelectingDate bool
 	showResults     bool
 	quitting        bool
@@ -101,6 +98,11 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			newList, cmd := m.list.Update(msg)
 			m.list = newList
 			return m, cmd
+		}
+
+		if m.isSelectingDate {
+			return m, tea.Quit
+			// Remove old selecting date
 		}
 
 		switch {
@@ -210,7 +212,7 @@ func (m *Model) View() tea.View {
 	if m.isSelectingDate {
 		strView = strings.Join([]string{
 			"When are you planning to travel?",
-			m.DatePicker.View(),
+			"Here goes the date selector",
 			footer,
 		}, "\n")
 	}
@@ -234,19 +236,15 @@ func InitialModel() *Model {
 	l.SetShowStatusBar(false)
 	l.SetShowHelp(false)
 
-	dp := datepicker.New(time.Now())
-	dp.SelectDate()
-
 	vp := CreateViewport()
 
 	m := &Model{
-		list:       l,
-		keys:       createKeyMap(),
-		help:       help.New(),
-		viewport:   vp,
-		DatePicker: dp,
-		progress:   progress.New(progress.WithDefaultBlend()),
-		dataMsg:    "Downloading required data...",
+		list:     l,
+		keys:     createKeyMap(),
+		help:     help.New(),
+		viewport: vp,
+		progress: progress.New(progress.WithDefaultBlend()),
+		dataMsg:  "Downloading required data...",
 	}
 	m.list.FilterInput.Placeholder = "testing..."
 	m.list.SetFilteringEnabled(true)
