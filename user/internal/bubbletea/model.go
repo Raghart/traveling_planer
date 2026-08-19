@@ -136,15 +136,12 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			if m.country.UserData.TravelDate.IsZero() {
 				userStrTravelDate := m.TextInput.Value()
-				m.debugStrs = append(m.debugStrs, fmt.Sprintf(
-					"user Str Travel Date: %s", userStrTravelDate))
 
 				userTravelDate, err := time.Parse(time.DateOnly, userStrTravelDate)
 				if err != nil {
 					m.debugStrs = append(m.debugStrs, fmt.Sprintf("ERROR: %v", err))
 					return m, nil
 				}
-				m.debugStrs = append(m.debugStrs, fmt.Sprintf("parsed date: %v", userStrTravelDate))
 				m.country.UserData.TravelDate = userTravelDate
 				return m, nil
 			}
@@ -152,15 +149,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if ok && m.country.From != "" && m.country.Destination != "" {
 
 				return m, tea.Quit
-				//formattedMsg := i.task()
-				//str, err := m.renderer.Render(formattedMsg)
-				//if err != nil {
-				//	m.err = err
-				//	return m, nil
-				//}
-
-				//m.viewport.SetContent(str)
-				//m.showResults = true
 			}
 
 			return m, nil
@@ -227,7 +215,7 @@ func (m *Model) View() tea.View {
 	var strView string
 
 	if m.isWritingDate {
-		headerView := "When are you planning to travel?"
+		headerView := m.styles.Title.Render("When are you planning to travel?")
 		var c *tea.Cursor
 		if !m.TextInput.VirtualCursor() {
 			c = m.TextInput.Cursor()
@@ -237,7 +225,8 @@ func (m *Model) View() tea.View {
 		strView = strings.Join([]string{
 			headerView,
 			m.TextInput.View(),
-			fmt.Sprintf("The date is: %s", m.country.UserData.TravelDate),
+			m.styles.StatusMessage.Render(
+				fmt.Sprintf("\nThe UserDate is: %s", m.country.UserData.TravelDate)),
 			footer,
 		}, "\n")
 	}
