@@ -249,7 +249,9 @@ func (m *Model) View() tea.View {
 		}, "\n")
 	}
 
-	strView += strings.Join(m.debugStrs, "\n")
+	if len(m.debugStrs) > 1 {
+		strView += strings.Join(m.debugStrs, "\n")
+	}
 
 	v := tea.NewView(strView)
 	v.AltScreen = true
