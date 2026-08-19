@@ -64,3 +64,13 @@ func (m *Model) UpdateStyles(isDark bool) {
 	m.list.Paginator.ActiveDot = m.styles.ActiveDot.Render("•")
 	m.list.Paginator.InactiveDot = m.styles.InactiveDot.Render("•")
 }
+
+func (m *Model) UpdateDateStyles() {
+	tiStyles := m.TextInput.Styles()
+	tiStyles.Cursor.Color = lipgloss.Color("205")
+	tiStyles.Focused.Prompt = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
+	tiStyles.Focused.Text = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
+	tiStyles.Blurred.Prompt = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
+	tiStyles.Focused.Text = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
+	m.TextInput.SetStyles(tiStyles)
+}

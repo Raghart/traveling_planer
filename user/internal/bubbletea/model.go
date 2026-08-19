@@ -44,6 +44,7 @@ func (m *Model) Init() tea.Cmd {
 }
 
 func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.list.SetSize(msg.Width, msg.Height-5)
@@ -59,7 +60,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 
 	case progress.FrameMsg:
-		var cmd tea.Cmd
 		m.progress, cmd = m.progress.Update(msg)
 		return m, cmd
 
@@ -100,8 +100,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyPressMsg:
 		if m.list.FilterState() == list.Filtering {
-			newList, cmd := m.list.Update(msg)
-			m.list = newList
+			m.list, cmd = m.list.Update(msg)
 			return m, cmd
 		}
 
@@ -130,6 +129,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.list.NewStatusMessage(m.styles.StatusMessage.Render(
 					fmt.Sprintf("%s budget registered!", i.title),
 				))
+
 				m.isWritingDate = true
 				return m, nil
 			}
@@ -167,16 +167,13 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			m.quitting = true
 			return m, tea.Quit
-		}
 
-		if m.isWritingDate {
-			newTi, cmd := m.TextInput.Update(msg)
-			m.TextInput = newTi
+		case m.isWritingDate:
+			m.TextInput, cmd = m.TextInput.Update(msg)
 			return m, cmd
 		}
 	}
 
-	var cmd tea.Cmd
 	m.list, cmd = m.list.Update(msg)
 	m.viewport, cmd = m.viewport.Update(msg)
 	return m, cmd
@@ -213,10 +210,10 @@ func (m *Model) View() tea.View {
 		}, " • "))
 
 	var strView string
+	var c *tea.Cursor
 
 	if m.isWritingDate {
 		headerView := m.styles.Title.Render("When are you planning to travel?")
-		var c *tea.Cursor
 		if !m.TextInput.VirtualCursor() {
 			c = m.TextInput.Cursor()
 			c.Y += lipgloss.Height(headerView)
@@ -244,6 +241,7 @@ func (m *Model) View() tea.View {
 
 	v := tea.NewView(strView)
 	v.AltScreen = true
+	v.Cursor = c
 	return v
 }
 
@@ -276,5 +274,6 @@ func InitialModel() *Model {
 	m.list.FilterInput.Placeholder = "testing..."
 	m.list.SetFilteringEnabled(true)
 	m.UpdateStyles(true)
+	m.UpdateDateStyles()
 	return m
 }
