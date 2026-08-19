@@ -3,6 +3,7 @@ package bubbletea
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"charm.land/bubbles/v2/help"
 	"charm.land/bubbles/v2/key"
@@ -27,6 +28,7 @@ type Model struct {
 	renderer      *glamour.TermRenderer
 	isWritingDate bool
 	TextInput     textinput.Model
+	debugStrs     []string
 	showResults   bool
 	quitting      bool
 	loadingData   bool
@@ -103,12 +105,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, cmd
 		}
 
-		if m.isWritingDate {
-			newTi, cmd := m.TextInput.Update(msg)
-			m.TextInput = newTi
-			return m, cmd
-		}
-
 		switch {
 		case key.Matches(msg, m.keys.Help):
 			m.help.ShowAll = !m.help.ShowAll
@@ -138,8 +134,19 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, nil
 			}
 
-			if ok && m.country.UserData.TravelDate.IsZero() {
+			if m.country.UserData.TravelDate.IsZero() {
+				userStrTravelDate := m.TextInput.Value()
+				m.debugStrs = append(m.debugStrs, fmt.Sprintf(
+					"user Str Travel Date: %s", userStrTravelDate))
 
+				userTravelDate, err := time.Parse(time.DateOnly, userStrTravelDate)
+				if err != nil {
+					m.debugStrs = append(m.debugStrs, fmt.Sprintf("ERROR: %v", err))
+					return m, nil
+				}
+				m.debugStrs = append(m.debugStrs, fmt.Sprintf("parsed date: %v", userStrTravelDate))
+				m.country.UserData.TravelDate = userTravelDate
+				return m, nil
 			}
 
 			if ok && m.country.From != "" && m.country.Destination != "" {
@@ -172,6 +179,12 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			m.quitting = true
 			return m, tea.Quit
+		}
+
+		if m.isWritingDate {
+			newTi, cmd := m.TextInput.Update(msg)
+			m.TextInput = newTi
+			return m, cmd
 		}
 	}
 
@@ -224,6 +237,7 @@ func (m *Model) View() tea.View {
 		strView = strings.Join([]string{
 			headerView,
 			m.TextInput.View(),
+			fmt.Sprintf("The date is: %s", m.country.UserData.TravelDate),
 			footer,
 		}, "\n")
 	}
@@ -234,6 +248,8 @@ func (m *Model) View() tea.View {
 			footer,
 		}, "\n")
 	}
+
+	strView += strings.Join(m.debugStrs, "\n")
 
 	v := tea.NewView(strView)
 	v.AltScreen = true
@@ -264,6 +280,7 @@ func InitialModel() *Model {
 		TextInput: ti,
 		progress:  progress.New(progress.WithDefaultBlend()),
 		dataMsg:   "Downloading required data...",
+		debugStrs: []string{"\nDEBUG: "},
 	}
 	m.list.FilterInput.Placeholder = "testing..."
 	m.list.SetFilteringEnabled(true)
