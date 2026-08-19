@@ -136,7 +136,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			if m.country.UserData.TravelDate.IsZero() {
 				userStrTravelDate := m.TextInput.Value()
-
 				userTravelDate, err := time.Parse(time.DateOnly, userStrTravelDate)
 				if err != nil {
 					m.debugStrs = append(m.debugStrs, fmt.Sprintf("ERROR: %v", err))
@@ -167,11 +166,12 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			m.quitting = true
 			return m, tea.Quit
-
-		case m.isWritingDate:
-			m.TextInput, cmd = m.TextInput.Update(msg)
-			return m, cmd
 		}
+	}
+
+	if m.isWritingDate {
+		m.TextInput, cmd = m.TextInput.Update(msg)
+		return m, cmd
 	}
 
 	m.list, cmd = m.list.Update(msg)
@@ -253,7 +253,9 @@ func InitialModel() *Model {
 	l.SetShowHelp(false)
 
 	ti := textinput.New()
-	ti.Placeholder = "Testing"
+	ti.Placeholder = "Date format YYYY-MM-DD"
+	currentTime := time.Now()
+	ti.SetValue(fmt.Sprintf("%d-%02d-%02d", currentTime.Year(), currentTime.Month(), currentTime.Day()))
 	ti.SetVirtualCursor(false)
 	ti.Focus()
 	ti.CharLimit = 10
