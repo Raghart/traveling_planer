@@ -5,7 +5,7 @@ import "strings"
 func (m *Model) buildDynamicHelp() string {
 	if m.isWritingDate {
 		return strings.Join([]string{
-			"← / →: Navigate",
+			"←/→: Navigate",
 			"Backspace: Delete",
 			"Enter: Select the date",
 			"Q/Esc: Exit",

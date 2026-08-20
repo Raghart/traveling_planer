@@ -5,13 +5,13 @@
    - **Language**: Go.
   
    - **Questions**:
-     - Where are you from?
+     - Where are you from?X
   
-     - How big is your budget? (*Economic*, *Moderate*, *High Level*)
+     - How big is your budget? (*Economic*, *Moderate*, *High Level*)X
 
-     - When are you planning to travel?
+     - When are you planning to travel?X
      
-     - How long will the travel be? 
+     - How long will the travel be?
      
      - Do you prefer *hotter* or *colder* enviroments?
      
