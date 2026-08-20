@@ -261,8 +261,7 @@ func InitialModel() *Model {
 
 	ti := textinput.New()
 	ti.Placeholder = "Date format YYYY-MM-DD"
-	currentTime := time.Now()
-	ti.SetValue(fmt.Sprintf("%d-%02d-%02d", currentTime.Year(), currentTime.Month(), currentTime.Day()))
+	ti.SetValue(time.Now().Format(time.DateOnly))
 	ti.SetVirtualCursor(false)
 	ti.Focus()
 	ti.CharLimit = 10
