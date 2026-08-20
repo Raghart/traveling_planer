@@ -15,7 +15,6 @@ import (
 	"charm.land/glamour/v2"
 	"charm.land/lipgloss/v2"
 	"github.com/Raghart/traveling_planer/internal/routing"
-	"github.com/Raghart/traveling_planer/internal/utils"
 )
 
 type Model struct {
@@ -260,7 +259,6 @@ func InitialModel() *Model {
 	ti.SetVirtualCursor(false)
 	ti.Focus()
 	ti.CharLimit = 10
-	ti.Validate = utils.IsValidInput
 	ti.SetWidth(20)
 
 	vp := CreateViewport()
