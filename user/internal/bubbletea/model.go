@@ -133,10 +133,17 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.country.UserData.TravelDate.IsZero() {
 				userStrTravelDate := m.TextInput.Value()
 				userTravelDate, err := time.Parse(time.DateOnly, userStrTravelDate)
+
 				if err != nil {
 					m.debugStrs = append(m.debugStrs, fmt.Sprintf("ERROR: %v", err))
 					return m, nil
 				}
+
+				if userTravelDate.Before(time.Now()) {
+					m.debugStrs = append(m.debugStrs, "Error: Travel Date can't be in the past")
+					return m, nil
+				}
+
 				m.country.UserData.TravelDate = userTravelDate
 				return m, nil
 			}
