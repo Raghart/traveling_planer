@@ -28,7 +28,7 @@ type UserPreferences struct {
 	From               string
 	Budget             string
 	TravelDate         time.Time
-	TravelDuration     int
+	TravelLength       time.Time
 	PrefersWarmth      bool
 	PreferedActivities []string
 }

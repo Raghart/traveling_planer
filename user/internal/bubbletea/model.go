@@ -27,6 +27,7 @@ type Model struct {
 	progress      progress.Model
 	viewport      viewport.Model
 	renderer      *glamour.TermRenderer
+	questionTitle string
 	isWritingDate bool
 	TextInput     textinput.Model
 	debugStrs     []string
@@ -145,12 +146,14 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 
 				m.country.UserData.TravelDate = userTravelDate
+				m.questionTitle = "How long will your travel be?"
+				m.TextInput.SetValue(userTravelDate.Add(24 * time.Hour).Format(time.DateOnly))
 				return m, nil
 			}
 
-			if ok && m.country.From != "" && m.country.Destination != "" {
+			if m.country.UserData.TravelLength.IsZero() {
 
-				return m, tea.Quit
+				return m, nil
 			}
 
 			return m, nil
@@ -220,7 +223,7 @@ func (m *Model) View() tea.View {
 	var c *tea.Cursor
 
 	if m.isWritingDate {
-		headerView := m.styles.Title.Render("When are you planning to travel?")
+		headerView := m.styles.Title.Render(m.questionTitle)
 		if !m.TextInput.VirtualCursor() {
 			c = m.TextInput.Cursor()
 			c.Y += lipgloss.Height(headerView)
@@ -270,14 +273,15 @@ func InitialModel() *Model {
 	vp := CreateViewport()
 
 	m := &Model{
-		list:      l,
-		keys:      createKeyMap(),
-		help:      help.New(),
-		viewport:  vp,
-		TextInput: ti,
-		progress:  progress.New(progress.WithDefaultBlend()),
-		dataMsg:   "Downloading required data...",
-		debugStrs: []string{"\nDEBUG: "},
+		list:          l,
+		keys:          createKeyMap(),
+		help:          help.New(),
+		viewport:      vp,
+		TextInput:     ti,
+		progress:      progress.New(progress.WithDefaultBlend()),
+		dataMsg:       "Downloading required data...",
+		debugStrs:     []string{"\nDEBUG: "},
+		questionTitle: "When are you planning to travel?",
 	}
 	m.list.FilterInput.Placeholder = "testing..."
 	m.list.SetFilteringEnabled(true)
