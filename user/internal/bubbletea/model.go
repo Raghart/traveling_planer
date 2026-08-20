@@ -207,13 +207,7 @@ func (m *Model) View() tea.View {
 		return tea.NewView(m.viewport.View() + helpViewport())
 	}
 
-	footer := m.styles.Help.Render(
-		strings.Join([]string{
-			"↑/↓/←/→: Navigate",
-			"Enter: Select",
-			"Filter: /",
-			"q/esc: Exit",
-		}, " • "))
+	footer := m.styles.Help.Render(m.buildDynamicHelp())
 
 	var strView string
 	var c *tea.Cursor
