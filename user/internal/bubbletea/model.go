@@ -2,6 +2,7 @@ package bubbletea
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -99,11 +100,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		)
 
 	case tea.KeyPressMsg:
-		if m.list.FilterState() == list.Filtering {
-			m.list, cmd = m.list.Update(msg)
-			return m, cmd
-		}
-
 		switch {
 		case key.Matches(msg, m.keys.Help):
 			m.help.ShowAll = !m.help.ShowAll
@@ -166,12 +162,22 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			m.quitting = true
 			return m, tea.Quit
-		}
-	}
 
-	if m.isWritingDate {
-		m.TextInput, cmd = m.TextInput.Update(msg)
-		return m, cmd
+		case m.isWritingDate:
+			allowedKeys := []string{
+				"left", "right", "backspace", "-",
+				"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+			}
+
+			switch {
+			case slices.Contains(allowedKeys, msg.Keystroke()):
+				m.TextInput, cmd = m.TextInput.Update(msg)
+				return m, cmd
+			}
+		case m.list.FilterState() == list.Filtering:
+			m.list, cmd = m.list.Update(msg)
+			return m, cmd
+		}
 	}
 
 	m.list, cmd = m.list.Update(msg)
