@@ -3,7 +3,6 @@ package bubbletea
 import (
 	"fmt"
 	"slices"
-	"strconv"
 	"strings"
 	"time"
 
@@ -17,6 +16,7 @@ import (
 	"charm.land/glamour/v2"
 	"charm.land/lipgloss/v2"
 	"github.com/Raghart/traveling_planer/internal/routing"
+	"github.com/Raghart/traveling_planer/internal/utils"
 )
 
 type Model struct {
@@ -134,20 +134,13 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			if m.country.UserData.TravelDate.IsZero() {
 				rawTravelDate := m.TextInput.Value()
-				rawTravelSlice := strings.Split(rawTravelDate, "-")
-				if len(rawTravelSlice) != 3 {
-					m.debugStrs = append(m.debugStrs, "Invalid date format")
+				parsedTravelDate, err := utils.ParseRawDateStr(rawTravelDate)
+				if err != nil {
+					m.debugStrs = append(m.debugStrs, fmt.Sprintf("Error: %v", err))
 					return m, nil
 				}
 
-				parsedTravelSlice := []string{}
-				for _, dateStr := range rawTravelSlice {
-					dateNum, _ := strconv.ParseInt(dateStr, 10, 32)
-					m.debugStrs = append(m.debugStrs, fmt.Sprintf("parsedNum: %v", dateNum))
-					parsedTravelSlice = append(parsedTravelSlice, fmt.Sprintf("%02d", dateNum))
-				}
-
-				userTravelDate, err := time.Parse(time.DateOnly, strings.Join(parsedTravelSlice, "-"))
+				userTravelDate, err := time.Parse(time.DateOnly, parsedTravelDate)
 
 				if err != nil {
 					m.debugStrs = append(m.debugStrs, fmt.Sprintf("ERROR: %v", err))
