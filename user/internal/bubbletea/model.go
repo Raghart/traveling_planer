@@ -16,7 +16,6 @@ import (
 	"charm.land/glamour/v2"
 	"charm.land/lipgloss/v2"
 	"github.com/Raghart/traveling_planer/internal/routing"
-	"github.com/Raghart/traveling_planer/internal/utils"
 )
 
 type Model struct {
@@ -141,9 +140,8 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					return m, nil
 				}
 
-				m.debugStrs = append(m.debugStrs, fmt.Sprintf("\nDate one: %v. Date two: %v", time.Now().Format(time.DateOnly), userTravelDate.Format(time.DateOnly)))
-				if utils.IsInvalidDate(userTravelDate) {
-					m.debugStrs = append(m.debugStrs, fmt.Sprintf("%v", userTravelDate.Format(time.DateOnly) == time.Now().Format(time.DateOnly)))
+				dateNow, _ := time.Parse(time.DateOnly, time.Now().Format(time.DateOnly))
+				if userTravelDate.Before(dateNow) {
 					m.debugStrs = append(m.debugStrs, "Error: Travel Date can't be in the past")
 					return m, nil
 				}
