@@ -152,8 +152,20 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, nil
 			}
 
-			if m.country.UserData.TravelLength.IsZero() {
+			if m.country.UserData.TravelEndDate.IsZero() {
+				userStrTravelEnds := m.TextInput.Value()
+				userTravelEnds, err := time.Parse(time.DateOnly, userStrTravelEnds)
+				if err != nil {
+					m.debugStrs = append(m.debugStrs,
+						fmt.Sprintf("Error: unable to parse that time: %v", err))
+					return m, nil
+				}
 
+				if userTravelEnds.Before(m.country.UserData.TravelDate) {
+					m.debugStrs = append(
+						m.debugStrs, "Error: Travel Length can't be before the traveling start!")
+				}
+				m.country.UserData.TravelEndDate = userTravelEnds
 				return m, nil
 			}
 
@@ -238,7 +250,7 @@ func (m *Model) View() tea.View {
 			m.styles.StatusMessage.Render(
 				fmt.Sprintf("\nThe TravelDate is: %s", m.country.UserData.TravelDate)),
 			m.styles.StatusMessage.Render(
-				fmt.Sprintf("The TravelLength is: %s", m.country.UserData.TravelLength),
+				fmt.Sprintf("The TravelLength is: %s", m.country.UserData.TravelEndDate),
 			),
 			footer,
 		}, "\n")
