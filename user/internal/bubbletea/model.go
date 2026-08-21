@@ -225,7 +225,7 @@ func (m *Model) View() tea.View {
 
 	if m.isWritingDate {
 		headerView := m.styles.Title.Render(m.questionTitle)
-		dateFormat := lipgloss.NewStyle().Foreground(lipgloss.Color("205")).Render("Date format YYYY-MM-DD\n")
+		dateFormat := m.styles.LightPurple.Render("Date format YYYY-MM-DD\n")
 		if !m.TextInput.VirtualCursor() {
 			c = m.TextInput.Cursor()
 			c.Y += lipgloss.Height(dateFormat + "\n" + headerView)
