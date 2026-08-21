@@ -236,7 +236,10 @@ func (m *Model) View() tea.View {
 			dateFormat,
 			m.TextInput.View(),
 			m.styles.StatusMessage.Render(
-				fmt.Sprintf("\nThe UserDate is: %s", m.country.UserData.TravelDate)),
+				fmt.Sprintf("\nThe TravelDate is: %s", m.country.UserData.TravelDate)),
+			m.styles.StatusMessage.Render(
+				fmt.Sprintf("The TravelLength is: %s", m.country.UserData.TravelLength),
+			),
 			footer,
 		}, "\n")
 	}
