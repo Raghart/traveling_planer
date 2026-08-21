@@ -3,6 +3,7 @@ package bubbletea
 import (
 	"fmt"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -132,8 +133,21 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			if m.country.UserData.TravelDate.IsZero() {
-				userStrTravelDate := m.TextInput.Value()
-				userTravelDate, err := time.Parse(time.DateOnly, userStrTravelDate)
+				rawTravelDate := m.TextInput.Value()
+				rawTravelSlice := strings.Split(rawTravelDate, "-")
+				if len(rawTravelSlice) != 3 {
+					m.debugStrs = append(m.debugStrs, "Invalid date format")
+					return m, nil
+				}
+
+				parsedTravelSlice := []string{}
+				for _, dateStr := range rawTravelSlice {
+					dateNum, _ := strconv.ParseInt(dateStr, 10, 32)
+					m.debugStrs = append(m.debugStrs, fmt.Sprintf("parsedNum: %v", dateNum))
+					parsedTravelSlice = append(parsedTravelSlice, fmt.Sprintf("%02d", dateNum))
+				}
+
+				userTravelDate, err := time.Parse(time.DateOnly, strings.Join(parsedTravelSlice, "-"))
 
 				if err != nil {
 					m.debugStrs = append(m.debugStrs, fmt.Sprintf("ERROR: %v", err))
