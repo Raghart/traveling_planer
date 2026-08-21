@@ -225,13 +225,15 @@ func (m *Model) View() tea.View {
 
 	if m.isWritingDate {
 		headerView := m.styles.Title.Render(m.questionTitle)
+		dateFormat := lipgloss.NewStyle().Foreground(lipgloss.Color("205")).Render("Date format YYYY-MM-DD\n")
 		if !m.TextInput.VirtualCursor() {
 			c = m.TextInput.Cursor()
-			c.Y += lipgloss.Height(headerView)
+			c.Y += lipgloss.Height(dateFormat + "\n" + headerView)
 		}
 
 		strView = strings.Join([]string{
 			headerView,
+			dateFormat,
 			m.TextInput.View(),
 			m.styles.StatusMessage.Render(
 				fmt.Sprintf("\nThe UserDate is: %s", m.country.UserData.TravelDate)),
