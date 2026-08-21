@@ -160,8 +160,14 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			if m.country.UserData.TravelEndDate.IsZero() {
-				userStrTravelEnds := m.TextInput.Value()
-				userTravelEnds, err := time.Parse(time.DateOnly, userStrTravelEnds)
+				rawUserTravelEnds := m.TextInput.Value()
+				parsedTravelEnds, err := utils.ParseRawDateStr(rawUserTravelEnds)
+				if err != nil {
+					m.debugStrs = append(m.debugStrs, fmt.Sprintf("Error: %v", err))
+					return m, nil
+				}
+
+				userTravelEnds, err := time.Parse(time.DateOnly, parsedTravelEnds)
 				if err != nil {
 					m.debugStrs = append(m.debugStrs,
 						fmt.Sprintf("Error: unable to parse that time: %v", err))
