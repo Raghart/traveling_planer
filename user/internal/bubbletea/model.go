@@ -24,7 +24,7 @@ import (
 type Model struct {
 	keys          KeyMap
 	list          list.Model
-	styles        Styles
+	styles        *Styles
 	help          help.Model
 	country       routing.CountryManager
 	progress      progress.Model
