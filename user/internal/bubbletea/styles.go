@@ -113,3 +113,21 @@ func (m *Model) AppFrameworkView(text string) string {
 		lipgloss.WithWhitespaceStyle(lipgloss.NewStyle().Foreground(m.styles.Indigo)),
 	)
 }
+
+func (m *Model) ErrorFrameworkView(text string) string {
+	return lipgloss.PlaceHorizontal(
+		m.Width,
+		lipgloss.Left,
+		m.styles.ErrorHeaderText.Render(text),
+		lipgloss.WithWhitespaceChars("/"),
+		lipgloss.WithWhitespaceStyle(lipgloss.NewStyle().Foreground(m.styles.Red)),
+	)
+}
+
+func (m *Model) ErrorView() string {
+	var s string
+	for _, err := range m.Form.Errors() {
+		s += err.Error()
+	}
+	return s
+}
