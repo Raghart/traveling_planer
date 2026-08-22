@@ -246,7 +246,12 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) View() tea.View {
+	errorSlice := m.Form.Errors()
 	header := m.AppFrameworkView("Traveling Planner")
+
+	if len(errorSlice) > 0 {
+		header = m.ErrorFrameworkView(m.ErrorView())
+	}
 
 	v := strings.TrimSuffix(m.Form.View(), "\n\n")
 	form := lipgloss.NewStyle().Margin(1, 0).Render(v)
@@ -254,6 +259,9 @@ func (m *Model) View() tea.View {
 	body := lipgloss.JoinHorizontal(lipgloss.Left, form)
 
 	footer := m.AppFrameworkView(m.Form.Help().ShortHelpView(m.Form.KeyBinds()))
+	if len(errorSlice) > 0 {
+		footer = m.ErrorFrameworkView("")
+	}
 
 	return tea.NewView(m.styles.Base.Render(header + "\n" + body + "\n\n" + footer))
 	/*
@@ -460,7 +468,9 @@ func InitialModel() *Model {
 				Description("Select the activities you enjoy doing!").
 				Height(4),
 		),
-	).WithShowHelp(false)
+	).
+		WithShowHelp(false).
+		WithShowErrors(false)
 
 	m := &Model{
 		list:          l,
