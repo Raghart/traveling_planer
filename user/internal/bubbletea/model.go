@@ -1,7 +1,9 @@
 package bubbletea
 
 import (
+	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	"charm.land/bubbles/v2/help"
@@ -348,10 +350,18 @@ func InitialModel() *Model {
 				Value(&currentDate),
 
 			huh.NewInput().
-				Key("travelEndDate").
+				Key("travelDuration").
 				Title("How many days are you planning to travel?").
 				CharLimit(3).
-				Placeholder("7"),
+				Placeholder("7").
+				Validate(func(s string) error {
+					_, err := strconv.ParseInt(s, 10, 32)
+					if err != nil {
+						return fmt.Errorf("Error: number is not a valid int: %v", err)
+					}
+
+					return nil
+				}),
 
 			huh.NewConfirm().
 				Key("enviroment").
