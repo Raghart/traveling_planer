@@ -17,6 +17,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/glamour/v2"
 	"charm.land/huh/v2"
+	"charm.land/lipgloss/v2"
 	"github.com/Raghart/traveling_planer/internal/routing"
 	"github.com/Raghart/traveling_planer/internal/utils"
 )
@@ -245,7 +246,16 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) View() tea.View {
-	return tea.NewView(m.Form.View())
+	header := m.AppFrameworkView("Traveling Planner")
+
+	v := strings.TrimSuffix(m.Form.View(), "\n\n")
+	form := lipgloss.NewStyle().Margin(1, 0).Render(v)
+
+	body := lipgloss.JoinHorizontal(lipgloss.Left, form)
+
+	footer := m.AppFrameworkView(m.Form.Help().ShortHelpView(m.Form.KeyBinds()))
+
+	return tea.NewView(m.styles.Base.Render(header + "\n" + body + "\n\n" + footer))
 	/*
 		if m.err != nil {
 			return tea.NewView(m.styles.QuitText.Render(
