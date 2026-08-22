@@ -324,6 +324,8 @@ func InitialModel() *Model {
 		log.Fatal(err)
 	}
 
+	currentDate := time.Now().Format(time.DateOnly)
+
 	newForm := huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[string]().
@@ -336,6 +338,14 @@ func InitialModel() *Model {
 				Key("budget").
 				Options(huh.NewOptions("Economic", "Moderate", "High Level")...).
 				Title("How big is your budget?"),
+
+			huh.NewInput().
+				Key("travelDate").
+				Title("When are you planning to travel?").
+				CharLimit(10).
+				Description("Date Format YYYY-MM-DD").
+				Placeholder("YYYY-MM-DD").
+				Value(&currentDate),
 
 			huh.NewConfirm().
 				Key("enviroment").

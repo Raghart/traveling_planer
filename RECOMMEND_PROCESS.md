@@ -9,13 +9,13 @@
   
      - How big is your budget? (*Economic*, *Moderate*, *High Level*)X
 
-     - When are you planning to travel?X
+     - When are you planning to travel?
      
-     - How long will the travel be?X
+     - How long will the travel be?
      
-     - Do you prefer *hotter* or *colder* enviroments?
+     - Do you prefer *hotter* or *colder* enviroments?X
      
-     - Which factor calls your attention when choosing for a place to travel? (*Nature-wilderness*, *City-life style*, *History-culture*)
+     - Which factor calls your attention when choosing for a place to travel? (*Nature-wilderness*, *City-life style*, *History-culture*)X
 
 2. Check **if** there is a similar request in the cache.
 
