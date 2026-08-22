@@ -347,6 +347,12 @@ func InitialModel() *Model {
 				Placeholder("YYYY-MM-DD").
 				Value(&currentDate),
 
+			huh.NewInput().
+				Key("travelEndDate").
+				Title("How many days are you planning to travel?").
+				CharLimit(3).
+				Placeholder("7"),
+
 			huh.NewConfirm().
 				Key("enviroment").
 				Title("Do you prefer hotter or colder enviroments?").
