@@ -362,7 +362,7 @@ func InitialModel() *Model {
 				Key("travelDate").
 				Title("When are you planning to travel?").
 				CharLimit(10).
-				Description("Date Format YYYY-MM-DD").
+				Description("Date Format YYYY-MM-DD | YYYY-M-DD").
 				Placeholder("YYYY-MM-DD").
 				Value(&currentDate).
 				Validate(func(s string) error {
@@ -423,7 +423,8 @@ func InitialModel() *Model {
 					}
 
 					return nil
-				}),
+				}).
+				Description("Select the number of days you're planning to travel"),
 
 			huh.NewConfirm().
 				Key("enviroment").
@@ -438,7 +439,8 @@ func InitialModel() *Model {
 					huh.NewOption("City-life style", "city"),
 					huh.NewOption("History-culture", "history"),
 				).
-				Title("What do you enjoy while traveling?").
+				Title("What do you enjoy doing while traveling?").
+				Description("Select the activities you enjoy doing!").
 				Height(4),
 		),
 	)
