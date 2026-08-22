@@ -103,3 +103,13 @@ func (m *Model) UpdateDateStyles() {
 	tiStyles.Focused.Text = lipgloss.NewStyle().Foreground(lipgloss.White)
 	m.TextInput.SetStyles(tiStyles)
 }
+
+func (m *Model) AppFrameworkView(text string) string {
+	return lipgloss.PlaceHorizontal(
+		m.Width,
+		lipgloss.Left,
+		m.styles.HeaderText.Render(text),
+		lipgloss.WithWhitespaceChars("/"),
+		lipgloss.WithWhitespaceStyle(lipgloss.NewStyle().Foreground(m.styles.Indigo)),
+	)
+}
