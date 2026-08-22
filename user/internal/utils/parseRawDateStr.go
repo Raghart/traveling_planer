@@ -19,6 +19,7 @@ func ParseRawDateStr(rawDateStr string) (string, error) {
 		if err != nil {
 			return "", fmt.Errorf("unable to parse the value: %v", dateStr)
 		}
+
 		switch idx {
 		case 0:
 			if dateNum < int64(time.Now().Year()) {
@@ -26,6 +27,14 @@ func ParseRawDateStr(rawDateStr string) (string, error) {
 			}
 			if dateNum > 3000 {
 				return "", fmt.Errorf("Invalid year, traveling date is too far into the future!")
+			}
+		case 1:
+			if dateNum < 1 || dateNum > 12 {
+				return "", fmt.Errorf("Invalid month: number must be between 1 and 12!")
+			}
+		case 2:
+			if dateNum < 1 || dateNum > 31 {
+				return "", fmt.Errorf("Invalid day: number must be between 1 and 31!")
 			}
 		}
 		parsedTravelSlice = append(parsedTravelSlice, fmt.Sprintf("%02d", dateNum))
