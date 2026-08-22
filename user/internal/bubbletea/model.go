@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 	"time"
 
 	"charm.land/bubbles/v2/help"
@@ -350,6 +351,26 @@ func InitialModel() *Model {
 				Placeholder("YYYY-MM-DD").
 				Value(&currentDate).
 				Validate(func(s string) error {
+					rawDateSlice := strings.Split(s, "-")
+					if len(rawDateSlice) != 3 {
+						return errors.New("Error: Invalid formtat, date must be YYYY-MM-DD")
+					}
+					for idx, dateStr := range rawDateSlice {
+						dateNum, err := strconv.ParseInt(dateStr, 10, 32)
+						if err != nil {
+							return fmt.Errorf("Error: %v is not a valid number!", dateStr)
+						}
+
+						switch idx {
+						case 0:
+							if dateNum < int64(time.Now().Year()) {
+								return errors.New("Error: Invalid year, It is impossible to travel in the past!")
+							}
+							if dateNum > 3000 {
+								return errors.New("Error: Year is too far into the future!")
+							}
+						}
+					}
 					rawTime, err := time.Parse(time.DateOnly, s)
 					if err != nil {
 						return fmt.Errorf("Error: Invalid time: %v", err)
