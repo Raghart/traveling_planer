@@ -14,6 +14,7 @@ import (
 	"charm.land/bubbles/v2/viewport"
 	tea "charm.land/bubbletea/v2"
 	"charm.land/glamour/v2"
+	"charm.land/huh/v2"
 	"charm.land/lipgloss/v2"
 	"github.com/Raghart/traveling_planer/internal/routing"
 	"github.com/Raghart/traveling_planer/internal/utils"
@@ -27,6 +28,7 @@ type Model struct {
 	country       routing.CountryManager
 	progress      progress.Model
 	viewport      viewport.Model
+	Form          *huh.Form
 	renderer      *glamour.TermRenderer
 	questionTitle string
 	isWritingDate bool
@@ -41,9 +43,7 @@ type Model struct {
 }
 
 func (m *Model) Init() tea.Cmd {
-	return tea.Batch(
-		tea.RequestBackgroundColor,
-	)
+	return m.Form.Init()
 }
 
 func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -303,12 +303,27 @@ func InitialModel() *Model {
 
 	vp := CreateViewport()
 
+	newForm := huh.NewForm(
+		huh.NewGroup(
+			huh.NewSelect[string]().
+				Key("country").
+				Options(huh.NewOptions("Pedro")...).
+				Title("Where are you from?"),
+
+			huh.NewSelect[string]().
+				Key("How big is your budget?").
+				Options(huh.NewOptions("Economic", "Moderate", "High Level")...).
+				Title("How big is your budget?"),
+		),
+	)
+
 	m := &Model{
 		list:          l,
 		keys:          createKeyMap(),
 		help:          help.New(),
 		viewport:      vp,
 		TextInput:     ti,
+		Form:          newForm,
 		progress:      progress.New(progress.WithDefaultBlend()),
 		dataMsg:       "Downloading required data...",
 		debugStrs:     []string{"\nDEBUG: "},

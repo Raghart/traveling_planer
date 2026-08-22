@@ -11,7 +11,7 @@
 
      - When are you planning to travel?X
      
-     - How long will the travel be?
+     - How long will the travel be?X
      
      - Do you prefer *hotter* or *colder* enviroments?
      
