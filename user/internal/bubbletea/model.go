@@ -1,6 +1,7 @@
 package bubbletea
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -347,7 +348,20 @@ func InitialModel() *Model {
 				CharLimit(10).
 				Description("Date Format YYYY-MM-DD").
 				Placeholder("YYYY-MM-DD").
-				Value(&currentDate),
+				Value(&currentDate).
+				Validate(func(s string) error {
+					rawTime, err := time.Parse(time.DateOnly, s)
+					if err != nil {
+						return fmt.Errorf("Error: Invalid time: %v", err)
+					}
+
+					dateNow, _ := time.Parse(time.DateOnly, time.Now().Format(time.DateOnly))
+					if rawTime.Before(dateNow) {
+						return errors.New("Invalid date: Traveling date can't be in the past!")
+					}
+
+					return nil
+				}),
 
 			huh.NewInput().
 				Key("travelDuration").
