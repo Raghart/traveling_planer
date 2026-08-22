@@ -355,6 +355,8 @@ func InitialModel() *Model {
 					if len(rawDateSlice) != 3 {
 						return errors.New("Error: Invalid formtat, date must be YYYY-MM-DD")
 					}
+
+					parsedDateSlice := []string{}
 					for idx, dateStr := range rawDateSlice {
 						dateNum, err := strconv.ParseInt(dateStr, 10, 32)
 						if err != nil {
@@ -369,9 +371,19 @@ func InitialModel() *Model {
 							if dateNum > 3000 {
 								return errors.New("Error: Year is too far into the future!")
 							}
+						case 1:
+							if dateNum < 1 || dateNum > 12 {
+								return errors.New("Error: Invalid month, it should be a number between 1 and 12!")
+							}
+						case 2:
+							if dateNum < 1 || dateNum > 31 {
+								return errors.New("Error: Invalid day of the month!")
+							}
 						}
+						parsedDateSlice = append(parsedDateSlice, fmt.Sprintf("%02d", dateNum))
 					}
-					rawTime, err := time.Parse(time.DateOnly, s)
+
+					rawTime, err := time.Parse(time.DateOnly, strings.Join(parsedDateSlice, "-"))
 					if err != nil {
 						return fmt.Errorf("Error: Invalid time: %v", err)
 					}
