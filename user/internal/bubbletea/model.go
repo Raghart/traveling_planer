@@ -42,7 +42,6 @@ type Model struct {
 	loadingData   bool
 	dataCh        chan tea.Msg
 	dataMsg       string
-	err           error
 }
 
 func (m *Model) Init() tea.Cmd {
@@ -263,71 +262,22 @@ func (m *Model) View() tea.View {
 		footer = m.ErrorFrameworkView("")
 	}
 
+	if m.loadingData {
+		return tea.NewView("\n" +
+			fmt.Sprintf("Loading data from %s...\n\n", m.country.Destination) +
+			fmt.Sprintf("%s\n\n", m.dataMsg) + m.progress.View() + "\n\n" +
+			HelpStyle("Press 'q' to quit"))
+	}
+
+	if m.showResults {
+		return tea.NewView(m.viewport.View() + helpViewport())
+	}
+
+	//if len(m.debugStrs) > 1 {
+	//	strView += strings.Join(m.debugStrs, "\n")
+	//}
+
 	return tea.NewView(m.styles.Base.Render(header + "\n" + body + "\n\n" + footer))
-	/*
-		if m.err != nil {
-			return tea.NewView(m.styles.QuitText.Render(
-				fmt.Sprintf("%v\n\n", m.err) +
-					HelpStyle("Press 'q' to exit error window")))
-		}
-
-		if m.loadingData {
-			return tea.NewView("\n" +
-				fmt.Sprintf("Loading data from %s...\n\n", m.country.Destination) +
-				fmt.Sprintf("%s\n\n", m.dataMsg) +
-				m.progress.View() + "\n\n" + HelpStyle("Press 'q' to quit"))
-		}
-
-		if m.quitting {
-			return tea.NewView(m.styles.QuitText.Render("Hope to see you again!"))
-		}
-
-		if m.showResults {
-			return tea.NewView(m.viewport.View() + helpViewport())
-		}
-
-		footer := m.styles.Help.Render(m.buildDynamicHelp())
-
-		var strView string
-		var c *tea.Cursor
-
-		if m.isWritingDate {
-			headerView := m.styles.Title.Render(m.questionTitle)
-			dateFormat := m.styles.LightPurple.Render("Date format YYYY-MM-DD\n")
-			if !m.TextInput.VirtualCursor() {
-				c = m.TextInput.Cursor()
-				c.Y += lipgloss.Height(dateFormat + "\n" + headerView)
-			}
-
-			strView = strings.Join([]string{
-				headerView,
-				dateFormat,
-				m.TextInput.View(),
-				m.styles.StatusMessage.Render(
-					fmt.Sprintf("\nThe TravelDate is: %s", m.country.UserData.TravelDate)),
-				m.styles.StatusMessage.Render(
-					fmt.Sprintf("The TravelLength is: %s", m.country.UserData.TravelEndDate),
-				),
-				footer,
-			}, "\n")
-		}
-
-		if !m.isWritingDate {
-			strView = strings.Join([]string{
-				m.list.View(),
-				footer,
-			}, "\n")
-		}
-
-		if len(m.debugStrs) > 1 {
-			strView += strings.Join(m.debugStrs, "\n")
-		}
-
-		v := tea.NewView(strView)
-		v.AltScreen = true
-		v.Cursor = c
-		return v
-	*/
 }
 
 func InitialModel() *Model {
