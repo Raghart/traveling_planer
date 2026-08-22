@@ -1,6 +1,7 @@
 package bubbletea
 
 import (
+	"log"
 	"time"
 
 	"charm.land/bubbles/v2/help"
@@ -13,6 +14,7 @@ import (
 	"charm.land/glamour/v2"
 	"charm.land/huh/v2"
 	"github.com/Raghart/traveling_planer/internal/routing"
+	"github.com/Raghart/traveling_planer/internal/utils"
 )
 
 type Model struct {
@@ -317,12 +319,18 @@ func InitialModel() *Model {
 
 	vp := CreateViewport()
 
+	countryNames, err := utils.GetAllCountriesNames()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	newForm := huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[string]().
 				Key("country").
-				Options(huh.NewOptions("Pedro")...).
-				Title("Where are you from?"),
+				Options(huh.NewOptions(countryNames...)...).
+				Title("Where are you from?").
+				Height(10),
 
 			huh.NewSelect[string]().
 				Key("How big is your budget?").
