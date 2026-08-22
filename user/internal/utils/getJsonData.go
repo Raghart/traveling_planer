@@ -28,3 +28,16 @@ func GetAllCountriesData() (types.CountriesJSON, error) {
 	}
 	return *jsonData, nil
 }
+
+func GetAllCountriesNames() ([]string, error) {
+	countriesData, err := GetAllCountriesData()
+	if err != nil {
+		return nil, fmt.Errorf("unable to gather the data: %v", err)
+	}
+
+	parsedCountries := []string{}
+	for _, country := range countriesData {
+		parsedCountries = append(parsedCountries, country.Name)
+	}
+	return parsedCountries, nil
+}
