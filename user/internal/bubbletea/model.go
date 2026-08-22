@@ -329,6 +329,7 @@ func InitialModel() *Model {
 	}
 
 	currentDate := time.Now().Format(time.DateOnly)
+	var budget string
 
 	newForm := huh.NewForm(
 		huh.NewGroup(
@@ -336,12 +337,26 @@ func InitialModel() *Model {
 				Key("country").
 				Options(huh.NewOptions(countryNames...)...).
 				Title("Where are you from?").
-				Height(10),
+				Height(10).
+				Description("Select your origin's country"),
 
 			huh.NewSelect[string]().
 				Key("budget").
 				Options(huh.NewOptions("Economic", "Moderate", "High Level")...).
-				Title("How big is your budget?"),
+				Title("How big is your budget?").
+				Value(&budget).
+				DescriptionFunc(func() string {
+					switch budget {
+					case "Economic":
+						return "Budget equal or lower than 5.000$"
+					case "Moderate":
+						return "Budget Between 5.000$ and 10.000$"
+					case "High Level":
+						return "Budget highter than 10.000$"
+					default:
+						return "Select your budget"
+					}
+				}, &budget),
 
 			huh.NewInput().
 				Key("travelDate").
