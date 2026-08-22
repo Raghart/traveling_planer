@@ -333,9 +333,15 @@ func InitialModel() *Model {
 				Height(10),
 
 			huh.NewSelect[string]().
-				Key("How big is your budget?").
+				Key("budget").
 				Options(huh.NewOptions("Economic", "Moderate", "High Level")...).
 				Title("How big is your budget?"),
+
+			huh.NewConfirm().
+				Key("enviroment").
+				Title("Do you prefer hotter or colder enviroments?").
+				Affirmative("Hotter").
+				Negative("Colder"),
 		),
 	)
 
