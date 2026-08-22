@@ -34,6 +34,7 @@ type Model struct {
 	questionTitle string
 	isWritingDate bool
 	TextInput     textinput.Model
+	Width         int
 	debugStrs     []string
 	showResults   bool
 	quitting      bool
@@ -49,6 +50,8 @@ func (m *Model) Init() tea.Cmd {
 
 func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.Width = min(msg.Width, 80) - m.styles.Base.GetHorizontalFrameSize()
 	case tea.KeyPressMsg:
 		switch {
 		case key.Matches(msg, m.keys.Quit):
@@ -56,12 +59,15 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
+	var cmds []tea.Cmd
+
 	form, cmd := m.Form.Update(msg)
 	if f, ok := form.(*huh.Form); ok {
 		m.Form = f
+		cmds = append(cmds, cmd)
 	}
 
-	return m, cmd
+	return m, tea.Batch(cmds...)
 	/*
 		var cmd tea.Cmd
 		switch msg := msg.(type) {
