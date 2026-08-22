@@ -342,6 +342,16 @@ func InitialModel() *Model {
 				Title("Do you prefer hotter or colder enviroments?").
 				Affirmative("Hotter").
 				Negative("Colder"),
+
+			huh.NewMultiSelect[string]().
+				Key("activities").
+				Options(
+					huh.NewOption("Nature-wilderness", "nature"),
+					huh.NewOption("City-life style", "city"),
+					huh.NewOption("History-culture", "history"),
+				).
+				Title("What do you enjoy while traveling?").
+				Height(4),
 		),
 	)
 
