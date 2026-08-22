@@ -426,7 +426,8 @@ func InitialModel() *Model {
 
 					return nil
 				}),
-
+		),
+		huh.NewGroup(
 			huh.NewInput().
 				Key("travelDuration").
 				Title("How many days are you planning to travel?").
@@ -459,7 +460,7 @@ func InitialModel() *Model {
 				Description("Select the activities you enjoy doing!").
 				Height(4),
 		),
-	)
+	).WithShowHelp(false)
 
 	m := &Model{
 		list:          l,
