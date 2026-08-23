@@ -12,10 +12,7 @@ import (
 	"charm.land/bubbles/v2/key"
 	"charm.land/bubbles/v2/list"
 	"charm.land/bubbles/v2/progress"
-	"charm.land/bubbles/v2/textinput"
-	"charm.land/bubbles/v2/viewport"
 	tea "charm.land/bubbletea/v2"
-	"charm.land/glamour/v2"
 	"charm.land/huh/v2"
 	"charm.land/lipgloss/v2"
 	"github.com/Raghart/traveling_planer/internal/routing"
@@ -23,25 +20,18 @@ import (
 )
 
 type Model struct {
-	keys          KeyMap
-	list          list.Model
-	styles        *Styles
-	help          help.Model
-	country       routing.CountryManager
-	progress      progress.Model
-	viewport      viewport.Model
-	Form          *huh.Form
-	renderer      *glamour.TermRenderer
-	questionTitle string
-	isWritingDate bool
-	TextInput     textinput.Model
-	Width         int
-	debugStrs     []string
-	showResults   bool
-	quitting      bool
-	loadingData   bool
-	dataCh        chan tea.Msg
-	dataMsg       string
+	keys        KeyMap
+	list        list.Model
+	styles      *Styles
+	help        help.Model
+	country     routing.CountryManager
+	progress    progress.Model
+	Form        *huh.Form
+	Width       int
+	debugStrs   []string
+	loadingData bool
+	dataCh      chan tea.Msg
+	dataMsg     string
 }
 
 func (m *Model) Init() tea.Cmd {
@@ -54,10 +44,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.Width = min(msg.Width, 80) - m.styles.Base.GetHorizontalFrameSize()
 		m.list.SetSize(msg.Width, msg.Height-5)
-		m.viewport.SetWidth(msg.Width)
-		m.viewport.SetHeight(msg.Height - 8)
-		renderer, _ := m.updateRenderer(msg.Width)
-		m.renderer = renderer
 		return m, nil
 
 	case progress.FrameMsg:
@@ -135,10 +121,6 @@ func (m *Model) View() tea.View {
 			fmt.Sprintf("Loading data from %s...\n\n", m.country.Destination) +
 			fmt.Sprintf("%s\n\n", m.dataMsg) + m.progress.View() + "\n\n" +
 			HelpStyle("Press 'q' to quit"))
-	}
-
-	if m.showResults {
-		return tea.NewView(m.viewport.View() + helpViewport())
 	}
 
 	//if len(m.debugStrs) > 1 {
