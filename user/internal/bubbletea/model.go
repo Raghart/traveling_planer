@@ -112,13 +112,6 @@ func (m *Model) View() tea.View {
 		footer = m.ErrorFrameworkView("")
 	}
 
-	if m.loadingData {
-		return tea.NewView("\n" +
-			fmt.Sprintf("Loading data from %s...\n\n", m.country.Destination) +
-			fmt.Sprintf("%s\n\n", m.dataMsg) + m.progress.View() + "\n\n" +
-			HelpStyle("Press 'q' to quit"))
-	}
-
 	//if len(m.debugStrs) > 1 {
 	//	strView += strings.Join(m.debugStrs, "\n")
 	//}
@@ -134,14 +127,13 @@ func InitialModel() *Model {
 	}
 
 	m := &Model{
+		styles:   NewStyles(true),
 		keys:     createKeyMap(),
 		help:     help.New(),
 		Form:     newForm,
 		progress: progress.New(progress.WithDefaultBlend()),
 		dataMsg:  "Downloading required data...",
 	}
-
-	m.UpdateStyles(true)
 
 	return m
 }
