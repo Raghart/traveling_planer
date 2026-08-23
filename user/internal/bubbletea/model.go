@@ -49,9 +49,51 @@ func (m *Model) Init() tea.Cmd {
 }
 
 func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.Width = min(msg.Width, 80) - m.styles.Base.GetHorizontalFrameSize()
+		m.list.SetSize(msg.Width, msg.Height-5)
+		m.viewport.SetWidth(msg.Width)
+		m.viewport.SetHeight(msg.Height - 8)
+		renderer, _ := m.updateRenderer(msg.Width)
+		m.renderer = renderer
+		return m, nil
+
+	case progress.FrameMsg:
+		m.progress, cmd = m.progress.Update(msg)
+		return m, cmd
+
+	case routing.CountryData:
+		switch msg.DataType {
+		case "temp":
+			tempSlice, _ := msg.Data.([]routing.DailyTemp)
+			m.country.DailyTemperatures = tempSlice
+			m.dataMsg = fmt.Sprintf("%s temperature loaded (+20%%)", m.country.Destination)
+		case "currency":
+			currencyData, _ := msg.Data.(routing.Currency)
+			m.country.Currency = currencyData
+			m.dataMsg = fmt.Sprintf("%s currency loaded (+20%%)", m.country.Destination)
+		case "holidays":
+			holidaysData, _ := msg.Data.([]routing.FestivityData)
+			m.country.Festivities = holidaysData
+			m.dataMsg = fmt.Sprintf("%s holidays loaded (+20%%)", m.country.Destination)
+		case "description":
+			description, _ := msg.Data.(string)
+			m.country.Description = description
+			m.dataMsg = fmt.Sprintf("%s description loaded (+20%%)", m.country.Destination)
+		case "images":
+			urlImages, _ := msg.Data.([]string)
+			m.country.ImageUrls = urlImages
+			m.dataMsg = fmt.Sprintf("%s url images loaded (+20%%)", m.country.Destination)
+		}
+
+		return m, tea.Batch(
+			m.progress.IncrPercent(.20),
+			ListenCountryData(m.dataCh),
+			m.CheckPercentage(),
+		)
+
 	case tea.KeyPressMsg:
 		switch {
 		case key.Matches(msg, m.keys.Quit):
@@ -68,180 +110,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	return m, tea.Batch(cmds...)
-	/*
-		var cmd tea.Cmd
-		switch msg := msg.(type) {
-		case tea.WindowSizeMsg:
-			m.list.SetSize(msg.Width, msg.Height-5)
-			m.viewport.SetWidth(msg.Width)
-			m.viewport.SetHeight(msg.Height - 8)
-			renderer, err := m.updateRenderer(msg.Width)
-			if err != nil {
-				m.err = err
-				return m, nil
-			}
-
-			m.renderer = renderer
-			return m, nil
-
-		case progress.FrameMsg:
-			m.progress, cmd = m.progress.Update(msg)
-			return m, cmd
-
-		case routing.CountryData:
-			if msg.Error != nil {
-				m.err = msg.Error
-				return m, nil
-			}
-
-			switch msg.DataType {
-			case "temp":
-				tempSlice, _ := msg.Data.([]routing.DailyTemp)
-				m.country.DailyTemperatures = tempSlice
-				m.dataMsg = fmt.Sprintf("%s temperature loaded (+20%%)", m.country.Destination)
-			case "currency":
-				currencyData, _ := msg.Data.(routing.Currency)
-				m.country.Currency = currencyData
-				m.dataMsg = fmt.Sprintf("%s currency loaded (+20%%)", m.country.Destination)
-			case "holidays":
-				holidaysData, _ := msg.Data.([]routing.FestivityData)
-				m.country.Festivities = holidaysData
-				m.dataMsg = fmt.Sprintf("%s holidays loaded (+20%%)", m.country.Destination)
-			case "description":
-				description, _ := msg.Data.(string)
-				m.country.Description = description
-				m.dataMsg = fmt.Sprintf("%s description loaded (+20%%)", m.country.Destination)
-			case "images":
-				urlImages, _ := msg.Data.([]string)
-				m.country.ImageUrls = urlImages
-				m.dataMsg = fmt.Sprintf("%s url images loaded (+20%%)", m.country.Destination)
-			}
-
-			return m, tea.Batch(
-				m.progress.IncrPercent(.20),
-				ListenCountryData(m.dataCh),
-				m.CheckPercentage(),
-			)
-
-		case tea.KeyPressMsg:
-			switch {
-			case key.Matches(msg, m.keys.Help):
-				m.help.ShowAll = !m.help.ShowAll
-
-			case key.Matches(msg, m.keys.Enter):
-				i, ok := m.list.SelectedItem().(Item)
-
-				if ok && m.country.From == "" {
-					m.country.From = i.title
-					m.country.UserData.From = i.title
-
-					m.list.Title = "How big is your budget?"
-					m.list.NewStatusMessage(
-						m.styles.StatusMessage.Render("From: " + i.title))
-
-					m.list.SetItems(GenerateBudgetItems())
-					m.list.ResetFilter()
-					return m, nil
-				}
-
-				if ok && m.country.UserData.Budget == "" {
-					m.country.UserData.Budget = i.title
-					m.list.NewStatusMessage(m.styles.StatusMessage.Render(
-						fmt.Sprintf("%s budget registered!", i.title),
-					))
-
-					m.isWritingDate = true
-					return m, nil
-				}
-
-				if m.country.UserData.TravelDate.IsZero() {
-					rawTravelDate := m.TextInput.Value()
-					parsedTravelDate, err := utils.ParseRawDateStr(rawTravelDate)
-					if err != nil {
-						m.debugStrs = append(m.debugStrs, fmt.Sprintf("Error: %v", err))
-						return m, nil
-					}
-
-					userTravelDate, err := time.Parse(time.DateOnly, parsedTravelDate)
-
-					if err != nil {
-						m.debugStrs = append(m.debugStrs, fmt.Sprintf("ERROR: %v", err))
-						return m, nil
-					}
-
-					dateNow, _ := time.Parse(time.DateOnly, time.Now().Format(time.DateOnly))
-					if userTravelDate.Before(dateNow) {
-						m.debugStrs = append(m.debugStrs, "Error: Travel Date can't be in the past")
-						return m, nil
-					}
-
-					m.country.UserData.TravelDate = userTravelDate
-					m.questionTitle = "How long will your travel be?"
-					m.TextInput.SetValue(userTravelDate.Add(24 * time.Hour).Format(time.DateOnly))
-					return m, nil
-				}
-
-				if m.country.UserData.TravelEndDate.IsZero() {
-					rawUserTravelEnds := m.TextInput.Value()
-					parsedTravelEnds, err := utils.ParseRawDateStr(rawUserTravelEnds)
-					if err != nil {
-						m.debugStrs = append(m.debugStrs, fmt.Sprintf("Error: %v", err))
-						return m, nil
-					}
-
-					userTravelEnds, err := time.Parse(time.DateOnly, parsedTravelEnds)
-					if err != nil {
-						m.debugStrs = append(m.debugStrs,
-							fmt.Sprintf("Error: unable to parse that time: %v", err))
-						return m, nil
-					}
-
-					if userTravelEnds.Before(m.country.UserData.TravelDate) {
-						m.debugStrs = append(
-							m.debugStrs, "Error: Travel Length can't be before the traveling start!")
-					}
-					m.country.UserData.TravelEndDate = userTravelEnds
-					return m, nil
-				}
-
-				return m, nil
-
-			case key.Matches(msg, m.keys.Quit):
-				if m.showResults {
-					m.showResults = false
-					m.loadingData = false
-					return m, nil
-				}
-
-				if m.err != nil {
-					m.err = nil
-					return m, nil
-				}
-
-				m.quitting = true
-				return m, tea.Quit
-
-			case m.isWritingDate:
-				allowedKeys := []string{
-					"left", "right", "backspace", "-",
-					"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-				}
-
-				switch {
-				case slices.Contains(allowedKeys, msg.Keystroke()):
-					m.TextInput, cmd = m.TextInput.Update(msg)
-					return m, cmd
-				}
-			case m.list.FilterState() == list.Filtering:
-				m.list, cmd = m.list.Update(msg)
-				return m, cmd
-			}
-		}
-
-		m.list, cmd = m.list.Update(msg)
-		m.viewport, cmd = m.viewport.Update(msg)
-		return m, cmd
-	*/
 }
 
 func (m *Model) View() tea.View {
