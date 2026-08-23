@@ -149,22 +149,6 @@ func (m *Model) View() tea.View {
 }
 
 func InitialModel() *Model {
-	items := GenerateFromCountryItems()
-	l := list.New(items, list.NewDefaultDelegate(), 0, 0)
-	l.Title = "Where are you from?"
-	l.SetShowStatusBar(false)
-	l.SetShowHelp(false)
-
-	ti := textinput.New()
-	ti.Placeholder = "Date format YYYY-MM-DD"
-	ti.SetValue(time.Now().Format(time.DateOnly))
-	ti.SetVirtualCursor(false)
-	ti.Focus()
-	ti.CharLimit = 10
-	ti.SetWidth(20)
-
-	vp := CreateViewport()
-
 	countryNames, err := utils.GetAllCountriesNames()
 	if err != nil {
 		log.Fatal(err)
@@ -291,20 +275,12 @@ func InitialModel() *Model {
 		WithShowErrors(false)
 
 	m := &Model{
-		list:          l,
-		keys:          createKeyMap(),
-		help:          help.New(),
-		viewport:      vp,
-		TextInput:     ti,
-		Form:          newForm,
-		progress:      progress.New(progress.WithDefaultBlend()),
-		dataMsg:       "Downloading required data...",
-		debugStrs:     []string{"\nDEBUG: "},
-		questionTitle: "When are you planning to travel?",
+		keys:     createKeyMap(),
+		help:     help.New(),
+		Form:     newForm,
+		progress: progress.New(progress.WithDefaultBlend()),
+		dataMsg:  "Downloading required data...",
 	}
-	m.list.FilterInput.Placeholder = "testing..."
-	m.list.SetFilteringEnabled(true)
-	m.UpdateStyles(true)
-	m.UpdateDateStyles()
+
 	return m
 }
