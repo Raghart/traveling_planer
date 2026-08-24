@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"charm.land/huh/v2"
-	"charm.land/lipgloss/v2"
 	"github.com/Raghart/traveling_planer/internal/utils"
 )
 
@@ -36,8 +35,7 @@ func (m *Model) CreateNewForm() error {
 				Options(huh.NewOptions(countryNames...)...).
 				Title("Where are you from?").
 				Height(10).
-				Description(lipgloss.NewStyle().
-					Foreground(lipgloss.Color("240")).Render("Select your origin's country")),
+				Description(m.styles.Help.Render("Select your origin's country")),
 
 			huh.NewSelect[string]().
 				Key("budget").
@@ -47,13 +45,13 @@ func (m *Model) CreateNewForm() error {
 				DescriptionFunc(func() string {
 					switch budget {
 					case "Economic":
-						return "Budget equal or lower than 5.000$"
+						return m.styles.Help.Render("Budget equal or lower than 5.000$")
 					case "Moderate":
-						return "Budget Between 5.000$ and 10.000$"
+						return m.styles.Help.Render("Budget Between 5.000$ and 10.000$")
 					case "High Level":
-						return "Budget highter than 10.000$"
+						return m.styles.Help.Render("Budget highter than 10.000$")
 					default:
-						return "Select your budget"
+						return m.styles.Help.Render("Select your budget")
 					}
 				}, &budget),
 
@@ -61,7 +59,7 @@ func (m *Model) CreateNewForm() error {
 				Key("travelDate").
 				Title("When are you planning to travel?").
 				CharLimit(10).
-				Description("Date Format YYYY-MM-DD | YYYY-M-DD").
+				Description(m.styles.Help.Render("Date Format YYYY-MM-DD | YYYY-M-DD")).
 				Placeholder("YYYY-MM-DD").
 				Value(&currentDate).
 				Validate(func(s string) error {
@@ -124,7 +122,7 @@ func (m *Model) CreateNewForm() error {
 
 					return nil
 				}).
-				Description("Select the number of days you're planning to travel"),
+				Description(m.styles.Help.Render("Select the number of days you're planning to travel")),
 
 			huh.NewConfirm().
 				Key("enviroment").
@@ -140,8 +138,8 @@ func (m *Model) CreateNewForm() error {
 					huh.NewOption("History-culture", "history"),
 				).
 				Title("What do you enjoy doing while traveling?").
-				Description("Select the activities you enjoy doing!").
-				Height(4),
+				Description(m.styles.Help.Render("Select the activities you enjoy doing!")).
+				Height(5),
 		),
 	).
 		WithShowHelp(false).
