@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"charm.land/huh/v2"
+	"charm.land/lipgloss/v2"
 	"github.com/Raghart/traveling_planer/internal/utils"
 )
 
@@ -19,7 +20,7 @@ const (
 	FormFilled
 )
 
-func CreateNewForm() (*huh.Form, error) {
+func (m *Model) CreateNewForm() error {
 	countryNames, err := utils.GetAllCountriesNames()
 	if err != nil {
 		log.Fatal(err)
@@ -28,14 +29,15 @@ func CreateNewForm() (*huh.Form, error) {
 	currentDate := time.Now().Format(time.DateOnly)
 	var budget string
 
-	return huh.NewForm(
+	newForm := huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[string]().
 				Key("country").
 				Options(huh.NewOptions(countryNames...)...).
 				Title("Where are you from?").
 				Height(10).
-				Description("Select your origin's country"),
+				Description(lipgloss.NewStyle().
+					Foreground(lipgloss.Color("240")).Render("Select your origin's country")),
 
 			huh.NewSelect[string]().
 				Key("budget").
@@ -143,5 +145,8 @@ func CreateNewForm() (*huh.Form, error) {
 		),
 	).
 		WithShowHelp(false).
-		WithShowErrors(false), nil
+		WithShowErrors(false)
+
+	m.Form = newForm
+	return nil
 }

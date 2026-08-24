@@ -120,19 +120,18 @@ func (m *Model) View() tea.View {
 }
 
 func InitialModel() *Model {
-	newForm, err := CreateNewForm()
-	if err != nil {
-		log.Print("Something went wrong!")
-		log.Fatal(err)
-	}
-
 	m := &Model{
 		styles:   NewStyles(true),
 		keys:     createKeyMap(),
 		help:     help.New(),
-		Form:     newForm,
 		progress: progress.New(progress.WithDefaultBlend()),
 		dataMsg:  "Downloading required data...",
+	}
+
+	err := m.CreateNewForm()
+	if err != nil {
+		log.Print("Something went wrong!")
+		log.Fatal(err)
 	}
 
 	return m

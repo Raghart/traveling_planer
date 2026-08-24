@@ -16,7 +16,7 @@ type Styles struct {
 	StatusHeader    lipgloss.Style
 	Highlight       lipgloss.Style
 	ErrorHeaderText lipgloss.Style
-	HelpForm        lipgloss.Style
+	Help            lipgloss.Style
 	StatusMessage   lipgloss.Style
 }
 
@@ -36,7 +36,7 @@ func NewStyles(darkBG bool) *Styles {
 	s.StatusHeader = lipgloss.NewStyle().Foreground(s.Green).Bold(true)
 	s.Highlight = lipgloss.NewStyle().Foreground(lipgloss.Color("212"))
 	s.ErrorHeaderText = s.HeaderText.Foreground(s.Red)
-	s.HelpForm = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
+	s.Help = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
 	s.StatusMessage = lipgloss.NewStyle().
 		Foreground(lightDark(lipgloss.Color("#04B575"), lipgloss.Color("#04B575")))
 
