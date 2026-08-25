@@ -105,7 +105,24 @@ func (m *Model) View() tea.View {
 	v := strings.TrimSuffix(m.Form.View(), "\n\n")
 	form := lipgloss.NewStyle().Margin(1, 0).Render(v)
 
-	body := lipgloss.JoinHorizontal(lipgloss.Left, form)
+	var (
+		country = "(None)"
+	)
+
+	if m.Form.GetString("country") != "" {
+		country = "From: " + m.Form.GetString("country")
+	}
+
+	const statusWidth = 28
+	statusMarginLeft := m.Width - statusWidth - lipgloss.Width(form) - m.styles.Status.GetMarginRight()
+	countryStatus := m.styles.Status.
+		Height(lipgloss.Height(form)).
+		Width(statusWidth).
+		MarginLeft(statusMarginLeft).
+		Render("Current Information" + "\n" +
+			country)
+
+	body := lipgloss.JoinHorizontal(lipgloss.Left, form, countryStatus)
 
 	footer := m.AppFrameworkView(m.Form.Help().ShortHelpView(m.Form.KeyBinds()))
 	if len(errorSlice) > 0 {

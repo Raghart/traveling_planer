@@ -4,7 +4,6 @@ import "charm.land/huh/v2"
 
 func getCountryNames() []huh.Option[string] {
 	return huh.NewOptions(
-		// common
 		"United States",
 		"Canada",
 		"Germany",
