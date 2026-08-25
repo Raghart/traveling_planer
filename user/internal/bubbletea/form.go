@@ -34,7 +34,7 @@ func (m *Model) CreateNewForm() error {
 				Key("country").
 				Options(huh.NewOptions(countryNames...)...).
 				Title("Where are you from?").
-				Height(10).
+				Inline(true).
 				Description(m.styles.Help.Render("Select your origin's country")),
 
 			huh.NewSelect[string]().
