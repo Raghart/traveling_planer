@@ -138,7 +138,8 @@ func (m *Model) CreateNewForm() error {
 		),
 	).
 		WithShowHelp(false).
-		WithShowErrors(false)
+		WithShowErrors(false).
+		WithTheme(huh.ThemeFunc(huh.ThemeDracula))
 
 	m.Form = newForm
 	return nil
