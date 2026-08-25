@@ -21,6 +21,7 @@ func (m *Model) CreateNewForm() error {
 	countryNames := getCountryNames()
 
 	currentDate := time.Now().Format(time.DateOnly)
+	defaultDaysNum := "7"
 	var budget string
 
 	newForm := huh.NewForm(
@@ -108,7 +109,7 @@ func (m *Model) CreateNewForm() error {
 				Key("travelDuration").
 				Title("How many days are you planning to travel?").
 				CharLimit(3).
-				Placeholder("7").
+				Value(&defaultDaysNum).
 				Validate(func(s string) error {
 					_, err := strconv.ParseInt(s, 10, 32)
 					if err != nil {

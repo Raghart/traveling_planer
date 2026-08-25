@@ -9,9 +9,9 @@
   
      - How big is your budget? (*Economic*, *Moderate*, *High Level*)X
 
-     - When are you planning to travel?
+     - When are you planning to travel?X
      
-     - How many days are you planning to travel?
+     - How many days are you planning to travel?X
      
      - Do you prefer *hotter* or *colder* enviroments?X
      
