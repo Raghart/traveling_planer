@@ -3,13 +3,11 @@ package bubbletea
 import (
 	"errors"
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 	"time"
 
 	"charm.land/huh/v2"
-	"github.com/Raghart/traveling_planer/internal/utils"
 )
 
 type state int
@@ -20,10 +18,7 @@ const (
 )
 
 func (m *Model) CreateNewForm() error {
-	countryNames, err := utils.GetAllCountriesNames()
-	if err != nil {
-		log.Fatal(err)
-	}
+	countryNames := getCountryNames()
 
 	currentDate := time.Now().Format(time.DateOnly)
 	var budget string
@@ -32,7 +27,7 @@ func (m *Model) CreateNewForm() error {
 		huh.NewGroup(
 			huh.NewSelect[string]().
 				Key("country").
-				Options(huh.NewOptions(countryNames...)...).
+				Options(countryNames...).
 				Title("Where are you from?").
 				Inline(true).
 				Description(m.styles.Help.Render("Select your origin's country")),
