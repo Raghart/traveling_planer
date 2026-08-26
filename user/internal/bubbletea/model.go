@@ -3,7 +3,9 @@ package bubbletea
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	"charm.land/bubbles/v2/help"
 	"charm.land/bubbles/v2/key"
@@ -116,22 +118,33 @@ func (m *Model) View() tea.View {
 
 	if m.Form.GetString("country") != "" {
 		country = fmt.Sprintf("\nFrom: %s\n", m.Form.GetString("country"))
+		m.country.UserData.From = country
 	}
 
 	if m.Form.GetString("budget") != "" {
 		budget = fmt.Sprintf("Budget: %s\n", m.Form.GetString("budget"))
+		m.country.UserData.Budget = budget
 	}
 
 	if m.Form.GetString("travelDate") != "" {
 		travelDate = fmt.Sprintf("Traveling Date: %s\n", m.Form.GetString("travelDate"))
+
+		travelDateTime, _ := time.Parse(time.DateOnly, travelDate)
+		m.country.UserData.TravelDate = travelDateTime
 	}
 
 	if m.Form.GetString("travelDuration") != "" {
 		travelDuration = fmt.Sprintf("Traveling Duration: %s days\n", m.Form.GetString("travelDuration"))
+
+		daysNum, _ := strconv.ParseInt(travelDuration, 10, 32)
+		travelEndDate := m.country.UserData.TravelDate.Add(time.Duration(daysNum) * 24 * time.Hour)
+		m.country.UserData.TravelEndDate = travelEndDate
 	}
 
-	if m.Form.GetString("enviroment") != "" {
-		enviroment = fmt.Sprintf("Enviroment: %s\n", m.Form.GetString("enviroment"))
+	if m.Form.GetBool("enviroment") {
+		enviroment = "Enviroment: Hotter\n"
+	} else {
+		enviroment = "Enviroment: Colder\n"
 	}
 
 	if m.Form.GetString("activities") != "" {

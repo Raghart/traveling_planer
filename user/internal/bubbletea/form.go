@@ -23,6 +23,7 @@ func (m *Model) CreateNewForm() error {
 	currentDate := time.Now().Format(time.DateOnly)
 	defaultDaysNum := "7"
 	var budget string
+	var preferredEnviroment bool
 
 	newForm := huh.NewForm(
 		huh.NewGroup(
@@ -124,7 +125,8 @@ func (m *Model) CreateNewForm() error {
 				Key("enviroment").
 				Title("Do you prefer hotter or colder enviroments?").
 				Affirmative("Hotter").
-				Negative("Colder"),
+				Negative("Colder").
+				Value(&preferredEnviroment),
 
 			huh.NewMultiSelect[string]().
 				Key("activities").
