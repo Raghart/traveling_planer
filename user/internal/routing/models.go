@@ -27,7 +27,7 @@ type UserPreferences struct {
 	Budget             string
 	TravelDate         string
 	TravelDays         string
-	PrefersWarmth      bool
+	PrefersWarmth      string
 	PreferedActivities []string
 }
 

@@ -116,7 +116,7 @@ func (m *Model) View() tea.View {
 	)
 
 	if m.Form.GetString("country") != "" {
-		country = fmt.Sprintf("\nFrom: %s\n", m.Form.GetString("country"))
+		country = fmt.Sprintf("From: %s\n", m.Form.GetString("country"))
 		m.country.UserData.From = country
 	}
 
@@ -133,14 +133,12 @@ func (m *Model) View() tea.View {
 		travelDuration = fmt.Sprintf("Traveling Duration: %s days\n", m.Form.GetString("travelDuration"))
 	}
 
-	if m.Form.GetBool("enviroment") && m.Form.GetString("travelDuration") != "" {
-		enviroment = "Enviroment: Hotter\n"
-	} else {
-		enviroment = "Enviroment: Colder\n"
+	if m.Form.GetString("enviroment") != "" {
+		enviroment = fmt.Sprintf("Enviroment: %s\n", m.Form.GetString("enviroment"))
 	}
 
 	if len(m.country.UserData.PreferedActivities) > 0 {
-		activities = "Activities: \n"
+		activities = "Activities:\n"
 		for _, act := range m.country.UserData.PreferedActivities {
 			activities += fmt.Sprintf("- %s\n", act)
 		}

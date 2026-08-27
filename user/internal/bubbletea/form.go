@@ -118,11 +118,10 @@ func (m *Model) CreateNewForm() error {
 				}).
 				Description(m.styles.Help.Render("Select the number of days you're planning to travel")),
 
-			huh.NewConfirm().
+			huh.NewSelect[string]().
 				Key("enviroment").
 				Title("Do you prefer hotter or colder enviroments?").
-				Affirmative("Hotter").
-				Negative("Colder").
+				Options(huh.NewOptions("Hotter", "Colder")...).
 				Value(&m.country.UserData.PrefersWarmth),
 
 			huh.NewMultiSelect[string]().
