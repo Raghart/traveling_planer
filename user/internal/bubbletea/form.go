@@ -22,8 +22,6 @@ func (m *Model) CreateNewForm() error {
 
 	currentDate := time.Now().Format(time.DateOnly)
 	defaultDaysNum := "7"
-	var budget string
-	var preferredEnviroment bool
 
 	newForm := huh.NewForm(
 		huh.NewGroup(
@@ -38,9 +36,9 @@ func (m *Model) CreateNewForm() error {
 				Key("budget").
 				Options(huh.NewOptions("Economic", "Moderate", "High Level")...).
 				Title("How big is your budget?").
-				Value(&budget).
+				Value(&m.country.UserData.Budget).
 				DescriptionFunc(func() string {
-					switch budget {
+					switch m.country.UserData.Budget {
 					case "Economic":
 						return m.styles.Help.Render("Budget equal or lower than 5.000$")
 					case "Moderate":
@@ -50,7 +48,7 @@ func (m *Model) CreateNewForm() error {
 					default:
 						return m.styles.Help.Render("Select your budget")
 					}
-				}, &budget),
+				}, &m.country.UserData.Budget),
 
 			huh.NewInput().
 				Key("travelDate").
@@ -126,7 +124,7 @@ func (m *Model) CreateNewForm() error {
 				Title("Do you prefer hotter or colder enviroments?").
 				Affirmative("Hotter").
 				Negative("Colder").
-				Value(&preferredEnviroment),
+				Value(&m.country.UserData.PrefersWarmth),
 
 			huh.NewMultiSelect[string]().
 				Key("activities").
@@ -137,7 +135,8 @@ func (m *Model) CreateNewForm() error {
 				).
 				Title("What do you enjoy doing while traveling?").
 				Description(m.styles.Help.Render("Select the activities you enjoy doing!")).
-				Height(5),
+				Height(5).
+				Value(&m.country.UserData.PreferedActivities),
 		),
 	).
 		WithShowHelp(false).

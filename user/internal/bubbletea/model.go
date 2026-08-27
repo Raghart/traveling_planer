@@ -141,7 +141,7 @@ func (m *Model) View() tea.View {
 		m.country.UserData.TravelEndDate = travelEndDate
 	}
 
-	if m.Form.GetBool("enviroment") {
+	if m.Form.GetBool("enviroment") && m.Form.GetString("travelDuration") != "" {
 		enviroment = "Enviroment: Hotter\n"
 	} else {
 		enviroment = "Enviroment: Colder\n"
