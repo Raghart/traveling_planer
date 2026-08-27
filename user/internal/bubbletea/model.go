@@ -107,7 +107,9 @@ func (m *Model) View() tea.View {
 	form := lipgloss.NewStyle().Margin(1, 0).Render(v)
 
 	var (
-		country        = "(None)"
+		countryStat = "(None)"
+		country     string
+
 		budget         string
 		travelDate     string
 		travelDuration string
@@ -115,9 +117,9 @@ func (m *Model) View() tea.View {
 		activities     string
 	)
 
-	if m.Form.GetString("country") != "" {
-		country = fmt.Sprintf("From: %s\n", m.Form.GetString("country"))
-		m.country.UserData.From = country
+	if m.Form.GetString("country") != "" || country != m.Form.GetString("country") {
+		country = m.Form.GetString("country")
+		countryStat = fmt.Sprintf("From: %s\n", m.Form.GetString("country"))
 	}
 
 	if m.Form.GetString("budget") != "" {
@@ -151,7 +153,7 @@ func (m *Model) View() tea.View {
 		Width(statusWidth).
 		MarginLeft(statusMarginLeft).
 		Render("Current Traveling Prefs!"+"\n\n"+
-			country+budget+travelDate+travelDuration+enviroment, activities)
+			countryStat+budget+travelDate+travelDuration+enviroment, activities)
 
 	body := lipgloss.JoinHorizontal(lipgloss.Left, form, countryStatus)
 
