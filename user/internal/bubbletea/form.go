@@ -20,9 +20,6 @@ const (
 func (m *Model) CreateNewForm() error {
 	countryNames := getCountryNames()
 
-	currentDate := time.Now().Format(time.DateOnly)
-	defaultDaysNum := "7"
-
 	newForm := huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[string]().
@@ -30,7 +27,8 @@ func (m *Model) CreateNewForm() error {
 				Options(countryNames...).
 				Title("Where are you from?").
 				Inline(true).
-				Description(m.styles.Help.Render("Select your origin's country")),
+				Description(m.styles.Help.Render("Select your origin's country")).
+				Value(&m.country.UserData.From),
 
 			huh.NewSelect[string]().
 				Key("budget").
@@ -56,7 +54,7 @@ func (m *Model) CreateNewForm() error {
 				CharLimit(10).
 				Description(m.styles.Help.Render("Date Format YYYY-MM-DD | YYYY-M-DD")).
 				Placeholder("YYYY-MM-DD").
-				Value(&currentDate).
+				Value(&m.country.UserData.TravelDate).
 				Validate(func(s string) error {
 					rawDateSlice := strings.Split(s, "-")
 					if len(rawDateSlice) != 3 {
@@ -103,12 +101,13 @@ func (m *Model) CreateNewForm() error {
 					return nil
 				}),
 		),
+
 		huh.NewGroup(
 			huh.NewInput().
 				Key("travelDuration").
 				Title("How many days are you planning to travel?").
 				CharLimit(3).
-				Value(&defaultDaysNum).
+				Value(&m.country.UserData.TravelDays).
 				Validate(func(s string) error {
 					_, err := strconv.ParseInt(s, 10, 32)
 					if err != nil {

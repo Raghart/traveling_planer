@@ -3,7 +3,6 @@ package bubbletea
 import (
 	"fmt"
 	"log"
-	"strconv"
 	"strings"
 	"time"
 
@@ -128,17 +127,10 @@ func (m *Model) View() tea.View {
 
 	if m.Form.GetString("travelDate") != "" {
 		travelDate = fmt.Sprintf("Traveling Date: %s\n", m.Form.GetString("travelDate"))
-
-		travelDateTime, _ := time.Parse(time.DateOnly, travelDate)
-		m.country.UserData.TravelDate = travelDateTime
 	}
 
 	if m.Form.GetString("travelDuration") != "" {
 		travelDuration = fmt.Sprintf("Traveling Duration: %s days\n", m.Form.GetString("travelDuration"))
-
-		daysNum, _ := strconv.ParseInt(travelDuration, 10, 32)
-		travelEndDate := m.country.UserData.TravelDate.Add(time.Duration(daysNum) * 24 * time.Hour)
-		m.country.UserData.TravelEndDate = travelEndDate
 	}
 
 	if m.Form.GetBool("enviroment") && m.Form.GetString("travelDuration") != "" {
@@ -178,11 +170,19 @@ func (m *Model) View() tea.View {
 }
 
 func InitialModel() *Model {
+	initialCountry := routing.CountryManager{
+		UserData: routing.UserPreferences{
+			TravelDate: time.Now().Format(time.DateOnly),
+			TravelDays: "7",
+		},
+	}
+
 	m := &Model{
 		styles:   NewStyles(true),
 		keys:     createKeyMap(),
 		help:     help.New(),
 		progress: progress.New(progress.WithDefaultBlend()),
+		country:  initialCountry,
 		dataMsg:  "Downloading required data...",
 	}
 

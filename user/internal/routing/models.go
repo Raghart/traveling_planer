@@ -1,7 +1,5 @@
 package routing
 
-import "time"
-
 type CountryManager struct {
 	From              string
 	Destination       string
@@ -27,8 +25,8 @@ type CountryDestination struct {
 type UserPreferences struct {
 	From               string
 	Budget             string
-	TravelDate         time.Time
-	TravelEndDate      time.Time
+	TravelDate         string
+	TravelDays         string
 	PrefersWarmth      bool
 	PreferedActivities []string
 }
