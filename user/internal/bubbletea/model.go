@@ -147,8 +147,11 @@ func (m *Model) View() tea.View {
 		enviroment = "Enviroment: Colder\n"
 	}
 
-	if m.Form.GetString("activities") != "" {
-		activities = fmt.Sprintf("Activities: %s\n", m.Form.GetString("activities"))
+	if len(m.country.UserData.PreferedActivities) > 0 {
+		activities = "Activities: \n"
+		for _, act := range m.country.UserData.PreferedActivities {
+			activities += fmt.Sprintf("- %s\n", act)
+		}
 	}
 
 	const statusWidth = 35

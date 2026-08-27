@@ -129,12 +129,11 @@ func (m *Model) CreateNewForm() error {
 			huh.NewMultiSelect[string]().
 				Key("activities").
 				Options(
-					huh.NewOption("Nature-wilderness", "nature"),
-					huh.NewOption("City-life style", "city"),
-					huh.NewOption("History-culture", "history"),
+					huh.NewOption("Nature-wilderness", "Nature-wilderness"),
+					huh.NewOption("City-life style", "City-life style"),
+					huh.NewOption("History-culture", "History-culture"),
 				).
-				Title("What do you enjoy doing while traveling?").
-				Description(m.styles.Help.Render("Select the activities you enjoy doing!")).
+				Title("Which areas would you prefer to explore?").
 				Height(5).
 				Value(&m.country.UserData.PreferedActivities),
 		),
