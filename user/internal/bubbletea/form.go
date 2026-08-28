@@ -45,7 +45,7 @@ func (m *Model) CreateNewForm() error {
 					case "High Level":
 						return m.styles.Help.Render("Budget highter than 10.000$")
 					default:
-						return m.styles.Help.Render("Select your budget")
+						return m.styles.Help.Render("Budget saved!")
 					}
 				}, &m.country.UserData.Budget),
 
