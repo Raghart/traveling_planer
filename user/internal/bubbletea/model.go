@@ -114,6 +114,8 @@ func (m *Model) View() tea.View {
 		budgetStat string
 
 		travelDate     string
+		travelDateStat string
+
 		travelDuration string
 		enviroment     string
 		activities     string
@@ -129,8 +131,9 @@ func (m *Model) View() tea.View {
 		budgetStat = fmt.Sprintf("Budget: %s\n", m.Form.GetString("budget"))
 	}
 
-	if m.Form.GetString("travelDate") != "" {
-		travelDate = fmt.Sprintf("Traveling Date: %s\n", m.Form.GetString("travelDate"))
+	if m.Form.GetString("travelDate") != "" || travelDate != m.Form.GetString("travelDate") {
+		travelDate = m.Form.GetString("travelDate")
+		travelDateStat = fmt.Sprintf("Traveling Date: %s\n", m.Form.GetString("travelDate"))
 	}
 
 	if m.Form.GetString("travelDuration") != "" {
@@ -155,7 +158,7 @@ func (m *Model) View() tea.View {
 		Width(statusWidth).
 		MarginLeft(statusMarginLeft).
 		Render("Current Traveling Prefs!"+"\n\n"+
-			countryStat+budgetStat+travelDate+travelDuration+enviroment, activities)
+			countryStat+budgetStat+travelDateStat+travelDuration+enviroment, activities)
 
 	body := lipgloss.JoinHorizontal(lipgloss.Left, form, countryStatus)
 
