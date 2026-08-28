@@ -162,12 +162,14 @@ func (m *Model) GenerateStatusView(form string) string {
 
 	if m.Form.GetString("country") != "" || country != m.Form.GetString("country") {
 		country = m.Form.GetString("country")
-		countryStat = fmt.Sprintf("From: %s\n", m.Form.GetString("country"))
+		countryStat = m.styles.HeaderText.Render("From: ") +
+			fmt.Sprintf("%s\n", m.Form.GetString("country"))
 	}
 
 	if m.Form.GetString("budget") != "" || budget != m.Form.GetString("budget") {
 		budget = m.Form.GetString("budget")
-		budgetStat = fmt.Sprintf("Budget: %s\n", m.Form.GetString("budget"))
+		budgetStat = m.styles.HeaderText.Render("Budget: ") +
+			fmt.Sprintf("%s\n", m.Form.GetString("budget"))
 	}
 
 	if m.Form.GetString("travelDate") != "" || travelDate != m.Form.GetString("travelDate") {
@@ -194,11 +196,19 @@ func (m *Model) GenerateStatusView(form string) string {
 	}
 
 	const statusWidth = 35
+	dataHeader := m.styles.HeaderText.Render("Traveling Data Gathered")
 
 	return m.styles.Status.
 		Height(lipgloss.Height(form)).
 		Width(statusWidth).
-		MarginLeft(m.Width-statusWidth-lipgloss.Width(form)-m.styles.Status.GetMarginRight()).
-		Render("Current Traveling Prefs!"+"\n\n"+
-			countryStat+budgetStat+travelDateStat+travelDurStat+enviromentStat, activities)
+		MarginLeft(m.Width - statusWidth - lipgloss.Width(form) - m.styles.Status.GetMarginRight()).
+		Render(
+			dataHeader + "\n\n" +
+				countryStat +
+				budgetStat +
+				travelDateStat +
+				travelDurStat +
+				enviromentStat +
+				activities,
+		)
 }

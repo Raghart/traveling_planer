@@ -12,6 +12,7 @@ type Styles struct {
 	Indigo          color.Color
 	Green           color.Color
 	HeaderText      lipgloss.Style
+	StatusText      lipgloss.Style
 	Status          lipgloss.Style
 	StatusHeader    lipgloss.Style
 	Highlight       lipgloss.Style
@@ -28,6 +29,8 @@ func NewStyles(darkBG bool) *Styles {
 	s.Green = lightDark(lipgloss.Color("#02BA84"), lipgloss.Color("#02BA84"))
 	s.Base = lipgloss.NewStyle().Padding(1, 4, 0, 1)
 	s.HeaderText = lipgloss.NewStyle().Foreground(s.Indigo).Bold(true).Padding(0, 1, 0, 2)
+	s.StatusText = lipgloss.NewStyle().Foreground(s.Green).Bold(true)
+
 	s.Status = lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
 		BorderForeground(s.Indigo).
