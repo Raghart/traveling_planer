@@ -162,13 +162,13 @@ func (m *Model) GenerateStatusView(form string) string {
 
 	if m.Form.GetString("country") != "" || country != m.Form.GetString("country") {
 		country = m.Form.GetString("country")
-		countryStat = m.styles.HeaderText.Render("From: ") +
+		countryStat = m.styles.StatusHeader.Render("From: ") +
 			fmt.Sprintf("%s\n", m.Form.GetString("country"))
 	}
 
 	if m.Form.GetString("budget") != "" || budget != m.Form.GetString("budget") {
 		budget = m.Form.GetString("budget")
-		budgetStat = m.styles.HeaderText.Render("Budget: ") +
+		budgetStat = m.styles.StatusHeader.Render("Budget: ") +
 			fmt.Sprintf("%s\n", m.Form.GetString("budget"))
 	}
 

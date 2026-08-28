@@ -29,6 +29,8 @@ func NewStyles(darkBG bool) *Styles {
 	s.Green = lightDark(lipgloss.Color("#02BA84"), lipgloss.Color("#02BA84"))
 	s.Base = lipgloss.NewStyle().Padding(1, 4, 0, 1)
 	s.HeaderText = lipgloss.NewStyle().Foreground(s.Indigo).Bold(true).Padding(0, 1, 0, 2)
+	s.StatusHeader = lipgloss.NewStyle().Foreground(s.Green).Bold(true)
+	// Need to update StatusText to be presentable
 	s.StatusText = lipgloss.NewStyle().Foreground(s.Green).Bold(true)
 
 	s.Status = lipgloss.NewStyle().
@@ -36,7 +38,6 @@ func NewStyles(darkBG bool) *Styles {
 		BorderForeground(s.Indigo).
 		PaddingLeft(1).
 		MarginTop(1)
-	s.StatusHeader = lipgloss.NewStyle().Foreground(s.Green).Bold(true)
 	s.Highlight = lipgloss.NewStyle().Foreground(lipgloss.Color("212"))
 	s.ErrorHeaderText = s.HeaderText.Foreground(s.Red)
 	s.Help = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
