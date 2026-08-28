@@ -110,9 +110,13 @@ func (m *Model) CreateNewForm() error {
 				CharLimit(3).
 				Value(&m.country.UserData.TravelDays).
 				Validate(func(s string) error {
-					_, err := strconv.ParseInt(s, 10, 32)
+					parsedInt, err := strconv.ParseInt(s, 10, 32)
 					if err != nil {
 						return fmt.Errorf("Error: number is not a valid int: %v", err)
+					}
+
+					if parsedInt <= 0 {
+						return errors.New("Error: It's imposible to travel in 0 or negative days!")
 					}
 
 					return nil
@@ -148,20 +152,11 @@ func (m *Model) CreateNewForm() error {
 func (m *Model) GenerateStatusView(form string) string {
 	var (
 		countryStat = "(None)"
-		country     string
-
-		budget     string
-		budgetStat string
-
-		travelDate     string
-		travelDateStat string
-
-		travelDuration string
-		travelDurStat  string
-
-		enviroment     string
-		enviromentStat string
-
+		country,
+		budget, budgetStat,
+		travelDate, travelDateStat,
+		travelDuration, travelDurStat,
+		enviroment, enviromentStat,
 		activities string
 	)
 

@@ -105,9 +105,9 @@ func (m *Model) View() tea.View {
 
 	v := strings.TrimSuffix(m.Form.View(), "\n\n")
 	form := lipgloss.NewStyle().Margin(1, 0).Render(v)
-	countryStatusView := m.GenerateStatusView(form)
+	travelingStatusView := m.GenerateStatusView(form)
 
-	body := lipgloss.JoinHorizontal(lipgloss.Left, form, countryStatusView)
+	body := lipgloss.JoinHorizontal(lipgloss.Left, form, travelingStatusView)
 
 	footer := m.AppFrameworkView(m.Form.Help().ShortHelpView(m.Form.KeyBinds()))
 	if len(errorSlice) > 0 {
