@@ -105,69 +105,9 @@ func (m *Model) View() tea.View {
 
 	v := strings.TrimSuffix(m.Form.View(), "\n\n")
 	form := lipgloss.NewStyle().Margin(1, 0).Render(v)
+	countryStatusView := m.GenerateStatusView(form)
 
-	var (
-		countryStat = "(None)"
-		country     string
-
-		budget     string
-		budgetStat string
-
-		travelDate     string
-		travelDateStat string
-
-		travelDuration string
-		travelDurStat  string
-
-		enviroment     string
-		enviromentStat string
-
-		activities string
-	)
-
-	if m.Form.GetString("country") != "" || country != m.Form.GetString("country") {
-		country = m.Form.GetString("country")
-		countryStat = fmt.Sprintf("From: %s\n", m.Form.GetString("country"))
-	}
-
-	if m.Form.GetString("budget") != "" || budget != m.Form.GetString("budget") {
-		budget = m.Form.GetString("budget")
-		budgetStat = fmt.Sprintf("Budget: %s\n", m.Form.GetString("budget"))
-	}
-
-	if m.Form.GetString("travelDate") != "" || travelDate != m.Form.GetString("travelDate") {
-		travelDate = m.Form.GetString("travelDate")
-		travelDateStat = fmt.Sprintf("Traveling Date: %s\n", m.Form.GetString("travelDate"))
-	}
-
-	if m.Form.GetString("travelDuration") != "" || travelDuration != m.Form.GetString("travelDuration") {
-		travelDuration = m.Form.GetString("travelDuration")
-		travelDurStat = fmt.Sprintf(
-			"Traveling Duration: %s days\n", m.Form.GetString("travelDuration"))
-	}
-
-	if m.Form.GetString("enviroment") != "" || enviroment != m.Form.GetString("enviroment") {
-		enviroment = m.Form.GetString("enviroment")
-		enviromentStat = fmt.Sprintf("Enviroment: %s\n", m.Form.GetString("enviroment"))
-	}
-
-	if len(m.country.UserData.PreferedActivities) > 0 {
-		activities = "Activities:\n"
-		for _, act := range m.country.UserData.PreferedActivities {
-			activities += fmt.Sprintf("- %s\n", act)
-		}
-	}
-
-	const statusWidth = 35
-	statusMarginLeft := m.Width - statusWidth - lipgloss.Width(form) - m.styles.Status.GetMarginRight()
-	countryStatus := m.styles.Status.
-		Height(lipgloss.Height(form)).
-		Width(statusWidth).
-		MarginLeft(statusMarginLeft).
-		Render("Current Traveling Prefs!"+"\n\n"+
-			countryStat+budgetStat+travelDateStat+travelDurStat+enviromentStat, activities)
-
-	body := lipgloss.JoinHorizontal(lipgloss.Left, form, countryStatus)
+	body := lipgloss.JoinHorizontal(lipgloss.Left, form, countryStatusView)
 
 	footer := m.AppFrameworkView(m.Form.Help().ShortHelpView(m.Form.KeyBinds()))
 	if len(errorSlice) > 0 {
