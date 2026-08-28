@@ -151,7 +151,7 @@ func (m *Model) CreateNewForm() error {
 
 func (m *Model) GenerateStatusView(form string) string {
 	var (
-		countryStat = "Waiting for the data!"
+		countryStat = m.styles.StatusHeader.Render("Waiting for the data!")
 		country,
 		budget, budgetStat,
 		travelDate, travelDateStat,
@@ -191,9 +191,9 @@ func (m *Model) GenerateStatusView(form string) string {
 	}
 
 	if len(m.country.UserData.PreferedActivities) > 0 {
-		activities = "Activities:\n"
+		activities = m.styles.StatusHeader.Render("Activities:") + "\n"
 		for _, act := range m.country.UserData.PreferedActivities {
-			activities += fmt.Sprintf("- %s\n", act)
+			activities += m.styles.StatusText.Render("- ") + fmt.Sprintf("%s\n", act)
 		}
 	}
 

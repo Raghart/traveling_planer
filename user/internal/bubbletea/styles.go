@@ -31,7 +31,7 @@ func NewStyles(darkBG bool) *Styles {
 	s.HeaderText = lipgloss.NewStyle().Foreground(s.Indigo).Bold(true).Padding(0, 1, 0, 2)
 	s.StatusHeader = lipgloss.NewStyle().Foreground(s.Green).Bold(true)
 	// Need to update StatusText to be presentable
-	s.StatusText = lipgloss.NewStyle().Foreground(s.Green).Bold(true)
+	s.StatusText = lipgloss.NewStyle().Foreground(s.Indigo).Bold(true)
 
 	s.Status = lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
