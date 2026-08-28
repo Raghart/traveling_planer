@@ -151,7 +151,7 @@ func (m *Model) CreateNewForm() error {
 
 func (m *Model) GenerateStatusView(form string) string {
 	var (
-		countryStat = "(None)"
+		countryStat = "Waiting for the data!"
 		country,
 		budget, budgetStat,
 		travelDate, travelDateStat,
@@ -174,18 +174,20 @@ func (m *Model) GenerateStatusView(form string) string {
 
 	if m.Form.GetString("travelDate") != "" || travelDate != m.Form.GetString("travelDate") {
 		travelDate = m.Form.GetString("travelDate")
-		travelDateStat = fmt.Sprintf("Traveling Date: %s\n", m.Form.GetString("travelDate"))
+		travelDateStat = m.styles.StatusHeader.Render("Traveling Date: ") + fmt.
+			Sprintf("%s\n", m.Form.GetString("travelDate"))
 	}
 
 	if m.Form.GetString("travelDuration") != "" || travelDuration != m.Form.GetString("travelDuration") {
 		travelDuration = m.Form.GetString("travelDuration")
-		travelDurStat = fmt.Sprintf(
-			"Traveling Duration: %s days\n", m.Form.GetString("travelDuration"))
+		travelDurStat = m.styles.StatusHeader.Render("Traveling Duration: ") + fmt.Sprintf(
+			"%s days\n", m.Form.GetString("travelDuration"))
 	}
 
 	if m.Form.GetString("enviroment") != "" || enviroment != m.Form.GetString("enviroment") {
 		enviroment = m.Form.GetString("enviroment")
-		enviromentStat = fmt.Sprintf("Enviroment: %s\n", m.Form.GetString("enviroment"))
+		enviromentStat = m.styles.StatusHeader.Render("Enviroment: ") + fmt.
+			Sprintf("%s\n", m.Form.GetString("enviroment"))
 	}
 
 	if len(m.country.UserData.PreferedActivities) > 0 {
