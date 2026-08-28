@@ -174,10 +174,6 @@ func (m *Model) View() tea.View {
 		footer = m.ErrorFrameworkView("")
 	}
 
-	//if len(m.debugStrs) > 1 {
-	//	strView += strings.Join(m.debugStrs, "\n")
-	//}
-
 	return tea.NewView(m.styles.Base.Render(header + "\n" + body + "\n\n" + footer))
 }
 
